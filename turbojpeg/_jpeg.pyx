@@ -1,4 +1,5 @@
 # cython: language_level=3
+# cython: embedsignature=True
 from __future__ import print_function, division, unicode_literals
 
 import cython
@@ -84,46 +85,68 @@ cdef extern from "turbojpeg.h" nogil:
     cdef int TJSCALED(int dimension, tjscalingfactor scalingFactor)
 
 
-cdef COLORSPACES = {
-    'rgb': TJPF_RGB,
-    'bgr': TJPF_BGR,
-    'rgbx': TJPF_RGBX,
-    'bgrx': TJPF_BGRX,
-    'xbgr': TJPF_XBGR,
-    'xrgb': TJPF_XRGB,
-    'gray': TJPF_GRAY,
-    'rgba': TJPF_RGBA,
-    'bgra': TJPF_BGRA,
-    'abgr': TJPF_ABGR,
-    'argb': TJPF_ARGB,
-    'cmyk': TJPF_CMYK,
-}
-
-
+cdef _cnames = ['RGB', 'YCbCr', 'Gray', 'CMYK', 'YCCK']
+cdef _cs = [TJCS_RGB, TJCS_YCbCr, TJCS_GRAY, TJCS_CMYK, TJCS_YCCK]
+cdef COLORSPACES = {}
+for c, i in zip(_cnames, _cs):
+    COLORSPACES[c] = i
+    COLORSPACES[c.lower()] = i
+    COLORSPACES[c.upper()] = i
+    c = c.encode('utf-8')
+    COLORSPACES[c] = i
+    COLORSPACES[c.lower()] = i
+    COLORSPACES[c.upper()] = i
 cdef COLORSPACE_NAMES = {
-    TJPF_RGB: 'rgb',
-    TJPF_BGR: 'bgr',
-    TJPF_RGBX: 'rgbx',
-    TJPF_BGRX: 'bgrx',
-    TJPF_XBGR: 'xbgr',
-    TJPF_XRGB: 'xrgb',
-    TJPF_GRAY: 'gray',
-    TJPF_RGBA: 'rgba',
-    TJPF_BGRA: 'bgra',
-    TJPF_ABGR: 'abgr',
-    TJPF_ARGB: 'argb',
-    TJPF_CMYK: 'cmyk',
+    i: c for i, c in zip(_cs, _cnames)
 }
 
 
-cdef SUBSAMPLING_NAMES = {
-    TJSAMP_444: '444',
-    TJSAMP_422: '422',
-    TJSAMP_420: '420',
-    TJSAMP_GRAY: 'gray',
-    TJSAMP_440: '440',
-    TJSAMP_411: '411',
+cdef _snames = ['444', '422', '420', 'Gray', '440', '411',]
+cdef _ss = [
+    TJSAMP_444, TJSAMP_422, TJSAMP_420, TJSAMP_GRAY, TJSAMP_440, TJSAMP_411
+]
+SUBSAMPLING_NAMES = {
+    sub: name for name, sub in zip(_snames, _ss)
 }
+
+
+cdef _pfnames = [
+'RGB',
+'BGR',
+'RGBX',
+'BGRX',
+'XBGR',
+'XRGB',
+'Gray',
+'RGBA',
+'BGRA',
+'ABGR',
+'ARGB',
+'CMYK',
+]
+cdef _pfs = [
+    TJPF_RGB,
+    TJPF_BGR,
+    TJPF_RGBX,
+    TJPF_BGRX,
+    TJPF_XBGR,
+    TJPF_XRGB,
+    TJPF_GRAY,
+    TJPF_RGBA,
+    TJPF_BGRA,
+    TJPF_ABGR,
+    TJPF_ARGB,
+    TJPF_CMYK,
+]
+cdef PIXELFORMATS = {}
+for name, pf in zip(_pfnames, _pfs):
+    PIXELFORMATS[name] = pf
+    PIXELFORMATS[name.lower()] = pf
+    PIXELFORMATS[name.upper()] = pf
+    name = name.encode('utf-8')
+    PIXELFORMATS[name] = pf
+    PIXELFORMATS[name.lower()] = pf
+    PIXELFORMATS[name.upper()] = pf
 
 
 cdef __tj_error(tjhandle decoder_):
@@ -135,13 +158,52 @@ cdef __tj_error(tjhandle decoder_):
 
 
 @cython.cdivision(True)
-def decode_jpeg_header(const unsigned char[:] data not None):
+cdef void calc_height_width(
+        int* height,
+        int* width,
+        int min_height,
+        int min_width,
+        float min_factor,
+):
+    # find the minimum scaling factor that satisfies
+    # both min_width and min_height (if given).
+    cdef int numscalingfactors
+    cdef tjscalingfactor * factors = tjGetScalingFactors( & numscalingfactors)
+    cdef tjscalingfactor fac
+    cdef int f = -1
+    cdef int height_ = height[0]
+    cdef int width_ = width[0]
+    min_height = min(height_, min_height or height_)
+    min_width = min(width_, min_width or width_)
+    if min_height > 0 or min_width > 0:
+        for f in range(numscalingfactors - 1, -1, -1):
+            fac = factors[f]
+            if fac.num == fac.denom:
+                break
+            if TJSCALED(width_, fac) >= min_width \
+                    and TJSCALED(height_, fac) >= min_height:
+                break
+    # recalculate output width and height if scale factor was found
+    # and it is larger than min_factor
+    if f >= 0 and fac.denom >= min_factor * fac.num:
+        height[0] = TJSCALED(height_, fac)
+        width[0] = TJSCALED(width_, fac)
+
+
+def decode_jpeg_header(
+        const unsigned char[:] data not None,
+        int min_height=0,
+        int min_width=0,
+        float min_factor=1,
+):
     """
     Decode the header of a JPEG image.
     Returns height and width as pixels
     and colorspace and subsampling as strings.
 
     :param data: JPEG data
+    :param min_height:
+    :param min_width:
     :return: height, width, colorspace, color subsampling
     """
     cdef tjhandle decoder_ = tjInitDecompress()
@@ -172,6 +234,8 @@ def decode_jpeg_header(const unsigned char[:] data not None):
 
     tjDestroy(decoder_)
 
+    calc_height_width(&height, &width, min_height, min_width, min_factor)
+
     return (
         height,
         width,
@@ -179,32 +243,32 @@ def decode_jpeg_header(const unsigned char[:] data not None):
         SUBSAMPLING_NAMES[jpegSubsamp],
     )
 
-
-@cython.cdivision(True)
 def decode_jpeg(
         const unsigned char[:] data not None,
         colorspace='rgb',
-        fastdct=True,
-        fastupsample=True,
-        min_height=0,
-        min_width=0,
-        min_factor=2,
+        bint fastdct=True,
+        bint fastupsample=True,
+        int min_height=0,
+        int min_width=0,
+        float min_factor=2,
 ):
     """
     Decode a JPEG image into a numpy array.
 
     :param data: JPEG data
     :param colorspace: target colorspace, any of the following:
-                       'rgb', 'bgr', 'rgbx', 'bgrx', 'xbgr', 'xrgb',
-                       'gray', 'rgba', 'bgra', 'abgr', 'argb', 'cmyk'
-    :param fastdct: If True, use fastest DCT method
-    :param fastupsample: If True, use fast color upsampling
-    :param min_height: decode image to greater than this minimum
-                       height in pixels
-    :param min_width: decode image to greater than this minimum
-                      width in pixels
+                       'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
+                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'
+    :param fastdct: If True, use fastest DCT method;
+                    usually no observable difference
+    :param fastupsample: If True, use fastest color upsampling method;
+                         usually no observable difference
+    :param min_height: output height should be >= this minimum
+                       height in pixels; values <= 0 are ignored
+    :param min_width: output width should be >= this minimum
+                      width in pixels; values <= 0 are ignored
     :param min_factor: minimum scaling factor when decoding to smaller
-                       size; factors smaller than 2 may be slower to
+                       size; factors smaller than 2 may take longer to
                        decode
     """
     cdef tjhandle decoder_ = tjInitDecompress()
@@ -216,9 +280,6 @@ def decode_jpeg(
     cdef int retcode
     cdef int width
     cdef int height
-    cdef int min_height_ = min_height
-    cdef int min_width_ = min_width
-    cdef int min_factor_ = min_factor
 
     # get metadata
     cdef int jpegSubsamp
@@ -238,36 +299,12 @@ def decode_jpeg(
         tjDestroy(decoder_)
         raise ValueError(__tj_error(decoder_))
 
-    # find the minimum scaling factor that satisfies
-    # both min_width and min_height (if given).
-    cdef int numscalingfactors
-    cdef tjscalingfactor * factors = tjGetScalingFactors(&numscalingfactors)
-    cdef tjscalingfactor fac
-    cdef int f = -1
-    min_height_ = min(height, min_height_ or height)
-    min_width_ = min(width, min_width_ or width)
-    if min_height_ > 0 or min_width_ > 0:
-        for f in range(numscalingfactors-1, -1, -1):
-            fac = factors[f]
-            if fac.num == fac.denom:
-                break
-            if TJSCALED(width, fac) >= min_width_ \
-            and TJSCALED(height, fac) >= min_height_:
-                break
-    # recalculate output width and height if scale factor was found
-    # and it is larger than min_factor
-    if f >= 0 and fac.denom / fac.num > min_factor_:
-        width = TJSCALED(width, fac)
-        height = TJSCALED(height, fac)
+    calc_height_width(&height, &width, min_height, min_width, min_factor)
 
     # create the output array
-    cdef int colorspace_ = COLORSPACES[colorspace]
+    cdef int colorspace_ = PIXELFORMATS[colorspace]
     cdef np.npy_intp * dims = [height, width, tjPixelSize[colorspace_]]
     cdef np.ndarray[np.uint8_t, ndim = 3] out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
-    #cdef np.ndarray[np.uint8_t, ndim = 3] out = np.empty(
-    #        (height, width, tjPixelSize[colorspace_]),
-    #        np.uint8
-    #    )
     cdef unsigned char* out_p = <unsigned char*> out.data
 
     # combine flags

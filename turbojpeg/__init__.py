@@ -10,4 +10,8 @@ def is_jpeg(data):
     return data.startswith(b'\xFF\xD8\xFF\xE0')
 
 
-__all__ = [decode_jpeg, is_jpeg]
+__all__ = [
+    decode_jpeg,
+    decode_jpeg_header,
+    is_jpeg
+]
