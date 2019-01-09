@@ -13,34 +13,26 @@ np.import_array()
 cdef extern from "turbojpeg.h" nogil:
     ctypedef void* tjhandle
 
-    cdef int TJCS_RGB
-    cdef int TJCS_YCbCr
-    cdef int TJCS_GRAY
-    cdef int TJCS_CMYK
-    cdef int TJCS_YCCK
+    # TJ colorspace constants
+    cdef int TJCS_RGB, TJCS_YCbCr, TJCS_GRAY, TJCS_CMYK, TJCS_YCCK
 
-    cdef int TJPF_RGB
-    cdef int TJPF_BGR
-    cdef int TJPF_RGBX
-    cdef int TJPF_BGRX
-    cdef int TJPF_XBGR
-    cdef int TJPF_XRGB
-    cdef int TJPF_GRAY
-    cdef int TJPF_RGBA
-    cdef int TJPF_BGRA
-    cdef int TJPF_ABGR
-    cdef int TJPF_ARGB
-    cdef int TJPF_CMYK
+    # TJ pixel format constants
+    cdef int TJPF_RGB, TJPF_BGR, TJPF_RGBX, TJPF_BGRX, TJPF_XBGR, TJPF_XRGB
+    cdef int TJPF_GRAY, TJPF_RGBA, TJPF_BGRA, TJPF_ABGR, TJPF_ARGB, TJPF_CMYK
     cdef int TJPF_UNKNOWN
 
-    cdef int TJSAMP_444
-    cdef int TJSAMP_422
-    cdef int TJSAMP_420
-    cdef int TJSAMP_GRAY
-    cdef int TJSAMP_440
-    cdef int TJSAMP_411
+    # TJ color subsampling constants
+    cdef int TJSAMP_444, TJSAMP_422, TJSAMP_420
+    cdef int TJSAMP_GRAY, TJSAMP_440, TJSAMP_411
+
+    # TJ encoding/decoding flags
+    cdef int TJFLAG_NOREALLOC, TJFLAG_FASTDCT, TJFLAG_FASTUPSAMPLE
 
     cdef tjhandle tjInitDecompress()
+
+    cdef int tjDestroy(tjhandle handle)
+
+    cdef char* tjGetErrorStr2(tjhandle handle)
 
     cdef int tjDecompressHeader3(
         tjhandle handle,
@@ -64,17 +56,9 @@ cdef extern from "turbojpeg.h" nogil:
         int flags
     )
 
-    cdef char* tjGetErrorStr2(tjhandle handle)
-
     cdef const int* tjPixelSize
 
     cdef int TJPAD(int width)
-
-    cdef int tjDestroy(tjhandle handle)
-
-    cdef int TJFLAG_NOREALLOC
-    cdef int TJFLAG_FASTDCT
-    cdef int TJFLAG_FASTUPSAMPLE
 
     ctypedef struct tjscalingfactor:
         int num
@@ -85,6 +69,8 @@ cdef extern from "turbojpeg.h" nogil:
     cdef int TJSCALED(int dimension, tjscalingfactor scalingFactor)
 
 
+# Create a dict that maps colorspace names to TJ constants.
+# Add different cases for convenience.
 cdef _cnames = ['RGB', 'YCbCr', 'Gray', 'CMYK', 'YCCK']
 cdef _cs = [TJCS_RGB, TJCS_YCbCr, TJCS_GRAY, TJCS_CMYK, TJCS_YCCK]
 cdef COLORSPACES = {}
@@ -92,52 +78,26 @@ for c, i in zip(_cnames, _cs):
     COLORSPACES[c] = i
     COLORSPACES[c.lower()] = i
     COLORSPACES[c.upper()] = i
-    c = c.encode('utf-8')
+    c = c.encode('UTF-8')
     COLORSPACES[c] = i
     COLORSPACES[c.lower()] = i
     COLORSPACES[c.upper()] = i
-cdef COLORSPACE_NAMES = {
-    i: c for i, c in zip(_cs, _cnames)
-}
+cdef COLORSPACE_NAMES = {i: c for i, c in zip(_cs, _cnames)}
 
 
+# Create a dict that maps TJ constants to colorspace names.
 cdef _snames = ['444', '422', '420', 'Gray', '440', '411',]
-cdef _ss = [
-    TJSAMP_444, TJSAMP_422, TJSAMP_420, TJSAMP_GRAY, TJSAMP_440, TJSAMP_411
-]
-SUBSAMPLING_NAMES = {
-    sub: name for name, sub in zip(_snames, _ss)
-}
+cdef _ss = [TJSAMP_444, TJSAMP_422, TJSAMP_420,
+            TJSAMP_GRAY, TJSAMP_440, TJSAMP_411]
+SUBSAMPLING_NAMES = {sub: name for name, sub in zip(_snames, _ss)}
 
 
-cdef _pfnames = [
-'RGB',
-'BGR',
-'RGBX',
-'BGRX',
-'XBGR',
-'XRGB',
-'Gray',
-'RGBA',
-'BGRA',
-'ABGR',
-'ARGB',
-'CMYK',
-]
-cdef _pfs = [
-    TJPF_RGB,
-    TJPF_BGR,
-    TJPF_RGBX,
-    TJPF_BGRX,
-    TJPF_XBGR,
-    TJPF_XRGB,
-    TJPF_GRAY,
-    TJPF_RGBA,
-    TJPF_BGRA,
-    TJPF_ABGR,
-    TJPF_ARGB,
-    TJPF_CMYK,
-]
+# Create a dict that maps pixel formats names to TJ constants.
+# Add different cases for convenience.
+cdef _pfnames = ['RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
+                 'Gray', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK']
+cdef _pfs = [TJPF_RGB, TJPF_BGR, TJPF_RGBX, TJPF_BGRX, TJPF_XBGR, TJPF_XRGB,
+             TJPF_GRAY, TJPF_RGBA, TJPF_BGRA, TJPF_ABGR, TJPF_ARGB, TJPF_CMYK]
 cdef PIXELFORMATS = {}
 for name, pf in zip(_pfnames, _pfs):
     PIXELFORMATS[name] = pf
@@ -149,7 +109,10 @@ for name, pf in zip(_pfnames, _pfs):
     PIXELFORMATS[name.upper()] = pf
 
 
-cdef __tj_error(tjhandle decoder_):
+cdef str __tj_error(tjhandle decoder_):
+    '''
+    Extract the error message created by TJ
+    '''
     cdef char * error = tjGetErrorStr2(decoder_)
     if error == NULL:
         return 'unknown JPEG error'
@@ -164,7 +127,7 @@ cdef void calc_height_width(
         int min_height,
         int min_width,
         float min_factor,
-):
+) nogil:
     # find the minimum scaling factor that satisfies
     # both min_width and min_height (if given).
     cdef int numscalingfactors
@@ -198,18 +161,19 @@ def decode_jpeg_header(
 ):
     """
     Decode the header of a JPEG image.
-    Returns height and width as pixels
-    and colorspace and subsampling as strings.
+    Returns height and width in pixels
+    and colorspace and subsampling as string.
 
     :param data: JPEG data
-    :param min_height:
-    :param min_width:
+    :param min_height: height should be >= this minimum
+                       height in pixels; values <= 0 are ignored
+    :param min_width: width should be >= this minimum
+                      width in pixels; values <= 0 are ignored
+    :param min_factor: minimum scaling factor when decoding to smaller
+                       size; factors smaller than 2 may take longer to
+                       decode; default 1
     :return: height, width, colorspace, color subsampling
     """
-    cdef tjhandle decoder_ = tjInitDecompress()
-    if decoder_ == NULL:
-        raise RuntimeError('could not create JPEG decoder')
-
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
     cdef int retcode
@@ -217,9 +181,13 @@ def decode_jpeg_header(
     cdef int height
     cdef int jpegSubsamp
     cdef int jpegColorspace
+    cdef tjhandle decoder
     with nogil:
+        decoder = tjInitDecompress()
+        if decoder == NULL:
+            raise RuntimeError('could not create JPEG decoder')
         retcode = tjDecompressHeader3(
-            decoder_,
+            decoder,
             data_p,
             data_len,
             &width,
@@ -227,15 +195,11 @@ def decode_jpeg_header(
             &jpegSubsamp,
             &jpegColorspace
         )
-
-    if retcode != 0:
-        tjDestroy(decoder_)
-        raise ValueError(__tj_error(decoder_))
-
-    tjDestroy(decoder_)
-
-    calc_height_width(&height, &width, min_height, min_width, min_factor)
-
+        if retcode != 0:
+            tjDestroy(decoder)
+            raise ValueError(__tj_error(decoder))
+        tjDestroy(decoder)
+        calc_height_width(&height, &width, min_height, min_width, min_factor)
     return (
         height,
         width,
@@ -250,43 +214,44 @@ def decode_jpeg(
         bint fastupsample=True,
         int min_height=0,
         int min_width=0,
-        float min_factor=2,
+        float min_factor=1,
 ):
     """
-    Decode a JPEG image into a numpy array.
+    Decode a JPEG (JFIF) string.
+    Returns a numpy array.
 
     :param data: JPEG data
     :param colorspace: target colorspace, any of the following:
                        'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
-                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'
+                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB';
+                       'CMYK' may be used for images already in CMYK space.
     :param fastdct: If True, use fastest DCT method;
                     usually no observable difference
     :param fastupsample: If True, use fastest color upsampling method;
                          usually no observable difference
-    :param min_height: output height should be >= this minimum
-                       height in pixels; values <= 0 are ignored
-    :param min_width: output width should be >= this minimum
-                      width in pixels; values <= 0 are ignored
-    :param min_factor: minimum scaling factor when decoding to smaller
-                       size; factors smaller than 2 may take longer to
-                       decode
+    :param min_height: height should be >= this minimum in pixels;
+                       values <= 0 are ignored
+    :param min_width: width should be >= this minimum in pixels;
+                      values <= 0 are ignored
+    :param min_factor: minimum scaling factor (original size / decoded size);
+                       factors smaller than 2 may take longer to decode;
+                       default 1
+    :return: image as numpy array
     """
-    cdef tjhandle decoder_ = tjInitDecompress()
-    if decoder_ == NULL:
-        raise RuntimeError('could not create JPEG decoder')
-
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
     cdef int retcode
     cdef int width
     cdef int height
-
-    # get metadata
     cdef int jpegSubsamp
     cdef int jpegColorspace
+    cdef tjhandle decoder
     with nogil:
+        decoder = tjInitDecompress()
+        if decoder == NULL:
+                raise RuntimeError('could not create JPEG decoder')
         retcode = tjDecompressHeader3(
-            decoder_,
+            decoder,
             data_p,
             data_len,
             &width,
@@ -294,34 +259,31 @@ def decode_jpeg(
             &jpegSubsamp,
             &jpegColorspace
         )
-
-    if retcode != 0:
-        tjDestroy(decoder_)
-        raise ValueError(__tj_error(decoder_))
-
-    calc_height_width(&height, &width, min_height, min_width, min_factor)
+        if retcode != 0:
+            tjDestroy(decoder)
+            raise ValueError(__tj_error(decoder))
+        calc_height_width(&height, &width, min_height, min_width, min_factor)
 
     # create the output array
     cdef int colorspace_ = PIXELFORMATS[colorspace]
     cdef np.npy_intp * dims = [height, width, tjPixelSize[colorspace_]]
     cdef np.ndarray[np.uint8_t, ndim = 3] out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
     cdef unsigned char* out_p = <unsigned char*> out.data
-
-    # combine flags
-    # TJFLAG_NOREALLOC = the output buffer is managed by numpy,
-    #                    do not attempt to reallocate
-    # TJFLAG_FASTDCT = use fastest DCT method
-    # TJFLAG_FASTUPSAMPLE = use fastest color upsampling method
-    cdef int flags = TJFLAG_NOREALLOC
-    if fastdct:
-        flags |= TJFLAG_FASTDCT
-    if fastupsample:
-        flags |= TJFLAG_FASTUPSAMPLE
-
-    # decompress the image
+    cdef int flags
     with nogil:
+        # combine flags
+        # TJFLAG_NOREALLOC = the output buffer is managed by numpy,
+        #                    do not attempt to reallocate
+        # TJFLAG_FASTDCT = use fastest DCT method
+        # TJFLAG_FASTUPSAMPLE = use fastest color upsampling method
+        flags = TJFLAG_NOREALLOC
+        if fastdct:
+            flags |= TJFLAG_FASTDCT
+        if fastupsample:
+            flags |= TJFLAG_FASTUPSAMPLE
+        # decompress the image
         retcode = tjDecompress2(
-            decoder_,
+            decoder,
             data_p,
             data_len,
             out_p,
@@ -331,10 +293,8 @@ def decode_jpeg(
             colorspace_,
             flags
         )
-
-    if retcode != 0:
-        tjDestroy(decoder_)
-        raise ValueError(__tj_error(decoder_))
-
-    tjDestroy(decoder_)
+        if retcode != 0:
+            tjDestroy(decoder)
+            raise ValueError(__tj_error(decoder))
+        tjDestroy(decoder)
     return out
