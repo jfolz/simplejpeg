@@ -7,14 +7,14 @@ import platform
 
 from setuptools import setup
 from setuptools import find_packages
+from setuptools import Extension
 # don't require Cython for building
 try:
-    from Cython.Distutils import Extension
-    from Cython.Distutils import build_ext
+    from Cython.Build import cythonize
     HAVE_CYTHON = True
 except ImportError:
-    from setuptools import Extension
-    from setuptools.command.build_ext import build_ext
+    def cythonize(*_, **__):
+        pass
     HAVE_CYTHON = False
 import numpy as np
 
@@ -29,6 +29,26 @@ IS_WINDOWS = PLATFORM == 'Windows'
 IS_DARWIN = PLATFORM == 'Darwin'
 
 
+def remove_c_comments(*file_paths):
+    """
+    https://stackoverflow.com/a/241506/6862913
+    """
+    def replacer(match):
+        s = match.group(0)
+        return ' ' if s.startswith('/') else s
+    pattern = re.compile(
+        r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
+        re.DOTALL | re.MULTILINE
+    )
+    for fp in file_paths:
+        with open(fp) as f:
+            text = f.read()
+            new_text = re.sub(pattern, replacer, text)
+        if new_text != text:
+            with open(fp, 'w') as f:
+                f.write(text)
+
+
 def make_jpeg_module():
     include_dirs = [
         np.get_include(),
@@ -39,10 +59,11 @@ def make_jpeg_module():
         pt.join(PACKAGE_DIR, 'lib', 'turbojpeg',
                 'linux64', 'libturbojpeg.a')
     ]
-    src_file = '_jpeg.pyx' if HAVE_CYTHON else '_jpeg.c'
+    cythonize(pt.join('turbojpeg', '_jpeg.pyx'))
+    remove_c_comments(pt.join('turbojpeg', '_jpeg.c'))
     return Extension(
         'turbojpeg._jpeg',
-        [pt.join('turbojpeg', src_file)],
+        [pt.join('turbojpeg', '_jpeg.c')],
         language='C',
         include_dirs=include_dirs,
         extra_objects=extra_objects,
@@ -115,6 +136,5 @@ setup(
     package_data=package_data,
     setup_requires=['numpy'],
     install_requires=dependencies,
-    cmdclass={'build_ext': build_ext},
     ext_modules=ext_modules,
 )
