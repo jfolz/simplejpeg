@@ -43,10 +43,10 @@ def remove_c_comments(*file_paths):
     for fp in file_paths:
         with open(fp) as f:
             text = f.read()
-            new_text = re.sub(pattern, replacer, text)
+        new_text = re.sub(pattern, replacer, text)
         if new_text != text:
             with open(fp, 'w') as f:
-                f.write(text)
+                f.write(new_text)
 
 
 def make_jpeg_module():
