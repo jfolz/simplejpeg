@@ -111,7 +111,7 @@ for name, pf in zip(_pfnames, _pfs):
 
 cdef str __tj_error(tjhandle decoder_):
     '''
-    Extract the error message created by TJ
+    Extract the error message created by TJ.
     '''
     cdef char * error = tjGetErrorStr2(decoder_)
     if error == NULL:
@@ -249,7 +249,7 @@ def decode_jpeg(
     with nogil:
         decoder = tjInitDecompress()
         if decoder == NULL:
-                raise RuntimeError('could not create JPEG decoder')
+            raise RuntimeError('could not create JPEG decoder')
         retcode = tjDecompressHeader3(
             decoder,
             data_p,

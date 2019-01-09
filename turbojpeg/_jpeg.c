@@ -2598,7 +2598,7 @@ static PyObject *__pyx_codeobj__37;
  * 
  * cdef str __tj_error(tjhandle decoder_):             # <<<<<<<<<<<<<<
  *     '''
- *     Extract the error message created by TJ
+ *     Extract the error message created by TJ.
  */
 
 static PyObject *__pyx_f_9turbojpeg_5_jpeg___tj_error(tjhandle __pyx_v_decoder_) {
@@ -2610,7 +2610,7 @@ static PyObject *__pyx_f_9turbojpeg_5_jpeg___tj_error(tjhandle __pyx_v_decoder_)
   __Pyx_RefNannySetupContext("__tj_error", 0);
 
   /* "turbojpeg/_jpeg.pyx":116
- *     Extract the error message created by TJ
+ *     Extract the error message created by TJ.
  *     '''
  *     cdef char * error = tjGetErrorStr2(decoder_)             # <<<<<<<<<<<<<<
  *     if error == NULL:
@@ -2670,7 +2670,7 @@ static PyObject *__pyx_f_9turbojpeg_5_jpeg___tj_error(tjhandle __pyx_v_decoder_)
  * 
  * cdef str __tj_error(tjhandle decoder_):             # <<<<<<<<<<<<<<
  *     '''
- *     Extract the error message created by TJ
+ *     Extract the error message created by TJ.
  */
 
   /* function exit code */
@@ -3689,7 +3689,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
  *     with nogil:
  *         decoder = tjInitDecompress()             # <<<<<<<<<<<<<<
  *         if decoder == NULL:
- *                 raise RuntimeError('could not create JPEG decoder')
+ *             raise RuntimeError('could not create JPEG decoder')
  */
         __pyx_v_decoder = tjInitDecompress();
 
@@ -3697,7 +3697,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
  *     with nogil:
  *         decoder = tjInitDecompress()
  *         if decoder == NULL:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError('could not create JPEG decoder')
+ *             raise RuntimeError('could not create JPEG decoder')
  *         retcode = tjDecompressHeader3(
  */
         __pyx_t_4 = ((__pyx_v_decoder == NULL) != 0);
@@ -3706,7 +3706,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
           /* "turbojpeg/_jpeg.pyx":252
  *         decoder = tjInitDecompress()
  *         if decoder == NULL:
- *                 raise RuntimeError('could not create JPEG decoder')             # <<<<<<<<<<<<<<
+ *             raise RuntimeError('could not create JPEG decoder')             # <<<<<<<<<<<<<<
  *         retcode = tjDecompressHeader3(
  *             decoder,
  */
@@ -3735,14 +3735,14 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
  *     with nogil:
  *         decoder = tjInitDecompress()
  *         if decoder == NULL:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError('could not create JPEG decoder')
+ *             raise RuntimeError('could not create JPEG decoder')
  *         retcode = tjDecompressHeader3(
  */
         }
 
         /* "turbojpeg/_jpeg.pyx":253
  *         if decoder == NULL:
- *                 raise RuntimeError('could not create JPEG decoder')
+ *             raise RuntimeError('could not create JPEG decoder')
  *         retcode = tjDecompressHeader3(             # <<<<<<<<<<<<<<
  *             decoder,
  *             data_p,
