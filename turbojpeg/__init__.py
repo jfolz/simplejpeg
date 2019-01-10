@@ -1,3 +1,4 @@
+from ._jpeg import encode_jpeg
 from ._jpeg import decode_jpeg
 from ._jpeg import decode_jpeg_header
 
@@ -13,5 +14,6 @@ def is_jpeg(data):
 __all__ = [
     decode_jpeg,
     decode_jpeg_header,
-    is_jpeg
+    encode_jpeg,
+    is_jpeg,
 ]
