@@ -27,6 +27,12 @@ PLATFORM = platform.system()
 IS_LINUX = PLATFORM == 'Linux'
 IS_WINDOWS = PLATFORM == 'Windows'
 IS_DARWIN = PLATFORM == 'Darwin'
+if IS_LINUX:
+    LIB_FILE = 'libturbojpeg.a'
+elif IS_WINDOWS:
+    LIB_FILE = 'turbojpeg-static.lib'
+else:
+    raise RuntimeError('platform %s%s not supported' % (PLATFORM, BITNESS))
 
 
 def remove_c_comments(*file_paths):
@@ -57,7 +63,8 @@ def make_jpeg_module():
     ]
     extra_objects = [
         pt.join(PACKAGE_DIR, 'lib', 'turbojpeg',
-                'linux64', 'libturbojpeg.a')
+                PLATFORM.lower() + BITNESS,
+                LIB_FILE)
     ]
     cythonize(pt.join('turbojpeg', '_jpeg.pyx'))
     remove_c_comments(pt.join('turbojpeg', '_jpeg.c'))
@@ -73,11 +80,7 @@ def make_jpeg_module():
 
 
 # define extensions
-ext_modules = []
-if not IS_LINUX or IS_32BIT:
-    raise RuntimeError('only 64 bit Linux is supported')
-elif IS_LINUX and IS_64BIT:
-    ext_modules.append(make_jpeg_module())
+ext_modules = [make_jpeg_module()]
 
 
 def read(*names, **kwargs):
