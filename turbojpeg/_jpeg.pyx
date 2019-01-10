@@ -1,5 +1,6 @@
 # cython: language_level=3
 # cython: embedsignature=True
+# cython: boundscheck=False
 from __future__ import print_function, division, unicode_literals
 
 import cython
@@ -225,6 +226,7 @@ def decode_jpeg_header(
         SUBSAMPLING_NAMES[jpegSubsamp],
     )
 
+
 def decode_jpeg(
         const unsigned char[:] data not None,
         str colorspace='rgb',
@@ -286,7 +288,6 @@ def decode_jpeg(
     cdef int colorspace_ = PIXELFORMATS[colorspace]
     cdef np.npy_intp * dims = [height, width, tjPixelSize[colorspace_]]
     cdef np.ndarray[np.uint8_t, ndim = 3] out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
-    cdef unsigned char* out_p = <unsigned char*> out.data
     cdef int flags
     with nogil:
         flags = TJFLAG_NOREALLOC
@@ -299,7 +300,7 @@ def decode_jpeg(
             decoder,
             data_p,
             data_len,
-            out_p,
+            &out[0, 0, 0],
             width,
             0,
             height,
@@ -342,9 +343,9 @@ def encode_jpeg(
         raise ValueError('%d channels does not match given colorspace %s'
                          % (channels, colorspace))
     cdef int colorsubsampling_ = SUBSAMPLING[colorsubsampling]
-    cdef unsigned char * jpegBuf = NULL
-    cdef unsigned char ** jpegBufBuf = &jpegBuf
-    cdef unsigned long jpegSize = 0
+    cdef unsigned char * jpegbuf = NULL
+    cdef unsigned char ** jpegbufbuf = &jpegbuf
+    cdef unsigned long jpegsize = 0
     cdef int flags
     cdef tjhandle encoder
     with nogil:
@@ -361,8 +362,8 @@ def encode_jpeg(
             0,
             height,
             colorspace_,
-            jpegBufBuf,
-            &jpegSize,
+            jpegbufbuf,
+            &jpegsize,
             colorsubsampling_,
             quality,
             flags
@@ -370,7 +371,7 @@ def encode_jpeg(
         if retcode != 0:
             tjDestroy(encoder)
             raise ValueError(__tj_error(encoder))
-    jpeg = PyBytes_FromStringAndSize(<char *> jpegBuf, jpegSize)
-    tjFree(jpegBuf)
+    jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
+    tjFree(jpegbuf)
     tjDestroy(encoder)
     return jpeg
