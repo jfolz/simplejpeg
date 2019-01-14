@@ -1,5 +1,5 @@
 # cython: language_level=3
-# cython: embedsignature=True
+# cython: embedsignature=False
 # cython: boundscheck=False
 from __future__ import print_function, division, unicode_literals
 
@@ -102,7 +102,7 @@ cdef COLORSPACE_NAMES = {i: c for i, c in zip(_cconst, _cnames)}
 
 
 # Create a dict that maps TJ constants to colorspace names.
-cdef _snames = ['444', '422', '420', 'Gray', '440', '411',]
+cdef _snames = ['444', '422', '420', 'Gray', '440', '411']
 cdef _sconst = [TJSAMP_444, TJSAMP_422, TJSAMP_420,
                 TJSAMP_GRAY, TJSAMP_440, TJSAMP_411]
 cdef SUBSAMPLING = {}
@@ -236,6 +236,7 @@ def decode_jpeg(
         int min_width=0,
         float min_factor=1,
 ):
+    # type: (object, str, bool, bool, int, int, float) -> np.ndarray
     """
     Decode a JPEG (JFIF) string.
     Returns a numpy array.
@@ -325,10 +326,13 @@ def encode_jpeg(
     Encode an image to JPEG (JFIF) string.
     Returns JPEG (JFIF) data.
 
-    :param data: uncompressed image
-    :param colorspace: source colorspace, any of the following:
+    :param image: uncompressed image
+    :param quality: JPEG quantization factor
+    :param colorspace: source colorspace; one of
                        'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
                        'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.
+    :param colorsubsampling: subsampling factor for color channels; one of
+                             '444', '422', '420', '440', '411', 'Gray'.
     :param fastdct: If True, use fastest DCT method;
                     usually no observable difference
     :return: encoded image as JPEG (JFIF) data
