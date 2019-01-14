@@ -8,7 +8,7 @@ __version_info__ = __version__.split('.')
 
 
 def is_jpeg(data):
-    return data.startswith(b'\xFF\xD8\xFF\xE0')
+    return data[:4] == b'\xFF\xD8\xFF\xE0'
 
 
 __all__ = [
