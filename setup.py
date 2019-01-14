@@ -109,9 +109,7 @@ packages = find_packages(
 
 package_data = {
     package: [
-        '*.py',
-        '*.txt',
-        '*.json',
+        '*.pyi'
     ]
     for package in packages
 }
