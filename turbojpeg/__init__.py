@@ -8,6 +8,12 @@ __version_info__ = __version__.split('.')
 
 
 def is_jpeg(data):
+    """
+    Check whether a bytes object (or similar) contains JPEG (JFIF) data.
+
+    :param data: JPEG (JFIF) data
+    :return: True if JPEG
+    """
     return data[:4] == b'\xFF\xD8\xFF\xE0'
 
 
