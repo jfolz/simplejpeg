@@ -9,7 +9,7 @@ def decode_jpeg_header(
         data: Any,
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
-        min_factor: SupportsFloat=1
+        min_factor: SupportsFloat=1,
 ) -> (SupportsInt, SupportsInt, Text, Text):
     """
     Decode the header of a JPEG image.
@@ -36,7 +36,7 @@ def decode_jpeg(
         fastupsample: Any=True,
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
-        min_factor: SupportsFloat=1
+        min_factor: SupportsFloat=1,
 ) -> np.ndarray:
     """
     Decode a JPEG (JFIF) string.
