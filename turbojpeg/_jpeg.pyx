@@ -236,7 +236,6 @@ def decode_jpeg(
         int min_width=0,
         float min_factor=1,
 ):
-    # type: (object, str, bool, bool, int, int, float) -> np.ndarray
     """
     Decode a JPEG (JFIF) string.
     Returns a numpy array.
