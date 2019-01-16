@@ -20,19 +20,8 @@ import numpy as np
 
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
-IS_64BIT = sys.maxsize > 2**32
-IS_32BIT = not IS_64BIT
-BITNESS = '64' if IS_64BIT else '32'
-PLATFORM = platform.system()
-IS_LINUX = PLATFORM == 'Linux'
-IS_WINDOWS = PLATFORM == 'Windows'
-IS_DARWIN = PLATFORM == 'Darwin'
-if IS_LINUX:
-    LIB_FILE = 'libturbojpeg.a'
-elif IS_WINDOWS:
-    LIB_FILE = 'turbojpeg-static.lib'
-else:
-    raise RuntimeError('platform %s%s not supported' % (PLATFORM, BITNESS))
+PLATFORM = platform.system().lower()
+ARCH = {'i686': 'i386'}.get(platform.machine(), platform.machine())
 
 
 def remove_c_comments(*file_paths):
@@ -61,11 +50,15 @@ def make_jpeg_module():
         pt.join(PACKAGE_DIR, 'lib', 'turbojpeg'),
         pt.join(PACKAGE_DIR, 'turbojpeg'),
     ]
-    extra_objects = [
-        pt.join(PACKAGE_DIR, 'lib', 'turbojpeg',
-                PLATFORM.lower() + BITNESS,
-                LIB_FILE)
-    ]
+    if PLATFORM == 'linux':
+        lib = 'libturbojpeg.a'
+    elif PLATFORM == 'windows':
+        lib = 'turbojpeg-static.lib'
+    else:
+        lib = 'none'
+    lib = pt.join(PACKAGE_DIR, 'lib', 'turbojpeg', PLATFORM, ARCH, lib)
+    if not pt.exists(lib):
+        raise RuntimeError('%s %s is not supported' % (PLATFORM, ARCH))
     cythonize(pt.join('turbojpeg', '_jpeg.pyx'))
     remove_c_comments(pt.join('turbojpeg', '_jpeg.c'))
     return Extension(
@@ -73,7 +66,7 @@ def make_jpeg_module():
         [pt.join('turbojpeg', '_jpeg.c')],
         language='C',
         include_dirs=include_dirs,
-        extra_objects=extra_objects,
+        extra_objects=[lib],
         extra_link_args=['-Wl,--strip-all'],
         extra_compile_args=['-g0'],
     )
