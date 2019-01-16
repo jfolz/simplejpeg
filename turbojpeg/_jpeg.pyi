@@ -32,8 +32,8 @@ def decode_jpeg_header(
 def decode_jpeg(
         data: Any,
         colorspace: Text='rgb',
-        fastdct: Any=True,
-        fastupsample: Any=True,
+        fastdct: Any=False,
+        fastupsample: Any=False,
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
@@ -68,7 +68,7 @@ def encode_jpeg(
         quality: SupportsInt=85,
         colorspace: Text='rgb',
         colorsubsampling: Text='444',
-        fastdct: Any=True,
+        fastdct: Any=False,
 ):
     """
     Encode an image to JPEG (JFIF) string.

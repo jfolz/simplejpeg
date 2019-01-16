@@ -19,8 +19,9 @@ cdef extern from "turbojpeg.h" nogil:
     cdef int TJCS_RGB, TJCS_YCbCr, TJCS_GRAY, TJCS_CMYK, TJCS_YCCK
 
     # TJ pixel format constants
-    cdef int TJPF_RGB, TJPF_BGR, TJPF_RGBX, TJPF_BGRX, TJPF_XBGR, TJPF_XRGB
-    cdef int TJPF_GRAY, TJPF_RGBA, TJPF_BGRA, TJPF_ABGR, TJPF_ARGB, TJPF_CMYK
+    cdef int TJPF_RGB, TJPF_BGR, TJPF_RGBX, TJPF_BGRX
+    cdef int TJPF_XBGR, TJPF_XRGB, TJPF_GRAY, TJPF_RGBA
+    cdef int TJPF_BGRA, TJPF_ABGR, TJPF_ARGB, TJPF_CMYK
     cdef int TJPF_UNKNOWN
 
     # TJ color subsampling constants
@@ -77,8 +78,9 @@ cdef extern from "turbojpeg.h" nogil:
 	)
 
     cdef const int* tjPixelSize
-
-    cdef int TJPAD(int width)
+    cdef const int* tjRedOffset
+    cdef const int* tjGreenOffset
+    cdef const int* tjBlueOffset
 
     ctypedef struct tjscalingfactor:
         int num
@@ -87,6 +89,35 @@ cdef extern from "turbojpeg.h" nogil:
     cdef tjscalingfactor* tjGetScalingFactors(int* numscalingfactors)
 
     cdef int TJSCALED(int dimension, tjscalingfactor scalingFactor)
+
+
+cdef void cmyk2gray(unsigned char* cmyk, unsigned char* out,
+                   int npixels):
+    cdef unsigned char k, r, g, b
+    for _ in range(npixels):
+        k = cmyk[3]
+        r = k - ((<unsigned char> ~cmyk[0]) * k >> 8)
+        g = k - ((<unsigned char> ~cmyk[1]) * k >> 8)
+        b = k - ((<unsigned char> ~cmyk[2]) * k >> 8)
+        out[0] = (r*4899 + g*9617 + b*1868 + 8192) >> 14
+        cmyk += 4
+        out += 1
+
+
+cdef void cmyk2color(unsigned char* cmyk, unsigned char* out,
+                      int npixels, int pixelformat):
+    cdef unsigned char k, r, g, b
+    cdef int out_step = tjPixelSize[pixelformat]
+    r = tjRedOffset[pixelformat]
+    g = tjGreenOffset[pixelformat]
+    b = tjBlueOffset[pixelformat]
+    for _ in range(npixels):
+        k = cmyk[3]
+        out[r] = k - ((<unsigned char> ~cmyk[0])*k>>8)
+        out[g] = k - ((<unsigned char> ~cmyk[1])*k>>8)
+        out[b] = k - ((<unsigned char> ~cmyk[2])*k>>8)
+        cmyk += 4
+        out += out_step
 
 
 # Create a dict that maps colorspace names to TJ constants.
@@ -230,8 +261,8 @@ def decode_jpeg_header(
 def decode_jpeg(
         const unsigned char[:] data not None,
         str colorspace='rgb',
-        bint fastdct=True,
-        bint fastupsample=True,
+        bint fastdct=False,
+        bint fastupsample=False,
         int min_height=0,
         int min_width=0,
         float min_factor=1,
@@ -258,6 +289,7 @@ def decode_jpeg(
                        default 1
     :return: image as numpy array
     """
+    cdef unsigned char test = 5
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
     cdef int retcode
@@ -284,8 +316,15 @@ def decode_jpeg(
             raise ValueError(__tj_error(decoder))
         calc_height_width(&height, &width, min_height, min_width, min_factor)
 
+    # check whether JPEG is in CMYK/YCCK colorspace
+    cdef int colorspace_
+    cdef bint is_cmyk = 0
+    if jpegColorspace == TJCS_CMYK or jpegColorspace == TJCS_YCCK:
+        colorspace_ = TJPF_CMYK
+        is_cmyk = 1
+    else:
+        colorspace_= PIXELFORMATS[colorspace]
     # create the output array
-    cdef int colorspace_ = PIXELFORMATS[colorspace]
     cdef np.npy_intp * dims = [height, width, tjPixelSize[colorspace_]]
     cdef np.ndarray[np.uint8_t, ndim = 3] out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
     cdef int flags
@@ -311,6 +350,24 @@ def decode_jpeg(
             tjDestroy(decoder)
             raise ValueError(__tj_error(decoder))
         tjDestroy(decoder)
+
+    cdef np.ndarray[np.uint8_t, ndim = 3] new_out
+    colorspace_ = PIXELFORMATS[colorspace]
+    if is_cmyk and colorspace_ != TJPF_CMYK:
+        dims[:] = [height, width, tjPixelSize[colorspace_]]
+        new_out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        if colorspace_ == TJPF_RGBA \
+          or colorspace_ == TJPF_BGRA \
+          or colorspace_ == TJPF_ABGR \
+          or colorspace_ == TJPF_ARGB:
+            np.PyArray_FILLWBYTE(new_out, 255)
+        if colorspace_ == TJPF_GRAY:
+            cmyk2gray(&out[0, 0, 0], &new_out[0, 0, 0], height*width)
+        else:
+            cmyk2color(&out[0, 0, 0], &new_out[0, 0, 0],
+                       height*width, colorspace_)
+        del out
+        out = new_out
     return out
 
 
