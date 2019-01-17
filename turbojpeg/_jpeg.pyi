@@ -48,9 +48,10 @@ def decode_jpeg(
                        'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB';
                        'CMYK' may be used for images already in CMYK space.
     :param fastdct: If True, use fastest DCT method;
-                    usually no observable difference
+                    speeds up decoding by 4-5% for a minor loss in quality
     :param fastupsample: If True, use fastest color upsampling method;
-                         usually no observable difference
+                         speeds up decoding by 4-5% for a minor loss
+                         in quality
     :param min_height: height should be >= this minimum in pixels;
                        values <= 0 are ignored
     :param min_width: width should be >= this minimum in pixels;
@@ -82,7 +83,7 @@ def encode_jpeg(
     :param colorsubsampling: subsampling factor for color channels; one of
                              '444', '422', '420', '440', '411', 'Gray'.
     :param fastdct: If True, use fastest DCT method;
-                    usually no observable difference
+                    speeds up encoding by 4-5% for a minor loss in quality
     :return: encoded image as JPEG (JFIF) data
     """
     return b''

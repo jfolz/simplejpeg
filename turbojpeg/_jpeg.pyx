@@ -27,6 +27,7 @@ cdef extern from "turbojpeg.h" nogil:
     # TJ color subsampling constants
     cdef int TJSAMP_444, TJSAMP_422, TJSAMP_420
     cdef int TJSAMP_GRAY, TJSAMP_440, TJSAMP_411
+    cdef int TJ_NUMSAMP
 
     # TJ encoding/decoding flags
     cdef int TJFLAG_NOREALLOC, TJFLAG_FASTDCT, TJFLAG_FASTUPSAMPLE
@@ -78,9 +79,6 @@ cdef extern from "turbojpeg.h" nogil:
 	)
 
     cdef const int* tjPixelSize
-    cdef const int* tjRedOffset
-    cdef const int* tjGreenOffset
-    cdef const int* tjBlueOffset
 
     ctypedef struct tjscalingfactor:
         int num
@@ -91,33 +89,10 @@ cdef extern from "turbojpeg.h" nogil:
     cdef int TJSCALED(int dimension, tjscalingfactor scalingFactor)
 
 
-cdef void cmyk2gray(unsigned char* cmyk, unsigned char* out,
-                   int npixels):
-    cdef unsigned char k, r, g, b
-    for _ in range(npixels):
-        k = cmyk[3]
-        r = k - ((<unsigned char> ~cmyk[0]) * k >> 8)
-        g = k - ((<unsigned char> ~cmyk[1]) * k >> 8)
-        b = k - ((<unsigned char> ~cmyk[2]) * k >> 8)
-        out[0] = (r*4899 + g*9617 + b*1868 + 8192) >> 14
-        cmyk += 4
-        out += 1
-
-
-cdef void cmyk2color(unsigned char* cmyk, unsigned char* out,
-                      int npixels, int pixelformat):
-    cdef unsigned char k, r, g, b
-    cdef int out_step = tjPixelSize[pixelformat]
-    r = tjRedOffset[pixelformat]
-    g = tjGreenOffset[pixelformat]
-    b = tjBlueOffset[pixelformat]
-    for _ in range(npixels):
-        k = cmyk[3]
-        out[r] = k - ((<unsigned char> ~cmyk[0])*k>>8)
-        out[g] = k - ((<unsigned char> ~cmyk[1])*k>>8)
-        out[b] = k - ((<unsigned char> ~cmyk[2])*k>>8)
-        cmyk += 4
-        out += out_step
+cdef extern from "_color.c" nogil:
+    cdef void cmyk2gray(unsigned char* cmyk, unsigned char* out, int npixels)
+    cdef void cmyk2color(unsigned char* cmyk, unsigned char* out,
+                         int npixels, int pixelformat)
 
 
 # Create a dict that maps colorspace names to TJ constants.
@@ -141,7 +116,11 @@ for name, sub in zip(_snames, _sconst):
     SUBSAMPLING[name] = sub
     SUBSAMPLING[name.lower()] = sub
     SUBSAMPLING[name.upper()] = sub
+# add 'unknown' in case tjDecompressHeader3 cannot determine subsampling
+_snames.append('unknown')
+_sconst.append(TJ_NUMSAMP)
 cdef SUBSAMPLING_NAMES = {sub: name for name, sub in zip(_snames, _sconst)}
+cdef SUBSAMPLING_ERROR = 'tjDecompressHeader3(): Could not determine subsampling type for JPEG image'
 
 
 # Create a dict that maps pixel formats names to TJ constants.
@@ -181,7 +160,7 @@ cdef void calc_height_width(
     # find the minimum scaling factor that satisfies
     # both min_width and min_height (if given).
     cdef int numscalingfactors
-    cdef tjscalingfactor * factors = tjGetScalingFactors( & numscalingfactors)
+    cdef tjscalingfactor* factors = tjGetScalingFactors(&numscalingfactors)
     cdef tjscalingfactor fac
     cdef int f = -1
     cdef int height_ = height[0]
@@ -189,7 +168,7 @@ cdef void calc_height_width(
     min_height = min(height_, min_height or height_)
     min_width = min(width_, min_width or width_)
     if min_height > 0 or min_width > 0:
-        for f in range(numscalingfactors - 1, -1, -1):
+        for f in range(numscalingfactors-1, -1, -1):
             fac = factors[f]
             if fac.num == fac.denom:
                 break
@@ -227,10 +206,10 @@ def decode_jpeg_header(
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
     cdef int retcode
-    cdef int width
-    cdef int height
-    cdef int jpegSubsamp
-    cdef int jpegColorspace
+    cdef int width = -1
+    cdef int height = -1
+    cdef int jpegSubsamp = -1
+    cdef int jpegColorspace = -1
     cdef tjhandle decoder
     with nogil:
         decoder = tjInitDecompress()
@@ -246,8 +225,14 @@ def decode_jpeg_header(
             &jpegColorspace
         )
         if retcode != 0:
-            tjDestroy(decoder)
-            raise ValueError(__tj_error(decoder))
+            with gil:
+                error = __tj_error(decoder)
+                if error != SUBSAMPLING_ERROR \
+                or height < 1 or width < 1 or jpegColorspace < 0:
+                    tjDestroy(decoder)
+                    raise ValueError(error)
+                else:
+                    jpegSubsamp = TJ_NUMSAMP
         tjDestroy(decoder)
         calc_height_width(&height, &width, min_height, min_width, min_factor)
     return (
@@ -277,9 +262,10 @@ def decode_jpeg(
                        'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB';
                        'CMYK' may be used for images already in CMYK space.
     :param fastdct: If True, use fastest DCT method;
-                    usually no observable difference
+                    speeds up decoding by 4-5% for a minor loss in quality
     :param fastupsample: If True, use fastest color upsampling method;
-                         usually no observable difference
+                         speeds up decoding by 4-5% for a minor loss
+                         in quality
     :param min_height: height should be >= this minimum in pixels;
                        values <= 0 are ignored
     :param min_width: width should be >= this minimum in pixels;
@@ -312,8 +298,14 @@ def decode_jpeg(
             &jpegColorspace
         )
         if retcode != 0:
-            tjDestroy(decoder)
-            raise ValueError(__tj_error(decoder))
+            with gil:
+                error = __tj_error(decoder)
+                if error != SUBSAMPLING_ERROR \
+                or height < 1 or width < 1 or jpegColorspace < 0:
+                    tjDestroy(decoder)
+                    raise ValueError(error)
+                else:
+                    jpegSubsamp = TJ_NUMSAMP
         calc_height_width(&height, &width, min_height, min_width, min_factor)
 
     # check whether JPEG is in CMYK/YCCK colorspace
@@ -376,7 +368,7 @@ def encode_jpeg(
         int quality=85,
         str colorspace='rgb',
         str colorsubsampling='444',
-        bint fastdct=True,
+        bint fastdct=False,
 ):
     """
     Encode an image to JPEG (JFIF) string.
@@ -390,7 +382,7 @@ def encode_jpeg(
     :param colorsubsampling: subsampling factor for color channels; one of
                              '444', '422', '420', '440', '411', 'Gray'.
     :param fastdct: If True, use fastest DCT method;
-                    usually no observable difference
+                    speeds up encoding by 4-5% for a minor loss in quality
     :return: encoded image as JPEG (JFIF) data
     """
     cdef const unsigned char* image_p = &image[0, 0, 0]
