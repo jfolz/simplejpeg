@@ -8,7 +8,7 @@ void cmyk2gray(unsigned char* cmyk, unsigned char* out, int npixels) {
         r = k - (((unsigned char) ~cmyk[0]) * k >> 8);
         g = k - (((unsigned char) ~cmyk[1]) * k >> 8);
         b = k - (((unsigned char) ~cmyk[2]) * k >> 8);
-        out[0] = (r*4899 + g*9617 + b*1868 + 8192) >> 14;
+        *out = (r*4899 + g*9617 + b*1868 + 8192) >> 14;
     }
 }
 
