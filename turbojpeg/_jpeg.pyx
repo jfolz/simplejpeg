@@ -120,7 +120,6 @@ for name, sub in zip(_snames, _sconst):
 _snames.append('unknown')
 _sconst.append(TJ_NUMSAMP)
 cdef SUBSAMPLING_NAMES = {sub: name for name, sub in zip(_snames, _sconst)}
-cdef SUBSAMPLING_ERROR = 'tjDecompressHeader3(): Could not determine subsampling type for JPEG image'
 
 
 # Create a dict that maps pixel formats names to TJ constants.
@@ -225,14 +224,8 @@ def decode_jpeg_header(
             &jpegColorspace
         )
         if retcode != 0:
-            with gil:
-                error = __tj_error(decoder)
-                if error != SUBSAMPLING_ERROR \
-                or height < 1 or width < 1 or jpegColorspace < 0:
-                    tjDestroy(decoder)
-                    raise ValueError(error)
-                else:
-                    jpegSubsamp = TJ_NUMSAMP
+            tjDestroy(decoder)
+            raise ValueError(__tj_error(decoder))
         tjDestroy(decoder)
         calc_height_width(&height, &width, min_height, min_width, min_factor)
     return (
@@ -298,14 +291,9 @@ def decode_jpeg(
             &jpegColorspace
         )
         if retcode != 0:
-            with gil:
-                error = __tj_error(decoder)
-                if error != SUBSAMPLING_ERROR \
-                or height < 1 or width < 1 or jpegColorspace < 0:
-                    tjDestroy(decoder)
-                    raise ValueError(error)
-                else:
-                    jpegSubsamp = TJ_NUMSAMP
+            tjDestroy(decoder)
+            raise ValueError(__tj_error(decoder))
+
         calc_height_width(&height, &width, min_height, min_width, min_factor)
 
     # check whether JPEG is in CMYK/YCCK colorspace
