@@ -5,7 +5,7 @@ devel:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - wheelhouse/*.whl
     expire_in: 8 hours
   except:
   - tags
@@ -17,7 +17,7 @@ devel-i686:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - wheelhouse/*.whl
     expire_in: 8 hours
   except:
   - tags
@@ -29,7 +29,7 @@ release:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - wheelhouse/*.whl
   only:
   - tags
 
@@ -40,7 +40,7 @@ release-i686:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - wheelhouse/*.whl
   only:
   - tags
 
