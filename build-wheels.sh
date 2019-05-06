@@ -7,7 +7,7 @@ rm -r /opt/python/cp34*
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
-    "${PYBIN}/pip" install -r /io/requirements.txt
+    "${PYBIN}/pip" install -r requirements.txt
     "${PYBIN}/pip" wheel /io/ -w wheelhouse/ --no-deps
 done
 
@@ -17,8 +17,8 @@ for whl in wheelhouse/*.whl; do
 done
 
 # Install packages and test
-for PYBIN in /opt/python/*/bin/; do
-    "${PYBIN}/pip" install -r /io/test-requirements.txt
-    "${PYBIN}/pip" install turbojpeg --no-index -f /io/wheelhouse
-    "${PYBIN}/nosetests" -w /io/test
-done
+#for PYBIN in /opt/python/*/bin/; do
+#    "${PYBIN}/pip" install -r /io/test-requirements.txt
+#    "${PYBIN}/pip" install turbojpeg --no-index -f /io/wheelhouse
+#    "${PYBIN}/nosetests" -w /io/test
+#done
