@@ -1,0 +1,46 @@
+devel:
+  image: quay.io/pypa/manylinux1_x86_64
+  stage: build
+  script:
+  - ./build_wheels.sh
+  artifacts:
+    paths:
+    - ./*.whl
+    expire_in: 8 hours
+  except:
+  - tags
+
+devel-i686:
+  image: quay.io/pypa/manylinux1_i686
+  stage: build
+  script:
+  - ./build_wheels.sh
+  artifacts:
+    paths:
+    - ./*.whl
+    expire_in: 8 hours
+  except:
+  - tags
+
+release:
+  image: quay.io/pypa/manylinux1_x86_64
+  stage: build
+  script:
+  - ./build_wheels.sh
+  artifacts:
+    paths:
+    - ./*.whl
+  only:
+  - tags
+
+release-i686:
+  image: quay.io/pypa/manylinux1_i686
+  stage: build
+  script:
+  - ./build_wheels.sh
+  artifacts:
+    paths:
+    - ./*.whl
+  only:
+  - tags
+
