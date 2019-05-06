@@ -13,7 +13,7 @@ done
 
 # Bundle external shared libraries into the wheels
 for whl in wheelhouse/*.whl; do
-    auditwheel repair "$whl" -w wheelhouse/
+    auditwheel repair "$whl" -w .
 done
 
 # Install packages and test
