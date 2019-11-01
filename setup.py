@@ -67,7 +67,7 @@ def make_jpeg_module():
         language='C',
         include_dirs=include_dirs,
         extra_objects=[lib],
-        extra_link_args=['-Wl,--strip-all'],
+        extra_link_args=['-Wl,--strip-all,--exclude-libs,ALL'],
         extra_compile_args=['-g0'],
     )
 
