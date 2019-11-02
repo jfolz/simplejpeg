@@ -6,8 +6,8 @@ project.
 
 # simplejpeg
 
-simplejpeg is a simple package based on the recent versions
-of libturbojpeg for the fast JPEG encoding and decoding.
+simplejpeg is a simple package based on recent versions
+of libturbojpeg for fast JPEG encoding and decoding.
 
 
 
