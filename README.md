@@ -4,9 +4,9 @@ project.
 
 
 
-# turbojpeg
+# simplejpeg
 
-turbojpeg is a simple package based on the recent versions
+simplejpeg is a simple package based on the recent versions
 of libturbojpeg for the fast JPEG encoding and decoding.
 
 

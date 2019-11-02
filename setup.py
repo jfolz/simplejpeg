@@ -48,7 +48,7 @@ def make_jpeg_module():
     include_dirs = [
         np.get_include(),
         pt.join(PACKAGE_DIR, 'lib', 'turbojpeg'),
-        pt.join(PACKAGE_DIR, 'turbojpeg'),
+        pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
     if PLATFORM == 'linux':
         lib = 'libturbojpeg.a'
@@ -59,11 +59,11 @@ def make_jpeg_module():
     lib = pt.join(PACKAGE_DIR, 'lib', 'turbojpeg', PLATFORM, ARCH, lib)
     if not pt.exists(lib):
         raise RuntimeError('%s %s is not supported' % (PLATFORM, ARCH))
-    cythonize(pt.join('turbojpeg', '_jpeg.pyx'))
-    remove_c_comments(pt.join('turbojpeg', '_jpeg.c'))
+    cythonize(pt.join('simplejpeg', '_jpeg.pyx'))
+    remove_c_comments(pt.join('simplejpeg', '_jpeg.c'))
     return Extension(
-        'turbojpeg._jpeg',
-        [pt.join('turbojpeg', '_jpeg.c')],
+        'simplejpeg._jpeg',
+        [pt.join('simplejpeg', '_jpeg.c')],
         language='C',
         include_dirs=include_dirs,
         extra_objects=[lib],
@@ -96,7 +96,7 @@ def find_version(*file_paths):
 
 
 packages = find_packages(
-    include=['turbojpeg', 'turbojpeg.*'],
+    include=['simplejpeg', 'simplejpeg.*'],
 )
 
 
@@ -113,8 +113,8 @@ with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
 
 
 setup(
-    name='turbojpeg',
-    version=find_version('turbojpeg', '__init__.py'),
+    name='simplejpeg',
+    version=find_version('simplejpeg', '__init__.py'),
     author='Joachim Folz',
     author_email='joachim.folz@dfki.de',
     classifiers=[
