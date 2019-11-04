@@ -140,11 +140,14 @@ setup(
         'Programming Language :: Python :: 3.7',
         'License :: OSI Approved :: MIT License',
     ],
-    description=description,
-    keywords='the fastest JPEG package in town',
+    description='A simple package for fast JPEG encoding and decoding.',
+    long_description=description,
+    long_description_content_type='text/x-rst; charset=UTF-8',
+    keywords='the fastest JPEG encoding decoding package in town',
     packages=packages,
     package_data=package_data,
     setup_requires=build_dependencies,
     install_requires=dependencies,
     ext_modules=ext_modules,
+    project_urls={'Gitlab': 'https://gitlab.com/jfolz/simplejpeg'}
 )
