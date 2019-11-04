@@ -607,15 +607,15 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__turbojpeg___jpeg
-#define __PYX_HAVE_API__turbojpeg___jpeg
+#define __PYX_HAVE__simplejpeg___jpeg
+#define __PYX_HAVE_API__simplejpeg___jpeg
  
 #include <string.h>
 #include <stdio.h>
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
 #include "turbojpeg.h"
-#include "_color.c"
+#include "_color.h"
 #include "pythread.h"
 #include <stdlib.h>
 #include "pystate.h"
@@ -848,7 +848,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "turbojpeg/_jpeg.pyx",
+  "simplejpeg/_jpeg.pyx",
   "__init__.pxd",
   "stringsource",
   "type.pxd",
@@ -1967,21 +1967,21 @@ static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
 static PyTypeObject *__pyx_memoryviewslice_type = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg__cnames = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg__cconst = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg_COLORSPACES = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg_COLORSPACE_NAMES = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg__snames = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg__sconst = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING_NAMES = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg__pfnames = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg__pfconst = 0;
-static PyObject *__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS = 0;
-static PyObject *__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i;
-static PyObject *__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c;
-static PyObject *__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name;
-static PyObject *__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg__cnames = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg__cconst = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg_COLORSPACES = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg_COLORSPACE_NAMES = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg__snames = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg__sconst = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING_NAMES = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg__pfnames = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg__pfconst = 0;
+static PyObject *__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS = 0;
+static PyObject *__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i;
+static PyObject *__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c;
+static PyObject *__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name;
+static PyObject *__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub;
 static PyObject *generic = 0;
 static PyObject *strided = 0;
 static PyObject *indirect = 0;
@@ -1989,8 +1989,8 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static PyObject *__pyx_f_9turbojpeg_5_jpeg___tj_error(tjhandle);  
-static void __pyx_f_9turbojpeg_5_jpeg_calc_height_width(int *, int *, int, int, float);  
+static PyObject *__pyx_f_10simplejpeg_5_jpeg___tj_error(tjhandle);  
+static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *, int *, int, int, float);  
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *);  
 static void *__pyx_align_pointer(void *, size_t);  
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *);  
@@ -2026,9 +2026,9 @@ static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *);  
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_uint8_t = { "uint8_t", NULL, sizeof(__pyx_t_5numpy_uint8_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_uint8_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_uint8_t), 0 };
 static __Pyx_TypeInfo __Pyx_TypeInfo_unsigned_char__const__ = { "const unsigned char", NULL, sizeof(unsigned char const ), { 0 }, 0, IS_UNSIGNED(unsigned char const ) ? 'U' : 'I', IS_UNSIGNED(unsigned char const ), 0 };
-#define __Pyx_MODULE_NAME "turbojpeg._jpeg"
-extern int __pyx_module_is_main_turbojpeg___jpeg;
-int __pyx_module_is_main_turbojpeg___jpeg = 0;
+#define __Pyx_MODULE_NAME "simplejpeg._jpeg"
+extern int __pyx_module_is_main_simplejpeg___jpeg;
+int __pyx_module_is_main_simplejpeg___jpeg = 0;
 
  
 static PyObject *__pyx_builtin_zip;
@@ -2166,15 +2166,15 @@ static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_turbojpeg__jpeg[] = "turbojpeg._jpeg";
 static const char __pyx_k_colorsubsampling[] = "colorsubsampling";
+static const char __pyx_k_simplejpeg__jpeg[] = "simplejpeg._jpeg";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_colorsubsampling_2[] = "colorsubsampling_";
 static const char __pyx_k_decode_jpeg_header[] = "decode_jpeg_header";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
 static const char __pyx_k_unknown_JPEG_error[] = "unknown JPEG error";
-static const char __pyx_k_turbojpeg__jpeg_pyx[] = "turbojpeg/_jpeg.pyx";
+static const char __pyx_k_simplejpeg__jpeg_pyx[] = "simplejpeg/_jpeg.pyx";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
@@ -2354,6 +2354,8 @@ static PyObject *__pyx_n_u_rgb;
 static PyObject *__pyx_n_s_setstate;
 static PyObject *__pyx_n_s_setstate_cython;
 static PyObject *__pyx_n_s_shape;
+static PyObject *__pyx_n_s_simplejpeg__jpeg;
+static PyObject *__pyx_kp_s_simplejpeg__jpeg_pyx;
 static PyObject *__pyx_n_s_size;
 static PyObject *__pyx_n_s_start;
 static PyObject *__pyx_n_s_step;
@@ -2366,8 +2368,6 @@ static PyObject *__pyx_n_s_struct;
 static PyObject *__pyx_n_s_sub;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_test_2;
-static PyObject *__pyx_n_s_turbojpeg__jpeg;
-static PyObject *__pyx_kp_s_turbojpeg__jpeg_pyx;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
 static PyObject *__pyx_n_u_unknown;
@@ -2378,9 +2378,9 @@ static PyObject *__pyx_n_s_update;
 static PyObject *__pyx_n_s_upper;
 static PyObject *__pyx_n_s_width;
 static PyObject *__pyx_n_s_zip;
-static PyObject *__pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor);  
-static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, PyObject *__pyx_v_colorspace, int __pyx_v_fastdct, int __pyx_v_fastupsample, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor);  
-static PyObject *__pyx_pf_9turbojpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_image, int __pyx_v_quality, PyObject *__pyx_v_colorspace, PyObject *__pyx_v_colorsubsampling, int __pyx_v_fastdct);  
+static PyObject *__pyx_pf_10simplejpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor);  
+static PyObject *__pyx_pf_10simplejpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, PyObject *__pyx_v_colorspace, int __pyx_v_fastdct, int __pyx_v_fastupsample, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor);  
+static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_image, int __pyx_v_quality, PyObject *__pyx_v_colorspace, PyObject *__pyx_v_colorsubsampling, int __pyx_v_fastdct);  
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);  
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info);  
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer);  
@@ -2477,7 +2477,7 @@ static PyObject *__pyx_codeobj__40;
 
  
 
-static PyObject *__pyx_f_9turbojpeg_5_jpeg___tj_error(tjhandle __pyx_v_decoder_) {
+static PyObject *__pyx_f_10simplejpeg_5_jpeg___tj_error(tjhandle __pyx_v_decoder_) {
   char *__pyx_v_error;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -2516,7 +2516,7 @@ static PyObject *__pyx_f_9turbojpeg_5_jpeg___tj_error(tjhandle __pyx_v_decoder_)
    
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("turbojpeg._jpeg.__tj_error", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("simplejpeg._jpeg.__tj_error", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2526,7 +2526,7 @@ static PyObject *__pyx_f_9turbojpeg_5_jpeg___tj_error(tjhandle __pyx_v_decoder_)
 
  
 
-static void __pyx_f_9turbojpeg_5_jpeg_calc_height_width(int *__pyx_v_height, int *__pyx_v_width, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor) {
+static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *__pyx_v_height, int *__pyx_v_width, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor) {
   int __pyx_v_numscalingfactors;
   tjscalingfactor *__pyx_v_factors;
   tjscalingfactor __pyx_v_fac;
@@ -2668,10 +2668,10 @@ static void __pyx_f_9turbojpeg_5_jpeg_calc_height_width(int *__pyx_v_height, int
  
 
  
-static PyObject *__pyx_pw_9turbojpeg_5_jpeg_1decode_jpeg_header(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);  
-static char __pyx_doc_9turbojpeg_5_jpeg_decode_jpeg_header[] = "\n    Decode the header of a JPEG image.\n    Returns height and width in pixels\n    and colorspace and subsampling as string.\n\n    :param data: JPEG data\n    :param min_height: height should be >= this minimum\n                       height in pixels; values <= 0 are ignored\n    :param min_width: width should be >= this minimum\n                      width in pixels; values <= 0 are ignored\n    :param min_factor: minimum scaling factor when decoding to smaller\n                       size; factors smaller than 2 may take longer to\n                       decode; default 1\n    :return: height, width, colorspace, color subsampling\n    ";
-static PyMethodDef __pyx_mdef_9turbojpeg_5_jpeg_1decode_jpeg_header = {"decode_jpeg_header", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_9turbojpeg_5_jpeg_1decode_jpeg_header, METH_VARARGS|METH_KEYWORDS, __pyx_doc_9turbojpeg_5_jpeg_decode_jpeg_header};
-static PyObject *__pyx_pw_9turbojpeg_5_jpeg_1decode_jpeg_header(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10simplejpeg_5_jpeg_1decode_jpeg_header(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);  
+static char __pyx_doc_10simplejpeg_5_jpeg_decode_jpeg_header[] = "\n    Decode the header of a JPEG image.\n    Returns height and width in pixels\n    and colorspace and subsampling as string.\n\n    :param data: JPEG data\n    :param min_height: height should be >= this minimum\n                       height in pixels; values <= 0 are ignored\n    :param min_width: width should be >= this minimum\n                      width in pixels; values <= 0 are ignored\n    :param min_factor: minimum scaling factor when decoding to smaller\n                       size; factors smaller than 2 may take longer to\n                       decode; default 1\n    :return: height, width, colorspace, color subsampling\n    ";
+static PyMethodDef __pyx_mdef_10simplejpeg_5_jpeg_1decode_jpeg_header = {"decode_jpeg_header", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_10simplejpeg_5_jpeg_1decode_jpeg_header, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10simplejpeg_5_jpeg_decode_jpeg_header};
+static PyObject *__pyx_pw_10simplejpeg_5_jpeg_1decode_jpeg_header(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_data = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_min_height;
   int __pyx_v_min_width;
@@ -2758,14 +2758,14 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_1decode_jpeg_header(PyObject *__pyx_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("decode_jpeg_header", 0, 1, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 184, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("turbojpeg._jpeg.decode_jpeg_header", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("simplejpeg._jpeg.decode_jpeg_header", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_data.memview) == Py_None)) {
     PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "data"); __PYX_ERR(0, 185, __pyx_L1_error)
   }
-  __pyx_r = __pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(__pyx_self, __pyx_v_data, __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
+  __pyx_r = __pyx_pf_10simplejpeg_5_jpeg_decode_jpeg_header(__pyx_self, __pyx_v_data, __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
 
    
   goto __pyx_L0;
@@ -2776,7 +2776,7 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_1decode_jpeg_header(PyObject *__pyx_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor) {
+static PyObject *__pyx_pf_10simplejpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor) {
   unsigned char const *__pyx_v_data_p;
   unsigned long __pyx_v_data_len;
   int __pyx_v_retcode;
@@ -2875,7 +2875,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyO
               PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
               #endif
                 {
-                __pyx_t_4 = __pyx_f_9turbojpeg_5_jpeg___tj_error(__pyx_v_decoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L12_error)
+                __pyx_t_4 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_decoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 228, __pyx_L12_error)
                 __Pyx_GOTREF(__pyx_t_4);
                 __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 228, __pyx_L12_error)
                 __Pyx_GOTREF(__pyx_t_5);
@@ -2901,7 +2901,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyO
         (void)(tjDestroy(__pyx_v_decoder));
 
          
-        __pyx_f_9turbojpeg_5_jpeg_calc_height_width((&__pyx_v_height), (&__pyx_v_width), __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
+        __pyx_f_10simplejpeg_5_jpeg_calc_height_width((&__pyx_v_height), (&__pyx_v_width), __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
       }
 
        
@@ -2936,11 +2936,11 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyO
   __Pyx_GOTREF(__pyx_t_4);
 
    
-  __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_9turbojpeg_5_jpeg_COLORSPACE_NAMES, __pyx_v_jpegColorspace, int, 1, __Pyx_PyInt_From_int, 0, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_GetItemInt(__pyx_v_10simplejpeg_5_jpeg_COLORSPACE_NAMES, __pyx_v_jpegColorspace, int, 1, __Pyx_PyInt_From_int, 0, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
    
-  __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING_NAMES, __pyx_v_jpegSubsamp, int, 1, __Pyx_PyInt_From_int, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 235, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_GetItemInt(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING_NAMES, __pyx_v_jpegSubsamp, int, 1, __Pyx_PyInt_From_int, 0, 1, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 235, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
 
    
@@ -2971,7 +2971,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyO
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("turbojpeg._jpeg.decode_jpeg_header", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("simplejpeg._jpeg.decode_jpeg_header", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_data, 1);
@@ -2983,10 +2983,10 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_decode_jpeg_header(CYTHON_UNUSED PyO
  
 
  
-static PyObject *__pyx_pw_9turbojpeg_5_jpeg_3decode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);  
-static char __pyx_doc_9turbojpeg_5_jpeg_2decode_jpeg[] = "\n    Decode a JPEG (JFIF) string.\n    Returns a numpy array.\n\n    :param data: JPEG data\n    :param colorspace: target colorspace, any of the following:\n                       'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',\n                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB';\n                       'CMYK' may be used for images already in CMYK space.\n    :param fastdct: If True, use fastest DCT method;\n                    speeds up decoding by 4-5% for a minor loss in quality\n    :param fastupsample: If True, use fastest color upsampling method;\n                         speeds up decoding by 4-5% for a minor loss\n                         in quality\n    :param min_height: height should be >= this minimum in pixels;\n                       values <= 0 are ignored\n    :param min_width: width should be >= this minimum in pixels;\n                      values <= 0 are ignored\n    :param min_factor: minimum scaling factor (original size / decoded size);\n                       factors smaller than 2 may take longer to decode;\n                       default 1\n    :return: image as numpy array\n    ";
-static PyMethodDef __pyx_mdef_9turbojpeg_5_jpeg_3decode_jpeg = {"decode_jpeg", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_9turbojpeg_5_jpeg_3decode_jpeg, METH_VARARGS|METH_KEYWORDS, __pyx_doc_9turbojpeg_5_jpeg_2decode_jpeg};
-static PyObject *__pyx_pw_9turbojpeg_5_jpeg_3decode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10simplejpeg_5_jpeg_3decode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);  
+static char __pyx_doc_10simplejpeg_5_jpeg_2decode_jpeg[] = "\n    Decode a JPEG (JFIF) string.\n    Returns a numpy array.\n\n    :param data: JPEG data\n    :param colorspace: target colorspace, any of the following:\n                       'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',\n                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB';\n                       'CMYK' may be used for images already in CMYK space.\n    :param fastdct: If True, use fastest DCT method;\n                    speeds up decoding by 4-5% for a minor loss in quality\n    :param fastupsample: If True, use fastest color upsampling method;\n                         speeds up decoding by 4-5% for a minor loss\n                         in quality\n    :param min_height: height should be >= this minimum in pixels;\n                       values <= 0 are ignored\n    :param min_width: width should be >= this minimum in pixels;\n                      values <= 0 are ignored\n    :param min_factor: minimum scaling factor (original size / decoded size);\n                       factors smaller than 2 may take longer to decode;\n                       default 1\n    :return: image as numpy array\n    ";
+static PyMethodDef __pyx_mdef_10simplejpeg_5_jpeg_3decode_jpeg = {"decode_jpeg", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_10simplejpeg_5_jpeg_3decode_jpeg, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10simplejpeg_5_jpeg_2decode_jpeg};
+static PyObject *__pyx_pw_10simplejpeg_5_jpeg_3decode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_data = { 0, 0, { 0 }, { 0 }, { 0 } };
   PyObject *__pyx_v_colorspace = 0;
   int __pyx_v_fastdct;
@@ -3122,7 +3122,7 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_3decode_jpeg(PyObject *__pyx_self, P
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("decode_jpeg", 0, 1, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 239, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("turbojpeg._jpeg.decode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("simplejpeg._jpeg.decode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -3130,7 +3130,7 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_3decode_jpeg(PyObject *__pyx_self, P
     PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "data"); __PYX_ERR(0, 240, __pyx_L1_error)
   }
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_colorspace), (&PyUnicode_Type), 1, "colorspace", 1))) __PYX_ERR(0, 241, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(__pyx_self, __pyx_v_data, __pyx_v_colorspace, __pyx_v_fastdct, __pyx_v_fastupsample, __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
+  __pyx_r = __pyx_pf_10simplejpeg_5_jpeg_2decode_jpeg(__pyx_self, __pyx_v_data, __pyx_v_colorspace, __pyx_v_fastdct, __pyx_v_fastupsample, __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
 
    
 
@@ -3143,7 +3143,7 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_3decode_jpeg(PyObject *__pyx_self, P
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, PyObject *__pyx_v_colorspace, int __pyx_v_fastdct, int __pyx_v_fastupsample, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor) {
+static PyObject *__pyx_pf_10simplejpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_data, PyObject *__pyx_v_colorspace, int __pyx_v_fastdct, int __pyx_v_fastupsample, int __pyx_v_min_height, int __pyx_v_min_width, float __pyx_v_min_factor) {
   CYTHON_UNUSED unsigned char __pyx_v_test;
   unsigned char const *__pyx_v_data_p;
   unsigned long __pyx_v_data_len;
@@ -3273,7 +3273,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
               PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
               #endif
                 {
-                __pyx_t_4 = __pyx_f_9turbojpeg_5_jpeg___tj_error(__pyx_v_decoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 295, __pyx_L12_error)
+                __pyx_t_4 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_decoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 295, __pyx_L12_error)
                 __Pyx_GOTREF(__pyx_t_4);
                 __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 295, __pyx_L12_error)
                 __Pyx_GOTREF(__pyx_t_5);
@@ -3296,7 +3296,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
         }
 
          
-        __pyx_f_9turbojpeg_5_jpeg_calc_height_width((&__pyx_v_height), (&__pyx_v_width), __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
+        __pyx_f_10simplejpeg_5_jpeg_calc_height_width((&__pyx_v_height), (&__pyx_v_width), __pyx_v_min_height, __pyx_v_min_width, __pyx_v_min_factor);
       }
 
        
@@ -3346,7 +3346,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
 
    
     {
-    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 306, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 306, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 306, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -3433,7 +3433,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
               PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
               #endif
                 {
-                __pyx_t_5 = __pyx_f_9turbojpeg_5_jpeg___tj_error(__pyx_v_decoder); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 331, __pyx_L24_error)
+                __pyx_t_5 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_decoder); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 331, __pyx_L24_error)
                 __Pyx_GOTREF(__pyx_t_5);
                 __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 331, __pyx_L24_error)
                 __Pyx_GOTREF(__pyx_t_4);
@@ -3480,7 +3480,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
   }
 
    
-  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 335, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_7 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_7 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -3658,7 +3658,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_new_out.rcbuffer->pybuffer);
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_out.rcbuffer->pybuffer);
   __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("turbojpeg._jpeg.decode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("simplejpeg._jpeg.decode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   goto __pyx_L2;
   __pyx_L0:;
@@ -3676,10 +3676,10 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_2decode_jpeg(CYTHON_UNUSED PyObject 
  
 
  
-static PyObject *__pyx_pw_9turbojpeg_5_jpeg_5encode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);  
-static char __pyx_doc_9turbojpeg_5_jpeg_4encode_jpeg[] = "\n    Encode an image to JPEG (JFIF) string.\n    Returns JPEG (JFIF) data.\n\n    :param image: uncompressed image\n    :param quality: JPEG quantization factor\n    :param colorspace: source colorspace; one of\n                       'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',\n                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.\n    :param colorsubsampling: subsampling factor for color channels; one of\n                             '444', '422', '420', '440', '411', 'Gray'.\n    :param fastdct: If True, use fastest DCT method;\n                    speeds up encoding by 4-5% for a minor loss in quality\n    :return: encoded image as JPEG (JFIF) data\n    ";
-static PyMethodDef __pyx_mdef_9turbojpeg_5_jpeg_5encode_jpeg = {"encode_jpeg", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_9turbojpeg_5_jpeg_5encode_jpeg, METH_VARARGS|METH_KEYWORDS, __pyx_doc_9turbojpeg_5_jpeg_4encode_jpeg};
-static PyObject *__pyx_pw_9turbojpeg_5_jpeg_5encode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_10simplejpeg_5_jpeg_5encode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);  
+static char __pyx_doc_10simplejpeg_5_jpeg_4encode_jpeg[] = "\n    Encode an image to JPEG (JFIF) string.\n    Returns JPEG (JFIF) data.\n\n    :param image: uncompressed image\n    :param quality: JPEG quantization factor\n    :param colorspace: source colorspace; one of\n                       'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',\n                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.\n    :param colorsubsampling: subsampling factor for color channels; one of\n                             '444', '422', '420', '440', '411', 'Gray'.\n    :param fastdct: If True, use fastest DCT method;\n                    speeds up encoding by 4-5% for a minor loss in quality\n    :return: encoded image as JPEG (JFIF) data\n    ";
+static PyMethodDef __pyx_mdef_10simplejpeg_5_jpeg_5encode_jpeg = {"encode_jpeg", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_10simplejpeg_5_jpeg_5encode_jpeg, METH_VARARGS|METH_KEYWORDS, __pyx_doc_10simplejpeg_5_jpeg_4encode_jpeg};
+static PyObject *__pyx_pw_10simplejpeg_5_jpeg_5encode_jpeg(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   __Pyx_memviewslice __pyx_v_image = { 0, 0, { 0 }, { 0 }, { 0 } };
   int __pyx_v_quality;
   PyObject *__pyx_v_colorspace = 0;
@@ -3778,7 +3778,7 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_5encode_jpeg(PyObject *__pyx_self, P
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("encode_jpeg", 0, 1, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 354, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("turbojpeg._jpeg.encode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("simplejpeg._jpeg.encode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
@@ -3787,7 +3787,7 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_5encode_jpeg(PyObject *__pyx_self, P
   }
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_colorspace), (&PyUnicode_Type), 1, "colorspace", 1))) __PYX_ERR(0, 357, __pyx_L1_error)
   if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_colorsubsampling), (&PyUnicode_Type), 1, "colorsubsampling", 1))) __PYX_ERR(0, 358, __pyx_L1_error)
-  __pyx_r = __pyx_pf_9turbojpeg_5_jpeg_4encode_jpeg(__pyx_self, __pyx_v_image, __pyx_v_quality, __pyx_v_colorspace, __pyx_v_colorsubsampling, __pyx_v_fastdct);
+  __pyx_r = __pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(__pyx_self, __pyx_v_image, __pyx_v_quality, __pyx_v_colorspace, __pyx_v_colorsubsampling, __pyx_v_fastdct);
 
    
 
@@ -3800,7 +3800,7 @@ static PyObject *__pyx_pw_9turbojpeg_5_jpeg_5encode_jpeg(PyObject *__pyx_self, P
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_9turbojpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_image, int __pyx_v_quality, PyObject *__pyx_v_colorspace, PyObject *__pyx_v_colorsubsampling, int __pyx_v_fastdct) {
+static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject *__pyx_self, __Pyx_memviewslice __pyx_v_image, int __pyx_v_quality, PyObject *__pyx_v_colorspace, PyObject *__pyx_v_colorsubsampling, int __pyx_v_fastdct) {
   unsigned char const *__pyx_v_image_p;
   int __pyx_v_retcode;
   int __pyx_v_height;
@@ -3846,7 +3846,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject 
   __pyx_v_channels = (__pyx_v_image.shape[2]);
 
    
-  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 381, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 381, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 381, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -3896,7 +3896,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject 
   }
 
    
-  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING, __pyx_v_colorsubsampling); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 385, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING, __pyx_v_colorsubsampling); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 385, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 385, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -3981,7 +3981,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject 
               PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
               #endif
                 {
-                __pyx_t_4 = __pyx_f_9turbojpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 413, __pyx_L14_error)
+                __pyx_t_4 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 413, __pyx_L14_error)
                 __Pyx_GOTREF(__pyx_t_4);
                 __pyx_t_9 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 413, __pyx_L14_error)
                 __Pyx_GOTREF(__pyx_t_9);
@@ -4048,7 +4048,7 @@ static PyObject *__pyx_pf_9turbojpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObject 
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("turbojpeg._jpeg.encode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("simplejpeg._jpeg.encode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_jpeg);
@@ -12824,7 +12824,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "turbojpeg._jpeg.array",  
+  "simplejpeg._jpeg.array",  
   sizeof(struct __pyx_array_obj),  
   0,  
   __pyx_tp_dealloc_array,  
@@ -12932,7 +12932,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "turbojpeg._jpeg.Enum",  
+  "simplejpeg._jpeg.Enum",  
   sizeof(struct __pyx_MemviewEnum_obj),  
   0,  
   __pyx_tp_dealloc_Enum,  
@@ -13182,7 +13182,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "turbojpeg._jpeg.memoryview",  
+  "simplejpeg._jpeg.memoryview",  
   sizeof(struct __pyx_memoryview_obj),  
   0,  
   __pyx_tp_dealloc_memoryview,  
@@ -13309,7 +13309,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "turbojpeg._jpeg._memoryviewslice",  
+  "simplejpeg._jpeg._memoryviewslice",  
   sizeof(struct __pyx_memoryviewslice_obj),  
   0,  
   __pyx_tp_dealloc__memoryviewslice,  
@@ -13564,6 +13564,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
+  {&__pyx_n_s_simplejpeg__jpeg, __pyx_k_simplejpeg__jpeg, sizeof(__pyx_k_simplejpeg__jpeg), 0, 0, 1, 1},
+  {&__pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_k_simplejpeg__jpeg_pyx, sizeof(__pyx_k_simplejpeg__jpeg_pyx), 0, 0, 1, 0},
   {&__pyx_n_s_size, __pyx_k_size, sizeof(__pyx_k_size), 0, 0, 1, 1},
   {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},
   {&__pyx_n_s_step, __pyx_k_step, sizeof(__pyx_k_step), 0, 0, 1, 1},
@@ -13576,8 +13578,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_sub, __pyx_k_sub, sizeof(__pyx_k_sub), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_test_2, __pyx_k_test_2, sizeof(__pyx_k_test_2), 0, 0, 1, 1},
-  {&__pyx_n_s_turbojpeg__jpeg, __pyx_k_turbojpeg__jpeg, sizeof(__pyx_k_turbojpeg__jpeg), 0, 0, 1, 1},
-  {&__pyx_kp_s_turbojpeg__jpeg_pyx, __pyx_k_turbojpeg__jpeg_pyx, sizeof(__pyx_k_turbojpeg__jpeg_pyx), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
   {&__pyx_n_u_unknown, __pyx_k_unknown, sizeof(__pyx_k_unknown), 0, 1, 0, 1},
@@ -13753,19 +13753,19 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__28 = PyTuple_Pack(12, __pyx_n_s_data, __pyx_n_s_min_height, __pyx_n_s_min_width, __pyx_n_s_min_factor, __pyx_n_s_data_p, __pyx_n_s_data_len, __pyx_n_s_retcode, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_jpegSubsamp, __pyx_n_s_jpegColorspace, __pyx_n_s_decoder); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(4, 0, 12, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_turbojpeg__jpeg_pyx, __pyx_n_s_decode_jpeg_header, 184, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(4, 0, 12, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_decode_jpeg_header, 184, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 184, __pyx_L1_error)
 
    
   __pyx_tuple__30 = PyTuple_Pack(22, __pyx_n_s_data, __pyx_n_s_colorspace, __pyx_n_s_fastdct, __pyx_n_s_fastupsample, __pyx_n_s_min_height, __pyx_n_s_min_width, __pyx_n_s_min_factor, __pyx_n_s_test, __pyx_n_s_data_p, __pyx_n_s_data_len, __pyx_n_s_retcode, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_jpegSubsamp, __pyx_n_s_jpegColorspace, __pyx_n_s_decoder, __pyx_n_s_colorspace_2, __pyx_n_s_is_cmyk, __pyx_n_s_dims, __pyx_n_s_out, __pyx_n_s_flags, __pyx_n_s_new_out); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(7, 0, 22, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_turbojpeg__jpeg_pyx, __pyx_n_s_decode_jpeg, 239, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(7, 0, 22, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_decode_jpeg, 239, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 239, __pyx_L1_error)
 
    
   __pyx_tuple__32 = PyTuple_Pack(18, __pyx_n_s_image, __pyx_n_s_quality, __pyx_n_s_colorspace, __pyx_n_s_colorsubsampling, __pyx_n_s_fastdct, __pyx_n_s_image_p, __pyx_n_s_retcode, __pyx_n_s_height, __pyx_n_s_width, __pyx_n_s_channels, __pyx_n_s_colorspace_2, __pyx_n_s_colorsubsampling_2, __pyx_n_s_jpegbuf, __pyx_n_s_jpegbufbuf, __pyx_n_s_jpegsize, __pyx_n_s_flags, __pyx_n_s_encoder, __pyx_n_s_jpeg); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(5, 0, 18, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_turbojpeg__jpeg_pyx, __pyx_n_s_encode_jpeg, 354, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(5, 0, 18, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_encode_jpeg, 354, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 354, __pyx_L1_error)
 
    
   __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 286, __pyx_L1_error)
@@ -13827,21 +13827,21 @@ static int __Pyx_modinit_global_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_global_init_code", 0);
    
-  __pyx_v_9turbojpeg_5_jpeg__cnames = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg__cconst = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg_COLORSPACES = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg_COLORSPACE_NAMES = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg__snames = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg__sconst = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING_NAMES = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg__pfnames = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg__pfconst = Py_None; Py_INCREF(Py_None);
-  __pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS = Py_None; Py_INCREF(Py_None);
-  __pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i = Py_None; Py_INCREF(Py_None);
-  __pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c = Py_None; Py_INCREF(Py_None);
-  __pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name = Py_None; Py_INCREF(Py_None);
-  __pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg__cnames = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg__cconst = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg_COLORSPACES = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg_COLORSPACE_NAMES = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg__snames = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg__sconst = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING_NAMES = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg__pfnames = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg__pfconst = Py_None; Py_INCREF(Py_None);
+  __pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS = Py_None; Py_INCREF(Py_None);
+  __pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i = Py_None; Py_INCREF(Py_None);
+  __pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c = Py_None; Py_INCREF(Py_None);
+  __pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name = Py_None; Py_INCREF(Py_None);
+  __pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub = Py_None; Py_INCREF(Py_None);
   generic = Py_None; Py_INCREF(Py_None);
   strided = Py_None; Py_INCREF(Py_None);
   indirect = Py_None; Py_INCREF(Py_None);
@@ -14162,14 +14162,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_turbojpeg___jpeg) {
+  if (__pyx_module_is_main_simplejpeg___jpeg) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name_2, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "turbojpeg._jpeg")) {
-      if (unlikely(PyDict_SetItemString(modules, "turbojpeg._jpeg", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "simplejpeg._jpeg")) {
+      if (unlikely(PyDict_SetItemString(modules, "simplejpeg._jpeg", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -14217,8 +14217,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_u_YCCK);
   __Pyx_GIVEREF(__pyx_n_u_YCCK);
   PyList_SET_ITEM(__pyx_t_1, 4, __pyx_n_u_YCCK);
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg__cnames);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg__cnames, __pyx_t_1);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg__cnames);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg__cnames, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
 
@@ -14250,28 +14250,28 @@ if (!__Pyx_RefNanny) {
   __pyx_t_4 = 0;
   __pyx_t_5 = 0;
   __pyx_t_6 = 0;
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg__cconst);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg__cconst, __pyx_t_7);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg__cconst);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg__cconst, __pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_7);
   __pyx_t_7 = 0;
 
    
   __pyx_t_7 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg_COLORSPACES);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg_COLORSPACES, __pyx_t_7);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg_COLORSPACES);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg_COLORSPACES, __pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_7);
   __pyx_t_7 = 0;
 
    
   __pyx_t_7 = PyTuple_New(2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__cnames);
-  __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__cnames);
-  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_9turbojpeg_5_jpeg__cnames);
-  __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__cconst);
-  __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__cconst);
-  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_9turbojpeg_5_jpeg__cconst);
+  __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__cnames);
+  __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__cnames);
+  PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_v_10simplejpeg_5_jpeg__cnames);
+  __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__cconst);
+  __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__cconst);
+  PyTuple_SET_ITEM(__pyx_t_7, 1, __pyx_v_10simplejpeg_5_jpeg__cconst);
   __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_7, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -14371,7 +14371,7 @@ if (!__Pyx_RefNanny) {
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 104, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_COLORSPACES, __pyx_t_4, __pyx_t_6) < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_COLORSPACES, __pyx_t_4, __pyx_t_6) < 0)) __PYX_ERR(0, 104, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
@@ -14398,7 +14398,7 @@ if (!__Pyx_RefNanny) {
     if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_COLORSPACES, __pyx_t_4, __pyx_t_6) < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_COLORSPACES, __pyx_t_4, __pyx_t_6) < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
@@ -14425,7 +14425,7 @@ if (!__Pyx_RefNanny) {
     if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_COLORSPACES, __pyx_t_4, __pyx_t_6) < 0)) __PYX_ERR(0, 106, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_COLORSPACES, __pyx_t_4, __pyx_t_6) < 0)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
@@ -14439,12 +14439,12 @@ if (!__Pyx_RefNanny) {
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 107, __pyx_L8_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__cconst);
-    __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__cconst);
-    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_9turbojpeg_5_jpeg__cconst);
-    __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__cnames);
-    __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__cnames);
-    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_v_9turbojpeg_5_jpeg__cnames);
+    __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__cconst);
+    __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__cconst);
+    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_10simplejpeg_5_jpeg__cconst);
+    __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__cnames);
+    __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__cnames);
+    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_v_10simplejpeg_5_jpeg__cnames);
     __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_6, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L8_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -14534,32 +14534,32 @@ if (!__Pyx_RefNanny) {
         __PYX_ERR(0, 107, __pyx_L8_error)
         __pyx_L12_unpacking_done:;
       }
-      __Pyx_XGOTREF(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i);
-      __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i, __pyx_t_5);
+      __Pyx_XGOTREF(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i);
+      __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i, __pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_5);
       __pyx_t_5 = 0;
-      __Pyx_XGOTREF(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c);
-      __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c, __pyx_t_3);
+      __Pyx_XGOTREF(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c);
+      __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c, __pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_3);
       __pyx_t_3 = 0;
-      if (unlikely(PyDict_SetItem(__pyx_t_7, (PyObject*)__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i, (PyObject*)__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c))) __PYX_ERR(0, 107, __pyx_L8_error)
+      if (unlikely(PyDict_SetItem(__pyx_t_7, (PyObject*)__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i, (PyObject*)__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c))) __PYX_ERR(0, 107, __pyx_L8_error)
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c);
-    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c, Py_None);
-    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i);
-    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i, Py_None);
+    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c);
+    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c, Py_None);
+    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i);
+    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i, Py_None);
     goto __pyx_L13_exit_scope;
     __pyx_L8_error:;
-    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c);
-    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_c, Py_None);
-    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i);
-    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_9turbojpeg_5_jpeg_i, Py_None);
+    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c);
+    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_c, Py_None);
+    __Pyx_GOTREF(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i);
+    __Pyx_DECREF_SET(__pyx_7genexpr__pyx_v_10simplejpeg_5_jpeg_i, Py_None);
     goto __pyx_L1_error;
     __pyx_L13_exit_scope:;
   }  
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg_COLORSPACE_NAMES);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg_COLORSPACE_NAMES, __pyx_t_7);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg_COLORSPACE_NAMES);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg_COLORSPACE_NAMES, __pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_7);
   __pyx_t_7 = 0;
 
@@ -14584,8 +14584,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_kp_u_411);
   __Pyx_GIVEREF(__pyx_kp_u_411);
   PyList_SET_ITEM(__pyx_t_7, 5, __pyx_kp_u_411);
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg__snames);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg__snames, __pyx_t_7);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg__snames);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg__snames, __pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_7);
   __pyx_t_7 = 0;
 
@@ -14626,28 +14626,28 @@ if (!__Pyx_RefNanny) {
   __pyx_t_3 = 0;
   __pyx_t_5 = 0;
   __pyx_t_1 = 0;
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg__sconst);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg__sconst, __pyx_t_11);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg__sconst);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg__sconst, __pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_11);
   __pyx_t_11 = 0;
 
    
   __pyx_t_11 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING, __pyx_t_11);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING, __pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_11);
   __pyx_t_11 = 0;
 
    
   __pyx_t_11 = PyTuple_New(2); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__snames);
-  __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__snames);
-  PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_v_9turbojpeg_5_jpeg__snames);
-  __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__sconst);
-  __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__sconst);
-  PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_v_9turbojpeg_5_jpeg__sconst);
+  __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__snames);
+  __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__snames);
+  PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_v_10simplejpeg_5_jpeg__snames);
+  __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__sconst);
+  __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__sconst);
+  PyTuple_SET_ITEM(__pyx_t_11, 1, __pyx_v_10simplejpeg_5_jpeg__sconst);
   __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_11, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
@@ -14747,7 +14747,7 @@ if (!__Pyx_RefNanny) {
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_name); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 116, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING, __pyx_t_3, __pyx_t_1) < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING, __pyx_t_3, __pyx_t_1) < 0)) __PYX_ERR(0, 116, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -14774,7 +14774,7 @@ if (!__Pyx_RefNanny) {
     if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING, __pyx_t_3, __pyx_t_1) < 0)) __PYX_ERR(0, 117, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING, __pyx_t_3, __pyx_t_1) < 0)) __PYX_ERR(0, 117, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -14801,7 +14801,7 @@ if (!__Pyx_RefNanny) {
     if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING, __pyx_t_3, __pyx_t_1) < 0)) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING, __pyx_t_3, __pyx_t_1) < 0)) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -14810,12 +14810,12 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
    
-  __pyx_t_12 = __Pyx_PyObject_Append(__pyx_v_9turbojpeg_5_jpeg__snames, __pyx_n_u_unknown); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_Append(__pyx_v_10simplejpeg_5_jpeg__snames, __pyx_n_u_unknown); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 120, __pyx_L1_error)
 
    
   __pyx_t_11 = __Pyx_PyInt_From_int(TJ_NUMSAMP); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_12 = __Pyx_PyObject_Append(__pyx_v_9turbojpeg_5_jpeg__sconst, __pyx_t_11); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyObject_Append(__pyx_v_10simplejpeg_5_jpeg__sconst, __pyx_t_11); if (unlikely(__pyx_t_12 == ((int)-1))) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
    
@@ -14824,12 +14824,12 @@ if (!__Pyx_RefNanny) {
     __Pyx_GOTREF(__pyx_t_11);
     __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L20_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__snames);
-    __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__snames);
-    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_9turbojpeg_5_jpeg__snames);
-    __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__sconst);
-    __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__sconst);
-    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_9turbojpeg_5_jpeg__sconst);
+    __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__snames);
+    __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__snames);
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_10simplejpeg_5_jpeg__snames);
+    __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__sconst);
+    __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__sconst);
+    PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_10simplejpeg_5_jpeg__sconst);
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L20_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14919,32 +14919,32 @@ if (!__Pyx_RefNanny) {
         __PYX_ERR(0, 122, __pyx_L20_error)
         __pyx_L24_unpacking_done:;
       }
-      __Pyx_XGOTREF(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name);
-      __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name, __pyx_t_5);
+      __Pyx_XGOTREF(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name);
+      __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name, __pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_5);
       __pyx_t_5 = 0;
-      __Pyx_XGOTREF(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub);
-      __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub, __pyx_t_4);
+      __Pyx_XGOTREF(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub);
+      __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub, __pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_4);
       __pyx_t_4 = 0;
-      if (unlikely(PyDict_SetItem(__pyx_t_11, (PyObject*)__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub, (PyObject*)__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name))) __PYX_ERR(0, 122, __pyx_L20_error)
+      if (unlikely(PyDict_SetItem(__pyx_t_11, (PyObject*)__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub, (PyObject*)__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name))) __PYX_ERR(0, 122, __pyx_L20_error)
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name);
-    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name, Py_None);
-    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub);
-    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub, Py_None);
+    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name);
+    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name, Py_None);
+    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub);
+    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub, Py_None);
     goto __pyx_L25_exit_scope;
     __pyx_L20_error:;
-    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name);
-    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_name, Py_None);
-    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub);
-    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_9turbojpeg_5_jpeg_sub, Py_None);
+    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name);
+    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_name, Py_None);
+    __Pyx_GOTREF(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub);
+    __Pyx_DECREF_SET(__pyx_8genexpr1__pyx_v_10simplejpeg_5_jpeg_sub, Py_None);
     goto __pyx_L1_error;
     __pyx_L25_exit_scope:;
   }  
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING_NAMES);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg_SUBSAMPLING_NAMES, __pyx_t_11);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING_NAMES);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING_NAMES, __pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_11);
   __pyx_t_11 = 0;
 
@@ -14987,8 +14987,8 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_u_CMYK);
   __Pyx_GIVEREF(__pyx_n_u_CMYK);
   PyList_SET_ITEM(__pyx_t_11, 11, __pyx_n_u_CMYK);
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg__pfnames);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg__pfnames, __pyx_t_11);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg__pfnames);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg__pfnames, __pyx_t_11);
   __Pyx_GIVEREF(__pyx_t_11);
   __pyx_t_11 = 0;
 
@@ -15061,28 +15061,28 @@ if (!__Pyx_RefNanny) {
   __pyx_t_15 = 0;
   __pyx_t_16 = 0;
   __pyx_t_17 = 0;
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg__pfconst);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg__pfconst, __pyx_t_18);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg__pfconst);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg__pfconst, __pyx_t_18);
   __Pyx_GIVEREF(__pyx_t_18);
   __pyx_t_18 = 0;
 
    
   __pyx_t_18 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_18);
-  __Pyx_XGOTREF(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS);
-  __Pyx_DECREF_SET(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS, __pyx_t_18);
+  __Pyx_XGOTREF(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS);
+  __Pyx_DECREF_SET(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_t_18);
   __Pyx_GIVEREF(__pyx_t_18);
   __pyx_t_18 = 0;
 
    
   __pyx_t_18 = PyTuple_New(2); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_18);
-  __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__pfnames);
-  __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__pfnames);
-  PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_v_9turbojpeg_5_jpeg__pfnames);
-  __Pyx_INCREF(__pyx_v_9turbojpeg_5_jpeg__pfconst);
-  __Pyx_GIVEREF(__pyx_v_9turbojpeg_5_jpeg__pfconst);
-  PyTuple_SET_ITEM(__pyx_t_18, 1, __pyx_v_9turbojpeg_5_jpeg__pfconst);
+  __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__pfnames);
+  __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__pfnames);
+  PyTuple_SET_ITEM(__pyx_t_18, 0, __pyx_v_10simplejpeg_5_jpeg__pfnames);
+  __Pyx_INCREF(__pyx_v_10simplejpeg_5_jpeg__pfconst);
+  __Pyx_GIVEREF(__pyx_v_10simplejpeg_5_jpeg__pfconst);
+  PyTuple_SET_ITEM(__pyx_t_18, 1, __pyx_v_10simplejpeg_5_jpeg__pfconst);
   __pyx_t_17 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_18, NULL); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 134, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
@@ -15182,7 +15182,7 @@ if (!__Pyx_RefNanny) {
     __Pyx_GOTREF(__pyx_t_17);
     __Pyx_GetModuleGlobalName(__pyx_t_15, __pyx_n_s_name); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 135, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_15);
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS, __pyx_t_15, __pyx_t_17) < 0)) __PYX_ERR(0, 135, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_t_15, __pyx_t_17) < 0)) __PYX_ERR(0, 135, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
     __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
 
@@ -15209,7 +15209,7 @@ if (!__Pyx_RefNanny) {
     if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_15);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS, __pyx_t_15, __pyx_t_17) < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_t_15, __pyx_t_17) < 0)) __PYX_ERR(0, 136, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
     __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
 
@@ -15236,7 +15236,7 @@ if (!__Pyx_RefNanny) {
     if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_15);
     __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-    if (unlikely(PyObject_SetItem(__pyx_v_9turbojpeg_5_jpeg_PIXELFORMATS, __pyx_t_15, __pyx_t_17) < 0)) __PYX_ERR(0, 137, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_t_15, __pyx_t_17) < 0)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
     __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
 
@@ -15245,19 +15245,19 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
    
-  __pyx_t_18 = PyCFunction_NewEx(&__pyx_mdef_9turbojpeg_5_jpeg_1decode_jpeg_header, NULL, __pyx_n_s_turbojpeg__jpeg); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 184, __pyx_L1_error)
+  __pyx_t_18 = PyCFunction_NewEx(&__pyx_mdef_10simplejpeg_5_jpeg_1decode_jpeg_header, NULL, __pyx_n_s_simplejpeg__jpeg); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_18);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_decode_jpeg_header, __pyx_t_18) < 0) __PYX_ERR(0, 184, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
    
-  __pyx_t_18 = PyCFunction_NewEx(&__pyx_mdef_9turbojpeg_5_jpeg_3decode_jpeg, NULL, __pyx_n_s_turbojpeg__jpeg); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_18 = PyCFunction_NewEx(&__pyx_mdef_10simplejpeg_5_jpeg_3decode_jpeg, NULL, __pyx_n_s_simplejpeg__jpeg); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_18);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_decode_jpeg, __pyx_t_18) < 0) __PYX_ERR(0, 239, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
 
    
-  __pyx_t_18 = PyCFunction_NewEx(&__pyx_mdef_9turbojpeg_5_jpeg_5encode_jpeg, NULL, __pyx_n_s_turbojpeg__jpeg); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_t_18 = PyCFunction_NewEx(&__pyx_mdef_10simplejpeg_5_jpeg_5encode_jpeg, NULL, __pyx_n_s_simplejpeg__jpeg); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_18);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_encode_jpeg, __pyx_t_18) < 0) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_18); __pyx_t_18 = 0;
@@ -15370,11 +15370,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_18);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init turbojpeg._jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init simplejpeg._jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init turbojpeg._jpeg");
+    PyErr_SetString(PyExc_ImportError, "init simplejpeg._jpeg");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

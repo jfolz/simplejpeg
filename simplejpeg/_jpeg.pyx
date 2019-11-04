@@ -89,7 +89,7 @@ cdef extern from "turbojpeg.h" nogil:
     cdef int TJSCALED(int dimension, tjscalingfactor scalingFactor)
 
 
-cdef extern from "_color.c" nogil:
+cdef extern from "_color.h" nogil:
     cdef void cmyk2gray(unsigned char* cmyk, unsigned char* out, int npixels)
     cdef void cmyk2color(unsigned char* cmyk, unsigned char* out,
                          int npixels, int pixelformat)
