@@ -3,4 +3,4 @@ set -e -x
 
 PYBIN=/opt/python/cp37
 "${PYBIN}/pip" install twine
-twine upload dist/*
+twine upload --skip-existing --disable-progress-bar dist/*
