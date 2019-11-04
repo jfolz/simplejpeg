@@ -1,9 +1,9 @@
 import io
-import sys
 import os
 import os.path as pt
 import re
 import platform
+import glob
 
 from setuptools import setup
 from setuptools import find_packages
@@ -108,8 +108,18 @@ package_data = {
 }
 
 
+data_files = [
+    ('simplejpeg', [pt.join(PACKAGE_DIR, 'LICENSE')]),
+    ('turbojpeg', glob.glob(pt.join(PACKAGE_DIR, 'lib', '*', 'LICENSE*')))
+]
+
+
 with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
     dependencies = [l.strip(' \n') for l in f]
+
+
+with open(pt.join(PACKAGE_DIR, 'README.rst')) as f:
+    description = f.read()
 
 
 setup(
@@ -118,17 +128,19 @@ setup(
     author='Joachim Folz',
     author_email='joachim.folz@dfki.de',
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'License :: OSI Approved :: MIT License',
     ],
+    description=description,
     keywords='the fastest JPEG package in town',
     packages=packages,
     package_data=package_data,
-    setup_requires=['numpy'],
+    data_files=data_files,
+    setup_requires=['numpy==1.15.0'],
     install_requires=dependencies,
     ext_modules=ext_modules,
 )

@@ -30,6 +30,7 @@ release:
   artifacts:
     paths:
     - ./*.whl
+    expire_in: 1000 years
   only:
   - tags
 
@@ -41,6 +42,7 @@ release-i686:
   artifacts:
     paths:
     - ./*.whl
+    expire_in: 1000 years
   only:
   - tags
 
