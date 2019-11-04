@@ -1,0 +1,4 @@
+recursive-include lib *.md *.ijg *.h *.a *.lib
+recursive-include simplejpeg *.py *.h *.c
+include LICENSE *requirements.txt
+exclude test/*
