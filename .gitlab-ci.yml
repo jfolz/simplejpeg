@@ -1,5 +1,9 @@
-devel:
-  image: quay.io/pypa/manylinux1_x86_64
+stages:
+  - build
+  - publish
+
+
+.build:
   stage: build
   script:
   - ./build-wheels.sh
@@ -7,46 +11,65 @@ devel:
     paths:
     - dist/*.tar.gz
     - dist/*.whl
+
+
+.devel:
+  extends: .build
+  artifacts:
     expire_in: 8 hours
   except:
   - tags
+
+
+.release:
+  extends: .build
+  artifacts:
+    expire_in: 1000 years
+  only:
+  - tags
+
+
+.publish:
+  stage: publish
+  script:
+  - ./publish-wheels.sh
+  only:
+  - tags
+
+
+.x86_64: &x86_64
+  image: quay.io/pypa/manylinux1_x86_64
+
+
+.i686: &i686
+  image: quay.io/pypa/manylinux1_i686
+
+
+devel:
+  <<: *x86_64
+  extends: .devel
+
 
 devel-i686:
-  image: quay.io/pypa/manylinux1_i686
-  stage: build
-  script:
-  - ./build-wheels.sh
-  artifacts:
-    paths:
-    - dist/*.tar.gz
-    - dist/*.whl
-    expire_in: 8 hours
-  except:
-  - tags
+  <<: *i686
+  extends: .devel
+
 
 release:
-  image: quay.io/pypa/manylinux1_x86_64
-  stage: build
-  script:
-  - ./build-wheels.sh
-  artifacts:
-    paths:
-    - dist/*.tar.gz
-    - dist/*.whl
-    expire_in: 1000 years
-  only:
-  - tags
+  <<: *x86_64
+  extends: .release
+
 
 release-i686:
-  image: quay.io/pypa/manylinux1_i686
-  stage: build
-  script:
-  - ./build-wheels.sh
-  artifacts:
-    paths:
-    - dist/*.tar.gz
-    - dist/*.whl
-    expire_in: 1000 years
-  only:
-  - tags
+  <<: *i686
+  extends: .release
 
+
+publish:
+  <<: *x86_64
+  extends: .publish
+
+
+publish-i686:
+  <<: *i686
+  extends: .publish
