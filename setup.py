@@ -59,11 +59,18 @@ def make_jpeg_module():
     lib = pt.join(PACKAGE_DIR, 'lib', 'turbojpeg', PLATFORM, ARCH, lib)
     if not pt.exists(lib):
         raise RuntimeError('%s %s is not supported' % (PLATFORM, ARCH))
-    cythonize(pt.join('simplejpeg', '_jpeg.pyx'))
+    cython_files = [pt.join('simplejpeg', '_jpeg.pyx')]
+    for cython_file in cython_files:
+        if pt.exists(cython_file):
+            cythonize(cython_file)
     remove_c_comments(pt.join('simplejpeg', '_jpeg.c'))
+    sources = [
+        pt.join('simplejpeg', '_jpeg.c'),
+        pt.join('simplejpeg', '_color.c')
+    ]
     return Extension(
         'simplejpeg._jpeg',
-        [pt.join('simplejpeg', '_jpeg.c')],
+        sources,
         language='C',
         include_dirs=include_dirs,
         extra_objects=[lib],
