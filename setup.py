@@ -118,6 +118,10 @@ with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
     dependencies = [l.strip(' \n') for l in f]
 
 
+with open(pt.join(PACKAGE_DIR, 'build-requirements.txt')) as f:
+    build_dependencies = [l.strip(' \n') for l in f]
+
+
 with open(pt.join(PACKAGE_DIR, 'README.rst')) as f:
     description = f.read()
 
@@ -140,7 +144,7 @@ setup(
     packages=packages,
     package_data=package_data,
     data_files=data_files,
-    setup_requires=['numpy==1.15.0'],
+    setup_requires=build_dependencies,
     install_requires=dependencies,
     ext_modules=ext_modules,
 )
