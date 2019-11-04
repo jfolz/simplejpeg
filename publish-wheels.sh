@@ -2,5 +2,5 @@
 set -e -x
 
 PYBIN=/opt/python/cp37
-${PYBIN}/pip" install twine
+"${PYBIN}/pip" install twine
 twine upload dist/*
