@@ -115,12 +115,6 @@ package_data = {
 }
 
 
-data_files = [
-    ('simplejpeg', [pt.join(PACKAGE_DIR, 'LICENSE')]),
-    ('turbojpeg', glob.glob(pt.join(PACKAGE_DIR, 'lib', '*', 'LICENSE*')))
-]
-
-
 with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
     dependencies = [l.strip(' \n') for l in f]
 
@@ -150,7 +144,6 @@ setup(
     keywords='the fastest JPEG package in town',
     packages=packages,
     package_data=package_data,
-    data_files=data_files,
     setup_requires=build_dependencies,
     install_requires=dependencies,
     ext_modules=ext_modules,
