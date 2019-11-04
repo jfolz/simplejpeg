@@ -68,8 +68,3 @@ release-i686:
 publish:
   <<: *x86_64
   extends: .publish
-
-
-publish-i686:
-  <<: *i686
-  extends: .publish
