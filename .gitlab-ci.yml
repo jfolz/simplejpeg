@@ -5,7 +5,8 @@ devel:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - dist/*.tar.gz
+    - dist/*.whl
     expire_in: 8 hours
   except:
   - tags
@@ -17,7 +18,8 @@ devel-i686:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - dist/*.tar.gz
+    - dist/*.whl
     expire_in: 8 hours
   except:
   - tags
@@ -29,7 +31,8 @@ release:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - dist/*.tar.gz
+    - dist/*.whl
     expire_in: 1000 years
   only:
   - tags
@@ -41,7 +44,8 @@ release-i686:
   - ./build-wheels.sh
   artifacts:
     paths:
-    - ./*.whl
+    - dist/*.tar.gz
+    - dist/*.whl
     expire_in: 1000 years
   only:
   - tags

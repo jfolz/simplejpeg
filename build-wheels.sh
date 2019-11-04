@@ -8,12 +8,13 @@ rm -r /opt/python/cp34*
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install -r build-requirements.txt
+    "${PYBIN}/python" setup.py sdist --dist-dir=dist
     "${PYBIN}/pip" wheel . -w wheelhouse/ --no-deps
 done
 
 # Bundle external shared libraries into the wheels
 for whl in wheelhouse/*.whl; do
-    auditwheel repair "$whl" -w .
+    auditwheel repair "$whl" -w dist
 done
 
 # Install packages and test
