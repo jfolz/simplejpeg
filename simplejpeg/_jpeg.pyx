@@ -290,11 +290,12 @@ def decode_jpeg(
             &jpegSubsamp,
             &jpegColorspace
         )
-        if retcode != 0:
-            tjDestroy(decoder)
-            raise ValueError(__tj_error(decoder))
 
-        calc_height_width(&height, &width, min_height, min_width, min_factor)
+    if retcode != 0:
+        tjDestroy(decoder)
+        raise ValueError(__tj_error(decoder))
+
+    calc_height_width(&height, &width, min_height, min_width, min_factor)
 
     # check whether JPEG is in CMYK/YCCK colorspace
     cdef int colorspace_
@@ -326,10 +327,11 @@ def decode_jpeg(
             colorspace_,
             flags
         )
-        if retcode != 0:
-            tjDestroy(decoder)
-            raise ValueError(__tj_error(decoder))
-        tjDestroy(decoder)
+
+    if retcode != 0:
+        raise ValueError(__tj_error(decoder))
+
+    tjDestroy(decoder)
 
     cdef np.ndarray[np.uint8_t, ndim = 3] new_out
     colorspace_ = PIXELFORMATS[colorspace]
