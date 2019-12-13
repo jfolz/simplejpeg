@@ -329,6 +329,7 @@ def decode_jpeg(
         )
 
     if retcode != 0:
+        tjDestroy(decoder)
         raise ValueError(__tj_error(decoder))
 
     tjDestroy(decoder)
