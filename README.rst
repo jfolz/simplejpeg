@@ -192,3 +192,18 @@ Check whether a bytes object (or similar) contains JPEG (JFIF) data.
 
 - data: JPEG (JFIF) data
 - returns: True if JPEG
+
+
+
+Changelog
+--------------------
+
+1.2.6
+~~~~~
+
+- Fix memory corruption caused by incorrect GIL handling.
+
+1.2.5
+~~~~~
+
+- Initial public release.
