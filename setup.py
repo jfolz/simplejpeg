@@ -149,5 +149,9 @@ setup(
     setup_requires=build_dependencies,
     install_requires=dependencies,
     ext_modules=ext_modules,
-    project_urls={'Gitlab': 'https://gitlab.com/jfolz/simplejpeg'}
+    project_urls={
+        'Documentation': 'https://gitlab.com/jfolz/simplejpeg/blob/master/README.rst',
+        'Source': 'https://gitlab.com/jfolz/simplejpeg',
+        'Tracker': 'https://gitlab.com/jfolz/simplejpeg/issues',
+    }
 )
