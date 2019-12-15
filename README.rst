@@ -72,7 +72,7 @@ decode_jpeg_header
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
-    )
+    ) -> (SupportsInt, SupportsInt, Text, Text)
 
 
 Decode only the header of a JPEG image given as JPEG (JFIF) data from memory.
@@ -106,12 +106,13 @@ decode_jpeg
     def decode_jpeg(
         data: SupportsBuffer,
         colorspace: Text='RGB',
-        fastdct: Any=True,
-        fastupsample: Any=True,
+        fastdct: Any=False,
+        fastupsample: Any=False,
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
-    )
+        buffer: SupportsBuffer=None,
+    ) -> np.ndarray
 
 Decode a JPEG image given as JPEG (JFIF) data from memory.
 Accepts any input that supports the
@@ -128,10 +129,10 @@ Returns the image as numpy array in the requested colorspace.
   'CMYK' may only be used for images already in CMYK space
 - fastdct:
   if True, use fastest DCT method;
-  usually no observable difference
+  speeds up decoding by 4-5% for a minor loss in quality
 - fastupsample:
   if True, use fastest color upsampling method;
-  usually no observable difference
+  speeds up decoding by 4-5% for a minor loss in quality
 - min_height:
   minimum height in pixels of the decoded image;
   values <= 0 are ignored
@@ -141,6 +142,11 @@ Returns the image as numpy array in the requested colorspace.
 - param min_factor:
   minimum downsampling factor when decoding to smaller size;
   factors smaller than 2 may take longer to decode
+- buffer:
+  use given object as output buffer;
+  must support the buffer protocol and be writable, e.g.,
+  numpy ndarray or bytearray;
+  use decode_jpeg_header to find out required minimum size
 - returns: image as ``numpy.ndarray``
 
 
@@ -156,13 +162,13 @@ encode_jpeg
             colorspace: Text='RGB',
             colorsubsampling: Text='444',
             fastdct: Any=True,
-    )
+    ) -> bytes
 
 Encode an image given as numpy array to JPEG (JFIF) string.
 Returns JPEG (JFIF) data.
 
 - image:
-  uncompressed image as numpy array
+  uncompressed image as uint8 array
 - quality:
   JPEG quantization factor;
   0\-100, higher equals better quality
@@ -197,6 +203,11 @@ Check whether a bytes object (or similar) contains JPEG (JFIF) data.
 
 Changelog
 --------------------
+
+1.3.0
+~~~~~
+
+- ``decode_jpeg`` accepts optional ``buffer`` argument.
 
 1.2.6
 ~~~~~

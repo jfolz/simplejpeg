@@ -7,6 +7,9 @@ import cython
 import numpy as np
 cimport numpy as np
 from cpython.bytes cimport PyBytes_FromStringAndSize
+from cpython cimport PyObject_GetBuffer
+from cpython cimport PyBUF_SIMPLE
+from cpython cimport PyBuffer_Release
 
 
 np.import_array()
@@ -246,6 +249,7 @@ def decode_jpeg(
         int min_height=0,
         int min_width=0,
         float min_factor=1,
+        buffer=None,
 ):
     """
     Decode a JPEG (JFIF) string.
@@ -268,6 +272,10 @@ def decode_jpeg(
     :param min_factor: minimum scaling factor (original size / decoded size);
                        factors smaller than 2 may take longer to decode;
                        default 1
+    :param buffer: use given object as output buffer;
+                   must support the buffer protocol and be writable, e.g.,
+                   numpy ndarray or bytearray;
+                   use decode_jpeg_header to find out required minimum size
     :return: image as numpy array
     """
     cdef unsigned char test = 5
@@ -299,17 +307,56 @@ def decode_jpeg(
                 raise ValueError(msg)
         calc_height_width(&height, &width, min_height, min_width, min_factor)
 
-    # check whether JPEG is in CMYK/YCCK colorspace
-    cdef int colorspace_
+    # get colorspace constants
+    cdef int tmp_colorspace = PIXELFORMATS[colorspace]
+    cdef int output_colorspace = PIXELFORMATS[colorspace]
     cdef bint is_cmyk = 0
+    # check whether JPEG is in CMYK/YCCK colorspace
     if jpegColorspace == TJCS_CMYK or jpegColorspace == TJCS_YCCK:
-        colorspace_ = TJPF_CMYK
+        tmp_colorspace = TJPF_CMYK
         is_cmyk = 1
+
+    # some variables that may be needed
+    cdef np.npy_intp tmplen = height * width * tjPixelSize[tmp_colorspace]
+    cdef np.npy_intp outlen = height * width * tjPixelSize[output_colorspace]
+    cdef np.ndarray[np.uint8_t, ndim = 3] tmp
+    cdef np.ndarray[np.uint8_t, ndim = 3] out
+    cdef unsigned char* tmp_p
+    cdef unsigned char* out_p
+    cdef Py_buffer view
+    cdef np.npy_intp bufferlen = 0
+
+    # no buffer is given, make new output array
+    cdef np.npy_intp * dims = [height, width, tjPixelSize[output_colorspace]]
+    if buffer is None:
+        out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        out_p = &out[0, 0, 0]
+    # attempt to create output array from given buffer
     else:
-        colorspace_= PIXELFORMATS[colorspace]
-    # create the output array
-    cdef np.npy_intp * dims = [height, width, tjPixelSize[colorspace_]]
-    cdef np.ndarray[np.uint8_t, ndim = 3] out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        if PyObject_GetBuffer(buffer, &view, PyBUF_SIMPLE) != 0:
+            raise ValueError("buffer does not support the buffer protocol")
+        # check memoryview size and extract pointer
+        bufferlen = view.len
+        if bufferlen < outlen:
+            PyBuffer_Release(&view)
+            raise ValueError('%d byte buffer is too small to decode (%d, %d, %d) image'
+                             % (bufferlen, height, width, tjPixelSize[output_colorspace]))
+        out = np.frombuffer(
+            buffer, np.uint8, outlen
+        ).reshape((height, width, tjPixelSize[output_colorspace]))
+        out_p = <unsigned char*> view.buf
+        PyBuffer_Release(&view)
+
+    # if temp is not output colorspace temporary array must be created
+    if tmp_colorspace != output_colorspace:
+        dims[:] = [height, width, tjPixelSize[tmp_colorspace]]
+        tmp = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        tmp_p = &tmp[0, 0, 0]
+    # otherwise use output array as temp array
+    else:
+        tmp_p = out_p
+
+    # decode image
     cdef int flags
     with nogil:
         flags = TJFLAG_NOREALLOC
@@ -322,11 +369,11 @@ def decode_jpeg(
             decoder,
             data_p,
             data_len,
-            &out[0, 0, 0],
+            tmp_p,
             width,
             0,
             height,
-            colorspace_,
+            tmp_colorspace,
             flags
         )
         if retcode != 0:
@@ -336,23 +383,20 @@ def decode_jpeg(
                 raise ValueError(msg)
         tjDestroy(decoder)
 
-    cdef np.ndarray[np.uint8_t, ndim = 3] new_out
-    colorspace_ = PIXELFORMATS[colorspace]
-    if is_cmyk and colorspace_ != TJPF_CMYK:
-        dims[:] = [height, width, tjPixelSize[colorspace_]]
-        new_out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
-        if colorspace_ == TJPF_RGBA \
-          or colorspace_ == TJPF_BGRA \
-          or colorspace_ == TJPF_ABGR \
-          or colorspace_ == TJPF_ARGB:
-            np.PyArray_FILLWBYTE(new_out, 255)
-        if colorspace_ == TJPF_GRAY:
-            cmyk2gray(&out[0, 0, 0], &new_out[0, 0, 0], height*width)
+    # JPEG is CMYK color, but output is RGB, apply color conversion
+    if is_cmyk and output_colorspace != TJPF_CMYK:
+        # pre-fill alpha channel
+        if output_colorspace == TJPF_RGBA \
+          or output_colorspace == TJPF_BGRA \
+          or output_colorspace == TJPF_ABGR \
+          or output_colorspace == TJPF_ARGB:
+            np.PyArray_FILLWBYTE(out, 255)
+        if output_colorspace == TJPF_GRAY:
+            cmyk2gray(tmp_p, out_p, height*width)
         else:
-            cmyk2color(&out[0, 0, 0], &new_out[0, 0, 0],
-                       height*width, colorspace_)
-        del out
-        out = new_out
+            cmyk2color(tmp_p, out_p, height*width, output_colorspace)
+
+    # done
     return out
 
 
@@ -367,7 +411,7 @@ def encode_jpeg(
     Encode an image to JPEG (JFIF) string.
     Returns JPEG (JFIF) data.
 
-    :param image: uncompressed image
+    :param image: uncompressed image as uint8 array
     :param quality: JPEG quantization factor
     :param colorspace: source colorspace; one of
                        'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',

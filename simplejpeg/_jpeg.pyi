@@ -37,6 +37,7 @@ def decode_jpeg(
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
+        buffer: Any=None,
 ) -> np.ndarray:
     """
     Decode a JPEG (JFIF) string.
@@ -59,6 +60,11 @@ def decode_jpeg(
     :param min_factor: minimum scaling factor (original size / decoded size);
                        factors smaller than 2 may take longer to decode;
                        default 1
+    :param buffer: use given object as output buffer;
+                   must support the buffer protocol and be writable, e.g.,
+                   numpy ndarray or bytearray;
+                   use decode_jpeg_header to find out required minimum size
+                   if image dimensions are unknown
     :return: image as numpy array
     """
     return np.empty((1, 1, 1))
@@ -70,12 +76,12 @@ def encode_jpeg(
         colorspace: Text='rgb',
         colorsubsampling: Text='444',
         fastdct: Any=False,
-):
+) -> bytes:
     """
     Encode an image to JPEG (JFIF) string.
     Returns JPEG (JFIF) data.
 
-    :param image: uncompressed image
+    :param image: uncompressed image as uint8 array
     :param quality: JPEG quantization factor
     :param colorspace: source colorspace; one of
                        'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
