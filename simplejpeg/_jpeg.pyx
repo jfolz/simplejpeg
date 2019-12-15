@@ -9,6 +9,7 @@ cimport numpy as np
 from cpython.bytes cimport PyBytes_FromStringAndSize
 from cpython cimport PyObject_GetBuffer
 from cpython cimport PyBUF_SIMPLE
+from cpython cimport PyBUF_WRITABLE
 from cpython cimport PyBuffer_Release
 
 
@@ -333,7 +334,7 @@ def decode_jpeg(
         out_p = &out[0, 0, 0]
     # attempt to create output array from given buffer
     else:
-        if PyObject_GetBuffer(buffer, &view, PyBUF_SIMPLE) != 0:
+        if PyObject_GetBuffer(buffer, &view, PyBUF_SIMPLE|PyBUF_WRITABLE) != 0:
             raise ValueError("buffer does not support the buffer protocol")
         # check memoryview size and extract pointer
         bufferlen = view.len

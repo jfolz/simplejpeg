@@ -204,6 +204,11 @@ Check whether a bytes object (or similar) contains JPEG (JFIF) data.
 Changelog
 --------------------
 
+1.3.1
+~~~~~
+
+- ``decode_jpeg`` requests writable buffer from ``buffer`` argument.
+
 1.3.0
 ~~~~~
 
