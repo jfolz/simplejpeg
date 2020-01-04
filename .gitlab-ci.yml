@@ -38,11 +38,11 @@ stages:
 
 
 .x86_64: &x86_64
-  image: quay.io/pypa/manylinux1_x86_64
+  image: quay.io/pypa/manylinux2010_x86_64
 
 
 .i686: &i686
-  image: quay.io/pypa/manylinux1_i686
+  image: quay.io/pypa/manylinux2010_i686
 
 
 devel:

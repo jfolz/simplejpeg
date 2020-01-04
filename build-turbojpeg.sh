@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e -x
 
-# install YASM to compile SIMD assembly
+# install cmake and YASM to compile SIMD assembly
 yum update -y
-yum install -y yasm
+yum install -y cmake yasm
 
 # checkout specific libjpeg-turbo tag from github
 mkdir -p lib
@@ -16,5 +16,5 @@ fi
 cd libjpeg-turbo
 mkdir -p build
 cd build
-cmake cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=. -DENABLE_SHARED=0 -DREQUIRE_SIMD=1 ..
+cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=. -DENABLE_SHARED=0 -DREQUIRE_SIMD=1 ..
 make
