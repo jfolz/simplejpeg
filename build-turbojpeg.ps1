@@ -5,9 +5,11 @@ cd lib
 # download YASM to compile SIMD assembly
 if ([Environment]::Is64BitOperatingSystem) {
     $bits = 64
+    $arch = "AMD64"
 }
 else {
     $bits = 32
+    $arch = "x86"
 }
 $yasm_url = "https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0-win" + $bits + ".exe"
 Invoke-WebRequest $yasm_url -OutFile yasm.exe
@@ -41,4 +43,14 @@ mkdir -Force build
 cd build
 cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="." -DENABLE_SHARED=0 -DREQUIRE_SIMD=1 ..
 nmake
-cd ..\..\..
+cd ..\..\
+
+# copy header and lib to turbojpeg dir
+New-Item -Force turbojpeg\windows\$arch -ItemType directory
+cp libjpeg-turbo\turbojpeg.h turbojpeg\
+cp libjpeg-turbo\build\turbojpeg-static.lib turbojpeg\windows\$arch\
+
+# cleanup
+Remove-Item yasm.exe
+Remove-Item -Force -Recurse -LiteralPath libjpeg-turbo
+cd ..

@@ -1,20 +1,19 @@
 stages:
+  - dependencies
   - build
   - publish
 
 
-.build:
-  stage: build
-  script:
-  - ./build-wheels.sh
+.artifacts:
   artifacts:
     paths:
+    - lib/*
     - dist/*.tar.gz
     - dist/*.whl
 
 
 .devel:
-  extends: .build
+  extends: .artifacts
   artifacts:
     expire_in: 8 hours
   except:
@@ -22,7 +21,7 @@ stages:
 
 
 .release:
-  extends: .build
+  extends: .artifacts
   artifacts:
     expire_in: 1000 years
   only:
@@ -45,23 +44,51 @@ stages:
   image: quay.io/pypa/manylinux2010_i686
 
 
+.build: &build
+  stage: build
+  script:
+  - ./build-wheels.sh
+
+
+.dependencies: &dependencies
+  stage: dependencies
+  script:
+  - ./build-turbojpeg.sh
+
+
+dependencies:
+  <<: *x86_64
+  <<: *dependencies
+  extends: .devel
+
+
+dependencies-i686:
+  <<: *i686
+  <<: *dependencies
+  extends: .devel
+
+
 devel:
   <<: *x86_64
+  <<: *build
   extends: .devel
 
 
 devel-i686:
   <<: *i686
+  <<: *build
   extends: .devel
 
 
 release:
   <<: *x86_64
+  <<: *build
   extends: .release
 
 
 release-i686:
   <<: *i686
+  <<: *build
   extends: .release
 
 

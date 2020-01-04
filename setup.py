@@ -22,7 +22,7 @@ import numpy as np
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
-ARCH = {'i686': 'i386'}.get(platform.machine(), platform.machine())
+ARCH = platform.machine()
 
 
 def remove_c_comments(*file_paths):
@@ -46,20 +46,25 @@ def remove_c_comments(*file_paths):
 
 
 def _libdir():
-    return pt.join(PACKAGE_DIR, 'lib', 'libjpeg-turbo', 'build')
+    return pt.join(PACKAGE_DIR, 'lib', 'turbojpeg', PLATFORM, ARCH)
+
+
+def _staticlib():
+    if PLATFORM == 'linux':
+        return 'libturbojpeg.a'
+    elif PLATFORM == 'windows':
+        return 'turbojpeg-static.lib'
+    else:
+        raise RuntimeError('Platform not supported: %s, %s' % (PLATFORM, ARCH))
 
 
 def make_jpeg_module():
     include_dirs = [
         np.get_include(),
-        pt.join(PACKAGE_DIR, 'lib', 'libjpeg-turbo'),
+        pt.join(PACKAGE_DIR, 'lib', 'turbojpeg'),
         pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
-    static_libs = []
-    if PLATFORM == 'linux':
-        static_libs.append(pt.join(_libdir(), 'libturbojpeg.a'))
-    elif PLATFORM == 'windows':
-        static_libs.append(pt.join(_libdir(), 'turbojpeg-static.lib'))
+    static_libs = [pt.join(_libdir(), _staticlib())]
     cython_files = [pt.join('simplejpeg', '_jpeg.pyx')]
     for cython_file in cython_files:
         if pt.exists(cython_file):
@@ -100,11 +105,6 @@ def find_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 
-packages = find_packages(
-    include=['simplejpeg', 'simplejpeg.*'],
-)
-
-
 def find_package_data(packages):
     package_data = {
         package: [
@@ -112,9 +112,12 @@ def find_package_data(packages):
         ]
         for package in packages
     }
-    #if PLATFORM == 'windows':
-    #    package_data['simplejpeg'].append('turbojpeg.dll')
     return package_data
+
+
+packages = find_packages(
+    include=['simplejpeg', 'simplejpeg.*'],
+)
 
 
 package_data = find_package_data(packages)

@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e -x
 
-# download and build libjpeg-turbo
-bash build-turbojpeg.sh
-
 # Python 2.7 and 3.4 are not supported
 rm -r /opt/python/cp27*
 rm -r /opt/python/cp34*
