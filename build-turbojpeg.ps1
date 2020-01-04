@@ -25,7 +25,7 @@ if (!(Test-Path libjpeg-turbo)) {
 # first create a temp file
 $tempFile = 'vcvars.txt'
 # run the vcvarsall.bat with platform name and store the console output in temp file
-cmd /c " `"$env:VCVARSALL $env:platform`" && set > `"$tempFile`" "
+cmd /c " `"$env:VCVARSALL`" $env:platform && set > `"$tempFile`" "
 # parse the temp file and set env vars
 Get-Content $tempFile | Foreach-Object {
     if($_ -match "^(.*?)=(.*)$") { 
