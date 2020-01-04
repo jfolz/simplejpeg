@@ -7,7 +7,7 @@ cd lib
 
 # download YASM to compile SIMD assembly
 if ($env:BITS -eq "64") {
-    $arch = "AMD64"
+    $arch = "x64"
 }
 else {
     $arch = "x86"

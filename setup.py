@@ -4,6 +4,7 @@ import os.path as pt
 import re
 import platform
 import glob
+import sys
 from shutil import copyfile
 
 from setuptools import setup
@@ -22,7 +23,8 @@ import numpy as np
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
-ARCH = platform.machine()
+IS64BIT = sys.maxsize > 2**32
+ARCH = 'x64' if IS64BIT else 'x86'
 
 
 def remove_c_comments(*file_paths):
