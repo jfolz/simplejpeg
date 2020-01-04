@@ -30,7 +30,7 @@ cd ../..
 ARCH=`uname -m`
 mkdir -p turbojpeg/linux/$ARCH
 \cp libjpeg-turbo/turbojpeg.h turbojpeg/
-\cp libjpeg-turbo/libturbojpeg.a turbojpeg/linux/$ARCH/
+\cp libjpeg-turbo/build/libturbojpeg.a turbojpeg/linux/$ARCH/
 
 # cleanup
 rm -rf libjpeg-turbo
