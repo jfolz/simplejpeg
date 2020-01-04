@@ -21,7 +21,7 @@ $env:Path += ";" + "C:\Users\riDDi\Miniconda3\Library\bin"
 
 # checkout specific libjpeg-turbo tag from github
 if (!(Test-Path libjpeg-turbo)) {
-    git clone --quiet --branch 2.0.4 --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git
+    git clone --quiet --branch 2.0.4 --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git 2>&1
 }
 
 # run vcvarsall - this shitshow is somehow the best "solution"
