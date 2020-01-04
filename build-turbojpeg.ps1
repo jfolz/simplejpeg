@@ -6,14 +6,13 @@ mkdir -Force lib
 cd lib
 
 # download YASM to compile SIMD assembly
-$bits = $env:BITS
-if ($bits -eq "64") {
+if ($env:BITS -eq "64") {
     $arch = "AMD64"
 }
 else {
     $arch = "x86"
 }
-$yasm_url = "https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0-win" + $bits + ".exe"
+$yasm_url = "https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0-win" + $env:BITS + ".exe"
 Invoke-WebRequest $yasm_url -OutFile yasm.exe
 $env:Path += ";" + $(Get-Location)
 
