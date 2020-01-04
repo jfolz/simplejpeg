@@ -1,0 +1,35 @@
+version: {build}-{branch}
+
+branches:
+  only:
+    - master
+
+image: Visual Studio 2019
+
+shallow_clone: true
+clone_depth: 1
+
+environment:
+  matrix:
+    # See appveyor docs for available Python versions:
+    # https://www.appveyor.com/docs/windows-images-software/#python
+    - PYTHON: "C:\\Python35"
+    - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python36-x64"
+    - PYTHON: "C:\\Python37"
+    - PYTHON: "C:\\Python37-x64"
+    - PYTHON: "C:\\Python38"
+    - PYTHON: "C:\\Python38-x64"
+
+install:
+  - "%PYTHON%\\python.exe -m pip install -U pip wheel"
+  - "%PYTHON%\\python.exe -m pip install -r build-requirements.txt
+  - "%PYTHON%\\python.exe -m pip wheel . -w wheelhouse --no-deps
+
+artifacts:
+  - path: wheelhouse\*.whl
+
+build_script:
+  - ps: build-turbojpeg.ps1
+  - ps: build-wheels.ps1
