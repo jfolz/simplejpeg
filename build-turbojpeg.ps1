@@ -6,15 +6,13 @@ mkdir -Force lib
 cd lib
 
 # download YASM to compile SIMD assembly
-if ([Environment]::Is64BitOperatingSystem) {
-    $bits = 64
-    $arch = "AMD64"
+if ($BITS -eq 64) {
+    $ARCH = "AMD64"
 }
 else {
-    $bits = 32
-    $arch = "x86"
+    $ARCH = "x86"
 }
-$yasm_url = "https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0-win" + $bits + ".exe"
+$yasm_url = "https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0-win" + $BITS + ".exe"
 Invoke-WebRequest $yasm_url -OutFile yasm.exe
 $env:Path += ";" + $(Get-Location)
 $env:Path += ";" + "C:\Users\riDDi\Miniconda3\Library\bin"
@@ -28,8 +26,8 @@ if (!(Test-Path libjpeg-turbo)) {
 # first create a temp file
 $tempFile = 'vcvars.txt'
 # locate appropriate vcvars.bat for system
-#$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars" + $bits  + ".bat"
-$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars" + $bits  + ".bat"
+#$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars" + $BITS  + ".bat"
+$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars" + $BITS  + ".bat"
 # run the vcvars.bat and store the console output in temp file
 cmd /c " `"$vcvars`" && set > `"$tempFile`" "
 # parse the temp file and set env vars
@@ -50,9 +48,9 @@ nmake
 cd ..\..\
 
 # copy header and lib to turbojpeg dir
-New-Item -Force turbojpeg\windows\$arch -ItemType directory
+New-Item -Force turbojpeg\windows\$ARCH -ItemType directory
 cp libjpeg-turbo\turbojpeg.h turbojpeg\
-cp libjpeg-turbo\build\turbojpeg-static.lib turbojpeg\windows\$arch\
+cp libjpeg-turbo\build\turbojpeg-static.lib turbojpeg\windows\$ARCH\
 
 # cleanup
 Remove-Item yasm.exe

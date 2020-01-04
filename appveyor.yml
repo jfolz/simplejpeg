@@ -12,13 +12,21 @@ environment:
     # See appveyor docs for available Python versions:
     # https://www.appveyor.com/docs/windows-images-software/#python
     - PYTHON: "C:\\Python35"
+      BITS: 32
     - PYTHON: "C:\\Python35-x64"
+      BITS: 64
     - PYTHON: "C:\\Python36"
+      BITS: 32
     - PYTHON: "C:\\Python36-x64"
+      BITS: 64
     - PYTHON: "C:\\Python37"
+      BITS: 32
     - PYTHON: "C:\\Python37-x64"
+      BITS: 64
     - PYTHON: "C:\\Python38"
+      BITS: 32
     - PYTHON: "C:\\Python38-x64"
+      BITS: 64
 
 install:
   - "%PYTHON%\\python.exe -m pip install -U pip wheel"
