@@ -1,3 +1,6 @@
+# stop on errors
+$ErrorActionPreference = "Stop";
+
 # everything happens in lib dir
 mkdir -Force lib
 cd lib
