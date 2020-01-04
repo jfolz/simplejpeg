@@ -28,7 +28,8 @@ if (!(Test-Path libjpeg-turbo)) {
 # first create a temp file
 $tempFile = 'vcvars.txt'
 # locate appropriate vcvars.bat for system
-$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars" + $bits  + ".bat"
+#$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars" + $bits  + ".bat"
+$vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars" + $bits  + ".bat"
 # run the vcvars.bat and store the console output in temp file
 cmd /c " `"$vcvars`" && set > `"$tempFile`" "
 # parse the temp file and set env vars
