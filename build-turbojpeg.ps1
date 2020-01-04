@@ -6,7 +6,7 @@ mkdir -Force lib
 cd lib
 
 # download YASM to compile SIMD assembly
-if ($BITS -eq 64) {
+if ($BITS -eq "64") {
     $ARCH = "AMD64"
 }
 else {
