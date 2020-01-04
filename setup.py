@@ -4,6 +4,7 @@ import os.path as pt
 import re
 import platform
 import glob
+from shutil import copyfile
 
 from setuptools import setup
 from setuptools import find_packages
@@ -44,21 +45,21 @@ def remove_c_comments(*file_paths):
                 f.write(new_text)
 
 
+def _libdir():
+    return pt.join(PACKAGE_DIR, 'lib', 'libjpeg-turbo', 'build')
+
+
 def make_jpeg_module():
     include_dirs = [
         np.get_include(),
-        pt.join(PACKAGE_DIR, 'lib', 'turbojpeg'),
+        pt.join(PACKAGE_DIR, 'lib', 'libjpeg-turbo'),
         pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
+    static_libs = []
     if PLATFORM == 'linux':
-        lib = 'libturbojpeg.a'
+        static_libs.append(pt.join(_libdir(), 'libturbojpeg.a'))
     elif PLATFORM == 'windows':
-        lib = 'turbojpeg-static.lib'
-    else:
-        lib = 'none'
-    lib = pt.join(PACKAGE_DIR, 'lib', 'turbojpeg', PLATFORM, ARCH, lib)
-    if not pt.exists(lib):
-        raise RuntimeError('%s %s is not supported' % (PLATFORM, ARCH))
+        static_libs.append(pt.join(_libdir(), 'turbojpeg-static.lib'))
     cython_files = [pt.join('simplejpeg', '_jpeg.pyx')]
     for cython_file in cython_files:
         if pt.exists(cython_file):
@@ -73,7 +74,7 @@ def make_jpeg_module():
         sources,
         language='C',
         include_dirs=include_dirs,
-        extra_objects=[lib],
+        extra_objects=static_libs,
         extra_link_args=['-Wl,--strip-all,--exclude-libs,ALL'],
         extra_compile_args=['-g0'],
     )
@@ -83,12 +84,9 @@ def make_jpeg_module():
 ext_modules = [make_jpeg_module()]
 
 
-def read(*names, **kwargs):
-    with io.open(
-        os.path.join(PACKAGE_DIR, *names),
-        encoding=kwargs.get('encoding', 'utf8')
-    ) as fp:
-        return fp.read()
+def read(*names):
+    with open(pt.join(PACKAGE_DIR, *names), encoding='utf8') as f:
+        return f.read()
 
 
 # pip's single-source version method as described here:
@@ -107,12 +105,19 @@ packages = find_packages(
 )
 
 
-package_data = {
-    package: [
-        '*.pyi'
-    ]
-    for package in packages
-}
+def find_package_data(packages):
+    package_data = {
+        package: [
+            '*.pyi'
+        ]
+        for package in packages
+    }
+    #if PLATFORM == 'windows':
+    #    package_data['simplejpeg'].append('turbojpeg.dll')
+    return package_data
+
+
+package_data = find_package_data(packages)
 
 
 with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
@@ -138,6 +143,7 @@ setup(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'License :: OSI Approved :: MIT License',
     ],
     description='A simple package for fast JPEG encoding and decoding.',
