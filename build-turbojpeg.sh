@@ -16,5 +16,11 @@ fi
 cd libjpeg-turbo
 mkdir -p build
 cd build
-cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=. -DENABLE_SHARED=0 -DREQUIRE_SIMD=1 ..
+cmake -G"Unix Makefiles" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=. \
+    -DENABLE_SHARED=0 \
+    -DREQUIRE_SIMD=1 \
+    -DCMAKE_C_FLAGS="-fPIC" \
+    ..
 make
