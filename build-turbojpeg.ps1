@@ -1,5 +1,5 @@
 # stop on errors
-$ErrorActionPreference = "Stop";
+# $ErrorActionPreference = "Stop";
 
 # everything happens in lib dir
 mkdir -Force lib
@@ -21,12 +21,12 @@ $env:Path += ";" + "C:\Users\riDDi\Miniconda3\Library\bin"
 
 # checkout specific libjpeg-turbo tag from github
 if (!(Test-Path libjpeg-turbo)) {
-    git clone --quiet --branch 2.0.4 --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git 2>&1
+    git clone --branch 2.0.4 --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git
 }
 
 # run vcvarsall - this shitshow is somehow the best "solution"
 # first create a temp file
-$tempFile = [IO.Path]::GetTempFileName()
+$tempFile = 'vcvars.txt'
 # locate appropriate vcvars.bat for system
 $vcvars = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\VC\Auxiliary\Build\vcvars" + $bits  + ".bat"
 # run the vcvars.bat and store the console output in temp file
