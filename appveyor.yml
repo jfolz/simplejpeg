@@ -25,7 +25,7 @@ install:
   - "%PYTHON%\\python.exe -m pip install -r build-requirements.txt"
 
 build_script:
-  - ps: build-turbojpeg.ps1
+  - ps: .\build-turbojpeg.ps1
   - cmd: "%PYTHON%\\python.exe -m pip wheel . -w wheelhouse --no-deps"
 
 artifacts:
