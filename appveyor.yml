@@ -25,11 +25,10 @@ environment:
 install:
   - "%PYTHON%\\python.exe -m pip install -U pip wheel"
   - "%PYTHON%\\python.exe -m pip install -r build-requirements.txt
-  - "%PYTHON%\\python.exe -m pip wheel . -w wheelhouse --no-deps
-
-artifacts:
-  - path: wheelhouse\*.whl
 
 build_script:
   - ps: build-turbojpeg.ps1
-  - ps: build-wheels.ps1
+  - cmd: "%PYTHON%\\python.exe -m pip wheel . -w wheelhouse --no-deps
+
+artifacts:
+  - path: wheelhouse\*.whl
