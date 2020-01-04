@@ -24,7 +24,7 @@ import numpy as np
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
 IS64BIT = sys.maxsize > 2**32
-ARCH = 'x64' if IS64BIT else 'x86'
+ARCH = 'x86_64' if IS64BIT else 'i686'
 
 
 def remove_c_comments(*file_paths):

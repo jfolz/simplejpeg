@@ -7,10 +7,10 @@ cd lib
 
 # download YASM to compile SIMD assembly
 if ($env:BITS -eq "64") {
-    $arch = "x64"
+    $arch = "x86_64"
 }
 else {
-    $arch = "x86"
+    $arch = "i686"
 }
 $yasm_url = "https://github.com/yasm/yasm/releases/download/v1.3.0/yasm-1.3.0-win" + $env:BITS + ".exe"
 Invoke-WebRequest $yasm_url -OutFile yasm.exe
