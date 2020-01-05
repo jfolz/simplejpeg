@@ -1,6 +1,8 @@
 stages:
   - dependencies
   - build
+  - external
+  - import
   - publish
 
 
@@ -10,6 +12,12 @@ stages:
     - lib/*
     - dist/*.tar.gz
     - dist/*.whl
+
+
+.always:
+  extends: .artifacts
+  artifacts:
+    expire_in: 8 hours
 
 
 .devel:
@@ -59,39 +67,52 @@ stages:
 dependencies:
   <<: *x86_64
   <<: *dependencies
-  extends: .devel
+  extends: .always
 
 
 dependencies-i686:
   <<: *i686
   <<: *dependencies
-  extends: .devel
+  extends: .always
 
 
 devel:
   <<: *x86_64
   <<: *build
   extends: .devel
+  needs: ["dependencies"]
 
 
 devel-i686:
   <<: *i686
   <<: *build
   extends: .devel
+  needs: ["dependencies-i686"]
 
 
 release:
   <<: *x86_64
   <<: *build
   extends: .release
+  needs: ["dependencies"]
 
 
 release-i686:
   <<: *i686
   <<: *build
   extends: .release
+  needs: ["dependencies-i686"]
+
+
+import-appveyor:
+  <<: *x86_64
+  stage: import
+  extends: .always
+  script:
+    - /opt/python/cp38/bin/python import_appveyor.py
 
 
 publish:
   <<: *x86_64
   extends: .publish
+  needs: ["release", "release-i686", "import-appveyor"]
