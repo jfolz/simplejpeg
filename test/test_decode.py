@@ -3,6 +3,7 @@ import os.path as pt
 
 import numpy as np
 from PIL import Image
+import pytest
 
 import simplejpeg
 
@@ -47,6 +48,21 @@ def test_decode_buffer():
         im = np.array(im.convert('RGB'))
         sim = simplejpeg.decode_jpeg(data, buffer=b)
         assert mean_absolute_difference(im, sim) < 1, f
+
+
+def test_decode_buffer_insufficient():
+    for f, data, im in yield_reference_images():
+        b = bytearray(len(im.getdata()) - 1)
+        with pytest.raises(ValueError) as excinfo:
+            simplejpeg.decode_jpeg(data, buffer=b)
+        assert 'too small' in str(excinfo.value)
+
+
+def test_decode_truncated():
+    for f, data, im in yield_reference_images():
+        with pytest.raises(ValueError) as excinfo:
+            simplejpeg.decode_jpeg(data[:-1])
+        assert str(excinfo.value) == 'Premature end of JPEG file'
 
 
 def test_decode_fastdct():
