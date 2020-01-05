@@ -47,6 +47,16 @@ def remove_c_comments(*file_paths):
                 f.write(new_text)
 
 
+def normalize_windows_paths(*file_paths):
+    for fp in file_paths:
+        with open(fp) as f:
+            text = f.read()
+        new_text = text.replace(r'\\', '/')
+        if new_text != text:
+            with open(fp, 'w') as f:
+                f.write(new_text)
+
+
 def _libdir():
     return pt.join(PACKAGE_DIR, 'lib', 'turbojpeg', PLATFORM, ARCH)
 
@@ -72,6 +82,7 @@ def make_jpeg_module():
         if pt.exists(cython_file):
             cythonize(cython_file)
     remove_c_comments(pt.join('simplejpeg', '_jpeg.c'))
+    normalize_windows_paths(pt.join('simplejpeg', '_jpeg.c'))
     sources = [
         pt.join('simplejpeg', '_jpeg.c'),
         pt.join('simplejpeg', '_color.c')
