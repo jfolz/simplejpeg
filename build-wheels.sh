@@ -9,6 +9,10 @@ rm -r /opt/python/cp34*
 for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install -r build-requirements.txt
     "${PYBIN}/pip" wheel . -w wheelhouse/ --no-deps
+    "${PYBIN}/pip" install .
+    cd test
+    "${PYBIN}/python" -m pytest -vv
+    cd ..
 done
 
 # Bundle external shared libraries into the wheels
