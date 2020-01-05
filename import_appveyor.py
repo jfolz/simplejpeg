@@ -104,18 +104,19 @@ def download_artifacts(jobids, outdir, basename=True):
 
 def main():
     build = get_build_for_commit()
-    finished = False
-    failed = False
-    while not (failed and finished):
-        print('Waiting for external job to finish...')
-        time.sleep(10)
+    while True:
         details = get_build_by_version(build['version'])
         status = [j['status'] for j in details['build']['jobs']]
         failed = 'failed' in status
-        finished = all(s in ('success', 'failed') for s in status)
-    if failed:
-        print('External job failed.', file=sys.stderr)
-        sys.exit(1)
+        success = all(s == 'success' for s in status)
+        if failed:
+            print('External job failed.', file=sys.stderr)
+            sys.exit(1)
+        if success:
+            break
+        else:
+            print('Waiting for external job to finish...')
+            time.sleep(30)
     jobids = [j['jobId'] for j in details['build']['jobs']]
     download_artifacts(jobids, 'dist')
     pass
