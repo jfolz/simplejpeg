@@ -1,7 +1,6 @@
 stages:
   - dependencies
   - build
-  - external
   - import
   - publish
 

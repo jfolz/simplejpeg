@@ -1,8 +1,10 @@
 import os
-from http.client import HTTPSConnection
 import os.path as pt
+import sys
 import json
 import urllib.request
+from http.client import HTTPSConnection
+import time
 
 
 APPVEYOR_URL = 'ci.appveyor.com'
@@ -102,7 +104,18 @@ def download_artifacts(jobids, outdir, basename=True):
 
 def main():
     build = get_build_for_commit()
-    details = get_build_by_version(build['version'])
+    finished = False
+    failed = False
+    while not (failed and finished):
+        print('Waiting for external job to finish...')
+        time.sleep(10)
+        details = get_build_by_version(build['version'])
+        status = [j['status'] for j in details['build']['jobs']]
+        failed = 'failed' in status
+        finished = all(s in ('success', 'failed') for s in status)
+    if failed:
+        print('External job failed.', file=sys.stderr)
+        sys.exit(1)
     jobids = [j['jobId'] for j in details['build']['jobs']]
     download_artifacts(jobids, 'dist')
     pass
