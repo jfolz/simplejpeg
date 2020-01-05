@@ -168,8 +168,8 @@ cdef void calc_height_width(
     cdef int f = -1
     cdef int height_ = height[0]
     cdef int width_ = width[0]
-    min_height = min(height_, min_height or height_)
-    min_width = min(width_, min_width or width_)
+    min_height = min(height_, min_height)
+    min_width = min(width_, min_width)
     if min_height > 0 or min_width > 0:
         for f in range(numscalingfactors-1, -1, -1):
             fac = factors[f]

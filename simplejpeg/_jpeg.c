@@ -2668,13 +2668,7 @@ static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *__pyx_v_height, i
   __pyx_v_width_ = (__pyx_v_width[0]);
 
    
-  if (!__pyx_v_min_height) {
-  } else {
-    __pyx_t_1 = __pyx_v_min_height;
-    goto __pyx_L3_bool_binop_done;
-  }
-  __pyx_t_1 = __pyx_v_height_;
-  __pyx_L3_bool_binop_done:;
+  __pyx_t_1 = __pyx_v_min_height;
   __pyx_t_2 = __pyx_v_height_;
   if (((__pyx_t_1 < __pyx_t_2) != 0)) {
     __pyx_t_3 = __pyx_t_1;
@@ -2684,13 +2678,7 @@ static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *__pyx_v_height, i
   __pyx_v_min_height = __pyx_t_3;
 
    
-  if (!__pyx_v_min_width) {
-  } else {
-    __pyx_t_3 = __pyx_v_min_width;
-    goto __pyx_L5_bool_binop_done;
-  }
-  __pyx_t_3 = __pyx_v_width_;
-  __pyx_L5_bool_binop_done:;
+  __pyx_t_3 = __pyx_v_min_width;
   __pyx_t_1 = __pyx_v_width_;
   if (((__pyx_t_3 < __pyx_t_1) != 0)) {
     __pyx_t_2 = __pyx_t_3;
@@ -2704,11 +2692,11 @@ static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *__pyx_v_height, i
   if (!__pyx_t_5) {
   } else {
     __pyx_t_4 = __pyx_t_5;
-    goto __pyx_L8_bool_binop_done;
+    goto __pyx_L4_bool_binop_done;
   }
   __pyx_t_5 = ((__pyx_v_min_width > 0) != 0);
   __pyx_t_4 = __pyx_t_5;
-  __pyx_L8_bool_binop_done:;
+  __pyx_L4_bool_binop_done:;
   if (__pyx_t_4) {
 
      
@@ -2723,7 +2711,7 @@ static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *__pyx_v_height, i
       if (__pyx_t_4) {
 
          
-        goto __pyx_L11_break;
+        goto __pyx_L7_break;
 
          
       }
@@ -2733,24 +2721,24 @@ static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *__pyx_v_height, i
       if (__pyx_t_5) {
       } else {
         __pyx_t_4 = __pyx_t_5;
-        goto __pyx_L14_bool_binop_done;
+        goto __pyx_L10_bool_binop_done;
       }
 
        
       __pyx_t_5 = ((TJSCALED(__pyx_v_height_, __pyx_v_fac) >= __pyx_v_min_height) != 0);
       __pyx_t_4 = __pyx_t_5;
-      __pyx_L14_bool_binop_done:;
+      __pyx_L10_bool_binop_done:;
 
        
       if (__pyx_t_4) {
 
          
-        goto __pyx_L11_break;
+        goto __pyx_L7_break;
 
          
       }
     }
-    __pyx_L11_break:;
+    __pyx_L7_break:;
 
      
   }
@@ -2760,11 +2748,11 @@ static void __pyx_f_10simplejpeg_5_jpeg_calc_height_width(int *__pyx_v_height, i
   if (__pyx_t_5) {
   } else {
     __pyx_t_4 = __pyx_t_5;
-    goto __pyx_L17_bool_binop_done;
+    goto __pyx_L13_bool_binop_done;
   }
   __pyx_t_5 = ((__pyx_v_fac.denom >= (__pyx_v_min_factor * __pyx_v_fac.num)) != 0);
   __pyx_t_4 = __pyx_t_5;
-  __pyx_L17_bool_binop_done:;
+  __pyx_L13_bool_binop_done:;
   if (__pyx_t_4) {
 
      
