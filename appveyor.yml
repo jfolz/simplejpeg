@@ -25,4 +25,4 @@ build_script:
 
 artifacts:
   - path: lib\*
-  - path: wheelhouse\*.whl
+  - path: dist\*.whl
