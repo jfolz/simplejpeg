@@ -109,7 +109,7 @@ import-appveyor:
   stage: import
   extends: .always
   script:
-    - /opt/python/cp38/bin/python import_appveyor.py
+    - /opt/python/cp38-cp38/bin/python import_appveyor.py
 
 
 publish:
