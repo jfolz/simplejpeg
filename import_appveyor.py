@@ -56,7 +56,7 @@ def project_history(
 
 def get_build_for_commit(commit=None, accountname=None, projectslug=None):
     commit = commit or os.environ['CI_COMMIT_SHA']
-    start_build_id=None
+    start_build_id = None
     build = None
     while not build:
         history = project_history(
@@ -87,18 +87,16 @@ def get_job_artifacts(jobid):
     return appveyor_api('buildjobs', jobid, 'artifacts')
 
 
-def download_artifacts(jobids, outdir, basename=True):
+def download_artifacts(jobids, outdir='.'):
     os.makedirs(outdir, exist_ok=True)
     for jobid in jobids:
         artifacts = get_job_artifacts(jobid)
         print('downloading artifacts for job', jobid)
         for artifact in artifacts:
             print('downloading', artifact['fileName'])
-            destination = artifact['fileName']
-            if basename:
-                destination = pt.basename(artifact['fileName'])
-            destination = pt.join(outdir,  destination)
-            url = '/'.join(['https:/', APPVEYOR_URL, 'api', 'buildjobs', jobid, 'artifacts', artifact['fileName']])
+            url = '/'.join(['https:/', APPVEYOR_URL, 'api', 'buildjobs',
+                            jobid, 'artifacts', artifact['fileName']])
+            destination = pt.join(outdir,  artifact['fileName'])
             urllib.request.urlretrieve(url, destination)
 
 
@@ -118,7 +116,7 @@ def main():
             print('Waiting for external job to finish...')
             time.sleep(30)
     jobids = [j['jobId'] for j in details['build']['jobs']]
-    download_artifacts(jobids, 'dist')
+    download_artifacts(jobids)
     pass
 
 
