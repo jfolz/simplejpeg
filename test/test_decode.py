@@ -107,3 +107,23 @@ def test_decode_min_width_height():
         # half width, but require minimum factor greater 2
         sim = simplejpeg.decode_jpeg(data, min_width=w/2, min_height=1, min_factor=2.01)
         assert sim.shape[1] == w, f
+
+
+def _colorspace_to_rgb(im, colorspace):
+    ind = colorspace.index('R'), colorspace.index('G'), colorspace.index('B')
+    out = np.zeros(im.shape[:2] + (3,))
+    out[...] = im[:, :, ind]
+    return out
+
+
+def test_decode_colorspace():
+    for f, data, im in yield_reference_images():
+        for colorspace in ('RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR',
+                           'XRGB', 'RGBA', 'BGRA', 'ABGR', 'ARGB'):
+            np_im = np.array(im.convert('RGB'))
+            sim = simplejpeg.decode_jpeg(data, colorspace)
+            sim = _colorspace_to_rgb(sim, colorspace)
+            assert mean_absolute_difference(np_im, sim) < 1, f
+        np_im = np.array(im.convert('L'))[:, :, np.newaxis]
+        sim = simplejpeg.decode_jpeg(data, 'GRAY')
+        assert mean_absolute_difference(np_im, sim) < 1, f
