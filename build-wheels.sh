@@ -8,7 +8,6 @@ rm -r /opt/python/cp34*
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install -r build-requirements.txt
-    "${PYBIN}/python" setup.py sdist --dist-dir=dist
     "${PYBIN}/pip" wheel . -w wheelhouse/ --no-deps
 done
 
