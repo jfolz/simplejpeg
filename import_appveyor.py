@@ -88,7 +88,6 @@ def get_job_artifacts(jobid):
 
 
 def download_artifacts(jobids, outdir='.'):
-    os.makedirs(outdir, exist_ok=True)
     for jobid in jobids:
         artifacts = get_job_artifacts(jobid)
         print('downloading artifacts for job', jobid)
@@ -97,6 +96,7 @@ def download_artifacts(jobids, outdir='.'):
             url = '/'.join(['https:/', APPVEYOR_URL, 'api', 'buildjobs',
                             jobid, 'artifacts', artifact['fileName']])
             destination = pt.join(outdir,  artifact['fileName'])
+            os.makedirs(pt.dirname(destination), exist_ok=True)
             urllib.request.urlretrieve(url, destination)
 
 
