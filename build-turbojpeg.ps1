@@ -52,3 +52,6 @@ cp libjpeg-turbo\build\turbojpeg-static.lib turbojpeg\windows\$arch\
 Remove-Item yasm.exe
 Remove-Item -Force -Recurse -LiteralPath libjpeg-turbo
 cd ..
+
+# return error
+exit($LastExitCode)
