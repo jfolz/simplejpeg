@@ -12,11 +12,6 @@ for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install -U pip wheel --no-warn-script-location
     "${PYBIN}/pip" install -r build-requirements.txt
     "${PYBIN}/pip" wheel . -w wheelhouse/ --no-deps
-    "${PYBIN}/pip" install .
-    "${PYBIN}/pip" install -r test-requirements.txt
-    cd test
-    "${PYBIN}/python" -m pytest -vv
-    cd ..
     "${PYBIN}/pip" install --force "$OLDPIP" "$OLDWHEEL"
 done
 
@@ -26,8 +21,10 @@ for whl in wheelhouse/*.whl; do
 done
 
 # Install packages and test
-#for PYBIN in /opt/python/*/bin/; do
-#    "${PYBIN}/pip" install -r test-requirements.txt
-#    "${PYBIN}/pip" install turbojpeg --no-index -f wheelhouse
-#    "${PYBIN}/nosetests" -w test
-#done
+cd test
+for PYBIN in /opt/python/*/bin/; do
+    "${PYBIN}/pip" install -r test-requirements.txt
+    "${PYBIN}/pip" install simplejpeg --no-index -i ../dist
+    "${PYBIN}/python" -m pytest -vv
+done
+cd ..
