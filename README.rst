@@ -211,6 +211,7 @@ Changelog
 - CI now builds libjpeg-turbo from source.
 - Add Appyevor to CI for Windows builds.
 - Distribute manylinux2010 wheels.
+- Fix license missing from linux wheels.
 
 1.3.1
 ~~~~~
