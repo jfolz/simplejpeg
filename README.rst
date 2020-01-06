@@ -204,6 +204,14 @@ Check whether a bytes object (or similar) contains JPEG (JFIF) data.
 Changelog
 --------------------
 
+1.3.2
+~~~~~
+
+- ``min_width`` and ``min_height`` are now ignored if 0 as stated in the docs.
+- CI now builds libjpeg-turbo from source.
+- Add Appyevor to CI for Windows builds.
+- Distribute manylinux2010 wheels.
+
 1.3.1
 ~~~~~
 
