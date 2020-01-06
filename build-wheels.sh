@@ -20,7 +20,7 @@ for whl in wheelhouse/*.whl; do
     auditwheel repair "$whl" -w dist
 done
 
-# Install packages and test
+# Install and test
 cd test
 for PYBIN in /opt/python/*/bin/; do
     "${PYBIN}/pip" install -r ../test-requirements.txt
