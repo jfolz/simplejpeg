@@ -104,8 +104,8 @@ def main():
     build = get_build_for_commit()
     while True:
         details = get_build_by_version(build['version'])
-        status = [j['status'] for j in details['build']['jobs']]
-        failed = 'failed' in status
+        status = [j['status'].lower() for j in details['build']['jobs']]
+        failed = 'failed' in status or 'cancelled' in status
         success = all(s == 'success' for s in status)
         if failed:
             print('External job failed.', file=sys.stderr)
