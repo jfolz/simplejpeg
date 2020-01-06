@@ -18,7 +18,8 @@ $env:Path += ";" + $(Get-Location)
 
 # checkout specific libjpeg-turbo tag from github
 if (!(Test-Path libjpeg-turbo)) {
-    git clone --quiet --branch 2.0.4 --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git
+    git config --global advice.detachedHead false
+    git clone --quiet --branch 2.0.4 --depth 1 https://github.com/libjpeg-turbo/libjpeg-turbo.git 2>&1 | echo
 }
 
 # run vcvarsall - this shitshow is somehow the best "solution"
