@@ -7,8 +7,8 @@ rm -r /opt/python/cp34*
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
-    OLDPIP=$("${PYBIN}/pip" freeze --all | grep pip== | tr -d '\n')
-    OLDWHEEL=$("${PYBIN}/pip" freeze --all | grep wheel== | tr -d '\n')
+    OLDPIP=$("${PYBIN}/pip" freeze --all | grep '^pip==' | tr -d '\n')
+    OLDWHEEL=$("${PYBIN}/pip" freeze --all | grep '^wheel==' | tr -d '\n')
     "${PYBIN}/pip" install -U pip wheel --no-warn-script-location
     "${PYBIN}/pip" install -r build-requirements.txt
     "${PYBIN}/pip" wheel . -w wheelhouse/ --no-deps
