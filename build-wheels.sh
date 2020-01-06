@@ -24,7 +24,7 @@ done
 cd test
 for PYBIN in /opt/python/*/bin/; do
     "${PYBIN}/pip" install -r ../test-requirements.txt
-    "${PYBIN}/pip" install simplejpeg --no-index -i ../dist
+    "${PYBIN}/pip" install simplejpeg --no-index -f ../dist
     "${PYBIN}/python" -m pytest -vv
 done
 cd ..
