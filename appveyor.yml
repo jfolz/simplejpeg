@@ -4,9 +4,6 @@ branches:
 
 image: Visual Studio 2019
 
-shallow_clone: true
-clone_depth: 1
-
 environment:
   VCVARSALL: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
   matrix:
