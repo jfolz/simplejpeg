@@ -25,12 +25,14 @@ cmake -G"Unix Makefiles" \
     ..
 make
 
-# copy header and library to lib dir
+# copy header, library and licenses to lib dir
 cd ../..
 ARCH=`uname -m`
 mkdir -p turbojpeg/linux/$ARCH
 \cp libjpeg-turbo/turbojpeg.h turbojpeg/
 \cp libjpeg-turbo/build/libturbojpeg.a turbojpeg/linux/$ARCH/
+\cp libjpeg-turbo/LICENSE.md turbojpeg/
+\cp libjpeg-turbo/README.ijg turbojpeg/
 
 # cleanup
 rm -rf libjpeg-turbo

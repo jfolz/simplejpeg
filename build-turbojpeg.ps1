@@ -44,10 +44,12 @@ cmake -G"NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="." 
 nmake /NOLOGO
 cd ..\..\
 
-# copy header and lib to turbojpeg dir
+# copy header, library and licenses to lib dir
 New-Item -Force turbojpeg\windows\$arch -ItemType directory
 cp libjpeg-turbo\turbojpeg.h turbojpeg\
 cp libjpeg-turbo\build\turbojpeg-static.lib turbojpeg\windows\$arch\
+cp libjpeg-turbo\LICENSE.md turbojpeg\
+cp libjpeg-turbo\README.ijg turbojpeg\
 
 # cleanup
 Remove-Item yasm.exe
