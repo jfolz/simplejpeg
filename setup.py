@@ -194,6 +194,7 @@ with ConcatFiles(*LICENSE_FILES):
         version=find_version('simplejpeg', '__init__.py'),
         author='Joachim Folz',
         author_email='joachim.folz@dfki.de',
+        license='MIT',
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Science/Research',
