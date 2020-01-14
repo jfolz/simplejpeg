@@ -59,28 +59,24 @@ devel:
   <<: *x86_64
   <<: *build
   extends: .devel
-  needs: ["dependencies"]
 
 
 devel-i686:
   <<: *i686
   <<: *build
   extends: .devel
-  needs: ["dependencies-i686"]
 
 
 release:
   <<: *x86_64
   <<: *build
   extends: .release
-  needs: ["dependencies"]
 
 
 release-i686:
   <<: *i686
   <<: *build
   extends: .release
-  needs: ["dependencies-i686"]
 
 
 import-appveyor:
