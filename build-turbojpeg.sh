@@ -21,14 +21,14 @@ cmake -G"Unix Makefiles" \
     -DCMAKE_INSTALL_PREFIX=. \
     -DENABLE_SHARED=0 \
     -DREQUIRE_SIMD=1 \
-    -DCMAKE_C_FLAGS="-fPIC" \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     ..
 make
 
 # copy header, library and licenses to lib dir
 cd ../..
-ARCH=`uname -m`
-mkdir -p turbojpeg/linux/$ARCH
+ARCH=$(uname -m)
+mkdir -p "turbojpeg/linux/$ARCH"
 \cp libjpeg-turbo/turbojpeg.h turbojpeg/
 \cp libjpeg-turbo/build/libturbojpeg.a turbojpeg/linux/$ARCH/
 \cp libjpeg-turbo/LICENSE.md turbojpeg/

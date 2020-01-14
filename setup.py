@@ -1,15 +1,16 @@
-import io
 import os
 import os.path as pt
 import re
 import platform
-import glob
 import sys
-from shutil import copyfile
+import urllib.request
+import tarfile
+import sysconfig
 
 from setuptools import setup
 from setuptools import find_packages
 from setuptools import Extension
+from setuptools.command.build_ext import build_ext
 # don't require Cython for building
 try:
     from Cython.Build import cythonize
@@ -25,6 +26,74 @@ PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
 IS64BIT = sys.maxsize > 2**32
 ARCH = 'x86_64' if IS64BIT else 'i686'
+YASM_VERSION = '1.3.0'
+YASM_SOURCE = 'yasm-%s.tar.gz' % YASM_VERSION
+YASM_URL = 'https://github.com/yasm/yasm/releases/download/v%s/' % YASM_VERSION + YASM_SOURCE
+LIBJPEG_TURBO_VERSION = '2.0.4'
+LIBJPEG_TURBO_SOURCE = 'libjpeg-turbo-%s.tar.gz' % LIBJPEG_TURBO_VERSION
+LIBJPEG_TURBO_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % LIBJPEG_TURBO_VERSION
+
+
+def untar_url(url, filename):
+    if not pt.exists(filename):
+        os.makedirs(pt.dirname(filename), exist_ok=True)
+        print('downloading', url)
+        urllib.request.urlretrieve(url, filename)
+    os.makedirs(pt.dirname(filename), exist_ok=True)
+    with tarfile.open(filename) as t:
+        t.extractall(pt.dirname(filename))
+    return filename.rstrip('.tar.gz')
+
+
+# download sources
+YASM_DIR = untar_url(YASM_URL, pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE))
+JPEG_DIR = untar_url(LIBJPEG_TURBO_URL, pt.join(PACKAGE_DIR, 'lib', LIBJPEG_TURBO_SOURCE))
+
+
+def cvar(name):
+    return sysconfig.get_config_var(name)
+
+
+def make_type():
+    if PLATFORM in ('linux', 'darwin'):
+        return 'Unix Makefiles'
+    elif PLATFORM == 'windows':
+        return 'NMake Makefiles'
+    else:
+        raise RuntimeError('Platform not supported: %s, %s' % (PLATFORM, ARCH))
+
+
+class cmake_build_ext(build_ext):
+    def run(self):
+        self.build_cmake_dependency(YASM_DIR, [
+            '-DBUILD_SHARED_LIBS=OFF'
+        ])
+        os.environ['PATH'] = pt.join(YASM_DIR, 'build') + os.pathsep + os.environ.get('PATH', '')
+        self.build_cmake_dependency(JPEG_DIR, [
+            '-DENABLE_SHARED=0',
+            '-DREQUIRE_SIMD=1',
+            '-DCMAKE_POSITION_INDEPENDENT_CODE=ON'
+        ])
+        # build extensions
+        super().run()
+
+    def build_cmake_dependency(self, path, options):
+        cur_dir = pt.abspath(os.curdir)
+        build_dir = pt.join(path, 'build')
+        if not pt.exists(build_dir):
+            os.makedirs(build_dir)
+        os.chdir(build_dir)
+        config = 'Debug' if self.debug else 'Release'
+        self.spawn([
+            'cmake',
+            '-G' + make_type(),
+            '-DCMAKE_BUILD_TYPE=' + config,
+            *options,
+            pt.join(path)
+        ])
+        if not self.dry_run:
+            self.spawn(['cmake', '--build', '.', '--config', config])
+        os.chdir(cur_dir)
 
 
 def remove_c_comments(*file_paths):
@@ -58,11 +127,11 @@ def normalize_windows_paths(*file_paths):
 
 
 def _libdir():
-    return pt.join(PACKAGE_DIR, 'lib', 'turbojpeg', PLATFORM, ARCH)
+    return pt.join(JPEG_DIR, 'build')
 
 
 def _staticlib():
-    if PLATFORM == 'linux':
+    if PLATFORM in ('linux', 'darwin'):
         return 'libturbojpeg.a'
     elif PLATFORM == 'windows':
         return 'turbojpeg-static.lib'
@@ -73,7 +142,7 @@ def _staticlib():
 def make_jpeg_module():
     include_dirs = [
         np.get_include(),
-        pt.join(PACKAGE_DIR, 'lib', 'turbojpeg'),
+        pt.join(JPEG_DIR),
         pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
     static_libs = [pt.join(_libdir(), _staticlib())]
@@ -185,8 +254,8 @@ class ConcatFiles:
 
 LICENSE_FILES = [
     'LICENSE',
-    pt.join('lib', 'turbojpeg', 'LICENSE.md'),
-    pt.join('lib', 'turbojpeg', 'README.ijg')
+    pt.join(JPEG_DIR, 'LICENSE.md'),
+    pt.join(JPEG_DIR, 'README.ijg')
 ]
 with ConcatFiles(*LICENSE_FILES):
     setup(
@@ -213,9 +282,11 @@ with ConcatFiles(*LICENSE_FILES):
         setup_requires=build_dependencies,
         install_requires=dependencies,
         ext_modules=ext_modules,
+        cmdclass={'build_ext': cmake_build_ext},
+        zip_safe=False,
         project_urls={
             'Documentation': 'https://gitlab.com/jfolz/simplejpeg/blob/master/README.rst',
             'Source': 'https://gitlab.com/jfolz/simplejpeg',
             'Tracker': 'https://gitlab.com/jfolz/simplejpeg/issues',
-        }
+        },
     )

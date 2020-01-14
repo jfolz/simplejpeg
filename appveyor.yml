@@ -10,16 +10,12 @@ environment:
     # See appveyor docs for available Python versions:
     # https://www.appveyor.com/docs/windows-images-software/#python
     - platform: x86
-      BITS: "32"
       INTERPRETERS: "C:\\Python35;C:\\Python36;C:\\Python37;C:\\Python38"
     - platform: x64
-      BITS: "64"
       INTERPRETERS: "C:\\Python35-x64;C:\\Python36-x64;C:\\Python37-x64;C:\\Python38-x64"
 
 build_script:
-  - ps: .\build-turbojpeg.ps1
   - ps: .\build-wheels.ps1
 
 artifacts:
-  - path: lib\turbojpeg\*\*\*.lib
   - path: dist\*.whl

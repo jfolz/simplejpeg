@@ -1,5 +1,4 @@
 stages:
-  - dependencies
   - build
   - import
   - publish
@@ -8,7 +7,6 @@ stages:
 .artifacts:
   artifacts:
     paths:
-    - lib/*
     - dist/*.tar.gz
     - dist/*.whl
 
@@ -55,24 +53,6 @@ stages:
   stage: build
   script:
   - ./build-wheels.sh
-
-
-.dependencies: &dependencies
-  stage: dependencies
-  script:
-  - ./build-turbojpeg.sh
-
-
-dependencies:
-  <<: *x86_64
-  <<: *dependencies
-  extends: .always
-
-
-dependencies-i686:
-  <<: *i686
-  <<: *dependencies
-  extends: .always
 
 
 devel:
