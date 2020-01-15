@@ -200,14 +200,19 @@ def make_jpeg_module():
         pt.join('simplejpeg', '_jpeg.c'),
         pt.join('simplejpeg', '_color.c')
     ]
+    extra_link_args = []
+    extra_compile_args = []
+    if PLATFORM != 'windows':
+        extra_link_args.extend(['-Wl,--strip-all,--exclude-libs,ALL'])
+        extra_compile_args.extend(['-g0'])
     return Extension(
         'simplejpeg._jpeg',
         sources,
         language='C',
         include_dirs=include_dirs,
         extra_objects=static_libs,
-        extra_link_args=['-Wl,--strip-all,--exclude-libs,ALL'],
-        extra_compile_args=['-g0'],
+        extra_link_args=extra_link_args,
+        extra_compile_args=extra_compile_args,
     )
 
 
