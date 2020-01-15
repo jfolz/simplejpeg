@@ -103,8 +103,8 @@ class cmake_build_ext(build_ext):
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
+        os.environ['ASM_NASM'] = pt.join(YASM_DIR, 'build', 'yasm')
         self.build_cmake_dependency(JPEG_DIR, [
-            '-DCMAKE_ASM_NASM_COMPILER=' + pt.join(YASM_DIR, 'build', 'yasm'),
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON'
