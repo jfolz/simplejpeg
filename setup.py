@@ -111,18 +111,12 @@ class cmake_build_ext(build_ext):
         ])
         os.environ['PATH'] = pt.join(YASM_DIR, 'build') + os.pathsep + os.getenv('PATH', '')
         flags = []
-        if PLATFORM == 'windows':
-            # fix for https://bugs.python.org/issue24872
-            # '-DCOMPILE_OPTIONS="/MT /LTCG /NODEFAULTLIB:libucrt.lib ucrt.lib"'
-            # flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libcmt.lib')
-            # flags.append('-DCMAKE_EXE_LINKER_FLAGS=/NODEFAULTLIB')
-            flags.extend([
-                '-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libucrt.lib',
-            ])
-            pass
+        # if PLATFORM == 'windows':
+        #     # fixes https://bugs.python.org/issue24872
+        #     flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libucrt.lib')
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
-            '-DWITH_CRT_DLL=1',
+            '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON'
