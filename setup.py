@@ -111,9 +111,6 @@ class cmake_build_ext(build_ext):
         ])
         os.environ['PATH'] = pt.join(YASM_DIR, 'build') + os.pathsep + os.getenv('PATH', '')
         flags = []
-        # if PLATFORM == 'windows':
-        #     # fixes https://bugs.python.org/issue24872
-        #     flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libucrt.lib')
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
             '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
