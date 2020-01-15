@@ -52,6 +52,8 @@ stages:
 .build: &build
   stage: build
   script:
+  - yum update -y
+  - yum install -y cmake
   - ./build-wheels.sh
 
 
