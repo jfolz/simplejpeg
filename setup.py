@@ -116,7 +116,12 @@ class cmake_build_ext(build_ext):
             # '-DCOMPILE_OPTIONS="/MT;/LTCG;/NODEFAULTLIB:libucrt.lib ucrt.lib"'
             # flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libcmt.lib')
             # flags.append('-DCMAKE_EXE_LINKER_FLAGS=/NODEFAULTLIB')
-            flags.append('-DCMAKE_EXE_LINKER_FLAGS="/MT /LTCG /NODEFAULTLIB:libucrt.lib ucrt.lib"')
+            flags.extend([
+                '-DCMAKE_STATIC_LINKER_FLAGS=/MT',
+                '-DCMAKE_STATIC_LINKER_FLAGS=/LTCG',
+                '-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libucrt.lib',
+                # '-DCMAKE_STATIC_LINKER_FLAGS=ucrt.lib',
+            ])
             pass
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
