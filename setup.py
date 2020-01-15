@@ -87,7 +87,10 @@ class cmake_build_ext(build_ext):
             info = EnvironmentInfo(ARCH)
             for k in dir(info):
                 print(k, getattr(info, k))
-            os.environ['PATH'] = os.pathsep.join(info.VCTools + info.SdkTools + [os.environ.get('PATH', '')])
+            os.environ['PATH'] = os.pathsep.join(info.VCTools + info.SdkTools + [
+                'C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.18362.0\\' + ARCH,
+                os.environ.get('PATH', '')
+            ])
             os.environ['INCLUDE'] = os.pathsep.join(info.OSIncludes + info.VCIncludes + info.UCRTIncludes)
             os.environ['LIB'] = os.pathsep.join(info.OSLibraries + info.VCLibraries + info.UCRTLibraries)
         cur_dir = pt.abspath(os.curdir)
