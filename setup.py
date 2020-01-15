@@ -87,12 +87,20 @@ class cmake_build_ext(build_ext):
             info = EnvironmentInfo(ARCH)
             for k in dir(info):
                 print(k, getattr(info, k))
-            os.environ['PATH'] = os.pathsep.join(info.VCTools + info.SdkTools + [
+            os.environ['PATH'] = os.pathsep.join([
                 'C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.18362.0\\' + ARCH,
                 os.environ.get('PATH', '')
-            ])
-            os.environ['INCLUDE'] = os.pathsep.join(info.OSIncludes + info.VCIncludes + info.UCRTIncludes)
-            os.environ['LIB'] = os.pathsep.join(info.OSLibraries + info.VCLibraries + info.UCRTLibraries)
+            ] + info.VCTools + info.SdkTools)
+            os.environ['INCLUDE'] = os.pathsep.join([
+                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\shared',
+                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\um',
+                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\winrt'
+                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\ucrt'
+            ] + info.OSIncludes + info.UCRTIncludes + info.VCIncludes)
+            os.environ['LIB'] = os.pathsep.join([
+                'C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.18362.0\\um\\' + ARCH,
+                'C:\\Program Files (x86)\\Windows Kits\\10\\lib\\10.0.18362.0\\ucrt\\' + ARCH,
+            ] + info.OSLibraries + info.UCRTLibraries + info.VCLibraries)
         cur_dir = pt.abspath(os.curdir)
         build_dir = pt.join(path, 'build')
         if not pt.exists(build_dir):
