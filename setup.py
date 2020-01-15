@@ -117,11 +117,12 @@ class cmake_build_ext(build_ext):
             # flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libcmt.lib')
             # flags.append('-DCMAKE_EXE_LINKER_FLAGS=/NODEFAULTLIB')
             flags.extend([
-                '-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:msvcrt.lib',
+                '-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libucrt.lib',
             ])
             pass
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
+            '-DWITH_CRT_DLL=1',
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON'
