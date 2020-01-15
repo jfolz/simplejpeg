@@ -1,4 +1,7 @@
-recursive-include lib *.md *.ijg *.h *.a *.lib
+recursive-include lib *
+exclude lib/*.tar.gz
+prune lib/*/build
 recursive-include simplejpeg *.py *.pyi *.h *.c *.pyx
 recursive-include test *
+prune test/images/original
 include LICENSE *requirements.txt

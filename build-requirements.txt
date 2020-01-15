@@ -1,3 +1,4 @@
 setuptools==44.0.0
+cmake==3.15.3
 cython==0.29.14
 numpy==1.17.5

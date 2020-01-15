@@ -25,29 +25,32 @@ import numpy as np
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
 IS64BIT = sys.maxsize > 2**32
-ARCH = 'x86_64' if IS64BIT else 'i686'
+ARCH = 'x64' if IS64BIT else 'x86'
 YASM_VERSION = '1.3.0'
 YASM_SOURCE = 'yasm-%s.tar.gz' % YASM_VERSION
 YASM_URL = 'https://github.com/yasm/yasm/releases/download/v%s/' % YASM_VERSION + YASM_SOURCE
-LIBJPEG_TURBO_VERSION = '2.0.4'
-LIBJPEG_TURBO_SOURCE = 'libjpeg-turbo-%s.tar.gz' % LIBJPEG_TURBO_VERSION
-LIBJPEG_TURBO_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % LIBJPEG_TURBO_VERSION
+JPEG_VERSION = '2.0.4'
+JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
+JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
 
 
 def untar_url(url, filename):
-    if not pt.exists(filename):
+    path = filename.rstrip('.tar.gz')
+    if not pt.exists(path):
+        if not pt.exists(filename):
+            os.makedirs(pt.dirname(filename), exist_ok=True)
+            print('downloading', url)
+            urllib.request.urlretrieve(url, filename)
         os.makedirs(pt.dirname(filename), exist_ok=True)
-        print('downloading', url)
-        urllib.request.urlretrieve(url, filename)
-    os.makedirs(pt.dirname(filename), exist_ok=True)
-    with tarfile.open(filename) as t:
-        t.extractall(pt.dirname(filename))
-    return filename.rstrip('.tar.gz')
+        with tarfile.open(filename) as t:
+            print('extracting', filename)
+            t.extractall(pt.dirname(filename))
+    return path
 
 
 # download sources
 YASM_DIR = untar_url(YASM_URL, pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE))
-JPEG_DIR = untar_url(LIBJPEG_TURBO_URL, pt.join(PACKAGE_DIR, 'lib', LIBJPEG_TURBO_SOURCE))
+JPEG_DIR = untar_url(JPEG_URL, pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE))
 
 
 def cvar(name):
@@ -68,8 +71,8 @@ class cmake_build_ext(build_ext):
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
-        os.environ['PATH'] = pt.join(YASM_DIR, 'build') + os.pathsep + os.environ.get('PATH', '')
         self.build_cmake_dependency(JPEG_DIR, [
+            '-DASM_NASM=' + pt.join(YASM_DIR, 'build', 'yasm'),
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON'
@@ -78,6 +81,13 @@ class cmake_build_ext(build_ext):
         super().run()
 
     def build_cmake_dependency(self, path, options):
+        if PLATFORM == 'windows':
+            # MSVC build environment
+            from setuptools.msvc import EnvironmentInfo
+            info = EnvironmentInfo('x86_amd64')
+            os.environ['PATH'] = os.pathsep.join(info.VCTools + info.SdkTools + [os.environ.get('PATH', '')])
+            os.environ['INCLUDE'] = os.pathsep.join(info.OSIncludes + info.VCIncludes + info.UCRTIncludes)
+            os.environ['LIB'] = os.pathsep.join(info.OSLibraries + info.VCLibraries + info.UCRTLibraries)
         cur_dir = pt.abspath(os.curdir)
         build_dir = pt.join(path, 'build')
         if not pt.exists(build_dir):
