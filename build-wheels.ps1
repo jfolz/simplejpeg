@@ -1,5 +1,5 @@
 # stop on errors
-$ErrorActionPreference = "Stop";
+#$ErrorActionPreference = "Stop";
 
 # the list of Python interpreters
 $interpreters = $env:INTERPRETERS -split ";"
