@@ -85,6 +85,10 @@ class cmake_build_ext(build_ext):
             # MSVC build environment
             from setuptools.msvc import EnvironmentInfo
             info = EnvironmentInfo(ARCH)
+            import glob
+            print(glob.glob('C:\\Program Files (x86)\\Windows Kits\\10\\bin\\*'))
+            print(glob.glob('C:\\Program Files (x86)\\Windows Kits\\10\\Include\\*'))
+            print(glob.glob('C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\*'))
             for k in dir(info):
                 print(k, getattr(info, k))
             os.environ['PATH'] = os.pathsep.join([
@@ -92,14 +96,14 @@ class cmake_build_ext(build_ext):
                 os.environ.get('PATH', '')
             ] + info.VCTools + info.SdkTools)
             os.environ['INCLUDE'] = os.pathsep.join([
-                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\shared',
-                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\um',
-                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\winrt'
-                'C:\\Program Files (x86)\\Windows Kits\\10\\include\\10.0.18362.0\\ucrt'
+                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\shared',
+                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\um',
+                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\winrt'
+                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\ucrt'
             ] + info.OSIncludes + info.UCRTIncludes + info.VCIncludes)
             os.environ['LIB'] = os.pathsep.join([
                 'C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.18362.0\\um\\' + ARCH,
-                'C:\\Program Files (x86)\\Windows Kits\\10\\lib\\10.0.18362.0\\ucrt\\' + ARCH,
+                'C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.18362.0\\ucrt\\' + ARCH,
             ] + info.OSLibraries + info.UCRTLibraries + info.VCLibraries)
         cur_dir = pt.abspath(os.curdir)
         build_dir = pt.join(path, 'build')
