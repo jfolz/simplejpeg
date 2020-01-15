@@ -114,7 +114,8 @@ class cmake_build_ext(build_ext):
         if PLATFORM == 'windows':
             # fix for https://bugs.python.org/issue24872
             # '-DCOMPILE_OPTIONS="/MT;/LTCG;/NODEFAULTLIB:libucrt.lib ucrt.lib"'
-            flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libcmt.lib')
+            # flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libcmt.lib')
+            flags.append('-DCMAKE_EXE_LINKER_FLAGS=/NODEFAULTLIB')
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
             '-DENABLE_SHARED=0',
