@@ -6,6 +6,7 @@ import sys
 import urllib.request
 import tarfile
 import sysconfig
+import subprocess
 
 from setuptools import setup
 from setuptools import find_packages
@@ -67,7 +68,6 @@ def make_type():
 
 
 def update_env_vcvarsall():
-    import subprocess
     vcvarsall = os.getenv("VCVARSALL")
     try:
         out = subprocess.check_output(
@@ -125,15 +125,18 @@ class cmake_build_ext(build_ext):
             os.makedirs(build_dir)
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
-        self.spawn([
+        subprocess.check_call([
             'cmake',
             '-G' + make_type(), '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
             pt.join(path)
-        ])
+        ], stdout=sys.stdout, stderr=sys.stderr)
         if not self.dry_run:
-            self.spawn(['cmake', '--build', '.', '--config', config])
+            subprocess.check_call(
+                ['cmake', '--build', '.', '--config', config],
+                stdout=sys.stdout, stderr=sys.stderr
+            )
         os.chdir(cur_dir)
 
 
