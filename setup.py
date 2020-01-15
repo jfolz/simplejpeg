@@ -125,10 +125,15 @@ class cmake_build_ext(build_ext):
             os.makedirs(build_dir)
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
+        flags = []
+        if PLATFORM == 'windows':
+            # fix for https://bugs.python.org/issue24872
+            flags.append('-DCMAKE_CXX_FLAGS="/MT /LTCG /NODEFAULTLIB:libucrt.lib ucrt.lib"')
         subprocess.check_call([
             'cmake',
             '-G' + make_type(), '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
+            *flags,
             *options,
             pt.join(path)
         ], stdout=sys.stdout, stderr=sys.stderr)
