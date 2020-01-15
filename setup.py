@@ -83,28 +83,10 @@ class cmake_build_ext(build_ext):
     def build_cmake_dependency(self, path, options):
         if PLATFORM == 'windows':
             # MSVC build environment
-            from setuptools.msvc import EnvironmentInfo
-            info = EnvironmentInfo(ARCH)
-            import glob
-            print(glob.glob('C:\\Program Files (x86)\\Windows Kits\\10\\bin\\*'))
-            print(glob.glob('C:\\Program Files (x86)\\Windows Kits\\10\\Include\\*'))
-            print(glob.glob('C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\*'))
-            for k in dir(info):
-                print(k, getattr(info, k))
-            os.environ['PATH'] = os.pathsep.join([
-                'C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.18362.0\\' + ARCH,
-                os.environ.get('PATH', '')
-            ] + info.VCTools + info.SdkTools)
-            os.environ['INCLUDE'] = os.pathsep.join([
-                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\shared',
-                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\um',
-                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\winrt'
-                'C:\\Program Files (x86)\\Windows Kits\\10\\Include\\10.0.18362.0\\ucrt'
-            ] + info.OSIncludes + info.UCRTIncludes + info.VCIncludes)
-            os.environ['LIB'] = os.pathsep.join([
-                'C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.18362.0\\um\\' + ARCH,
-                'C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.18362.0\\ucrt\\' + ARCH,
-            ] + info.OSLibraries + info.UCRTLibraries + info.VCLibraries)
+            from setuptools.msvc import msvc14_get_vc_env
+            env = msvc14_get_vc_env(ARCH)
+            for k, v in env.items():
+                os.environ[k] = v
         cur_dir = pt.abspath(os.curdir)
         build_dir = pt.join(path, 'build')
         if not pt.exists(build_dir):
@@ -113,7 +95,7 @@ class cmake_build_ext(build_ext):
         config = 'Debug' if self.debug else 'Release'
         self.spawn([
             'cmake',
-            '-G' + make_type(),
+            '-G' + make_type(), '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
             pt.join(path)
