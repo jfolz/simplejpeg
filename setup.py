@@ -113,14 +113,11 @@ class cmake_build_ext(build_ext):
         flags = []
         if PLATFORM == 'windows':
             # fix for https://bugs.python.org/issue24872
-            # '-DCOMPILE_OPTIONS="/MT;/LTCG;/NODEFAULTLIB:libucrt.lib ucrt.lib"'
+            # '-DCOMPILE_OPTIONS="/MT /LTCG /NODEFAULTLIB:libucrt.lib ucrt.lib"'
             # flags.append('-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libcmt.lib')
             # flags.append('-DCMAKE_EXE_LINKER_FLAGS=/NODEFAULTLIB')
             flags.extend([
-                '-DCMAKE_STATIC_LINKER_FLAGS=/MT',
-                '-DCMAKE_STATIC_LINKER_FLAGS=/LTCG',
-                '-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:libucrt.lib',
-                # '-DCMAKE_STATIC_LINKER_FLAGS=ucrt.lib',
+                '-DCMAKE_STATIC_LINKER_FLAGS=/NODEFAULTLIB:msvcrt.lib',
             ])
             pass
         self.build_cmake_dependency(JPEG_DIR, [
