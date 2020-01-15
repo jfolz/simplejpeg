@@ -100,6 +100,12 @@ def update_env_msvc():
 
 class cmake_build_ext(build_ext):
     def run(self):
+        if PLATFORM == 'windows':
+            # print errors to stdout, since powershell interprets a single
+            # character printed to stderr as a failure
+            sys.stderr = sys.stdout
+            # MSVC build environment
+            update_env_msvc()
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
@@ -113,9 +119,6 @@ class cmake_build_ext(build_ext):
         super().run()
 
     def build_cmake_dependency(self, path, options):
-        if PLATFORM == 'windows':
-            # MSVC build environment
-            update_env_msvc()
         cur_dir = pt.abspath(os.curdir)
         build_dir = pt.join(path, 'build')
         if not pt.exists(build_dir):
