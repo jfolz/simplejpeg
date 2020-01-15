@@ -85,6 +85,8 @@ class cmake_build_ext(build_ext):
             # MSVC build environment
             from setuptools.msvc import EnvironmentInfo
             info = EnvironmentInfo(ARCH)
+            for k in dir(info):
+                print(k, getattr(info, k))
             os.environ['PATH'] = os.pathsep.join(info.VCTools + info.SdkTools + [os.environ.get('PATH', '')])
             os.environ['INCLUDE'] = os.pathsep.join(info.OSIncludes + info.VCIncludes + info.UCRTIncludes)
             os.environ['LIB'] = os.pathsep.join(info.OSLibraries + info.VCLibraries + info.UCRTLibraries)
