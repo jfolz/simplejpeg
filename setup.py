@@ -66,6 +66,38 @@ def make_type():
         raise RuntimeError('Platform not supported: %s, %s' % (PLATFORM, ARCH))
 
 
+def update_env_vcvarsall():
+    import subprocess
+    vcvarsall = os.getenv("VCVARSALL")
+    try:
+        out = subprocess.check_output(
+            'cmd /u /c "{}" {} && set'.format(vcvarsall, ARCH),
+            stderr=subprocess.STDOUT,
+        ).decode('utf-16le', errors='replace')
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError('vcvarsall failed (%r), check that VCVARSALL env var is defined correctly.'
+                           % exc)
+    for key, _, value in (line.partition('=') for line in out.splitlines()):
+        if key and value:
+            os.environ[key] = value
+
+
+def update_env_setuptools():
+    from setuptools.msvc import msvc14_get_vc_env
+    env = msvc14_get_vc_env(ARCH)
+    for k, v in env.items():
+        os.environ[k] = v
+
+
+def update_env_msvc():
+    try:
+        update_env_vcvarsall()
+    except RuntimeError as e:
+        print('Error while running VCVARSALL: %r' % e)
+        print('Try to setup environment using setuptools')
+        update_env_setuptools()
+
+
 class cmake_build_ext(build_ext):
     def run(self):
         self.build_cmake_dependency(YASM_DIR, [
@@ -83,10 +115,7 @@ class cmake_build_ext(build_ext):
     def build_cmake_dependency(self, path, options):
         if PLATFORM == 'windows':
             # MSVC build environment
-            from setuptools.msvc import msvc14_get_vc_env
-            env = msvc14_get_vc_env(ARCH)
-            for k, v in env.items():
-                os.environ[k] = v
+            update_env_msvc()
         cur_dir = pt.abspath(os.curdir)
         build_dir = pt.join(path, 'build')
         if not pt.exists(build_dir):
