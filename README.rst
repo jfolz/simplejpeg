@@ -204,6 +204,11 @@ Check whether a bytes object (or similar) contains JPEG (JFIF) data.
 Changelog
 --------------------
 
+1.3.3
+~~~~~
+
+- Fix linker warning for Windows build.
+
 1.3.2
 ~~~~~
 
