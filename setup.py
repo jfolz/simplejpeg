@@ -206,7 +206,7 @@ def make_jpeg_module():
     extra_link_args = []
     extra_compile_args = []
     if PLATFORM != 'windows':
-        extra_link_args.extend(['-Wl,--strip-all,--exclude-libs,ALL'])
+        extra_link_args.extend(['-Wl,--gc-sections,--strip-all,--exclude-libs,ALL'])
         extra_compile_args.extend(['-g0'])
     return Extension(
         'simplejpeg._jpeg',
