@@ -108,7 +108,10 @@ class cmake_build_ext(build_ext):
             # MSVC build environment
             update_env_msvc()
         else:
-            flags.append('-DCMAKE_C_FLAGS="-ffunction-sections;-fdata-sections"')
+            flags.extend([
+                '-DCMAKE_C_FLAGS=-fdata-sections',
+                '-DCMAKE_C_FLAGS=-ffunction-sections',
+            ])
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
@@ -118,7 +121,7 @@ class cmake_build_ext(build_ext):
             '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
-            '-DCMAKE_POSITION_INDEPENDENT_CODE=ON'
+            '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
         ])
         # build extensions
         super().run()
