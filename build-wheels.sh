@@ -2,8 +2,9 @@
 set -e -x
 
 # Python 2.7 and 3.4 are not supported
-rm -r /opt/python/cp27*
-rm -r /opt/python/cp34*
+# remove binaries if still present
+rm -rf /opt/python/cp27*
+rm -rf /opt/python/cp34*
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
