@@ -100,17 +100,19 @@ def update_env_msvc():
 
 class cmake_build_ext(build_ext):
     def run(self):
+        flags = []
         if PLATFORM == 'windows':
             # print errors to stdout, since powershell interprets a single
             # character printed to stderr as a failure
             sys.stderr = sys.stdout
             # MSVC build environment
             update_env_msvc()
+        else:
+            flags.append('-DCMAKE_C_FLAGS="-ffunction-sections -fdata-sections"')
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
         os.environ['PATH'] = pt.join(YASM_DIR, 'build') + os.pathsep + os.getenv('PATH', '')
-        flags = []
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
             '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
@@ -210,8 +212,6 @@ def make_jpeg_module():
             '-Wl,--strip-all,--exclude-libs,ALL,--gc-sections'
         ])
         extra_compile_args.extend([
-            '-ffunction-sections',
-            '-fdata-sections'
         ])
     return Extension(
         'simplejpeg._jpeg',
