@@ -204,6 +204,11 @@ Check whether a bytes object (or similar) contains JPEG (JFIF) data.
 Changelog
 --------------------
 
+1.3.4
+~~~~~
+
+- Reduce linux binary size.
+
 1.3.3
 ~~~~~
 
