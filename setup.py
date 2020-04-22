@@ -107,43 +107,45 @@ class cmake_build_ext(build_ext):
             sys.stderr = sys.stdout
             # MSVC build environment
             update_env_msvc()
-        else:
-            flags.extend([
-                '-DCMAKE_C_FLAGS=-fdata-sections',
-                '-DCMAKE_C_FLAGS=-ffunction-sections',
-            ])
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
-        os.environ['PATH'] = pt.join(YASM_DIR, 'build') + os.pathsep + os.getenv('PATH', '')
+        # add YASM to the path
+        # make GCC put functions and data in separate sections
+        # the linker can then remove unused sections to reduce the size of the binary
+        env = {
+            'PATH': pt.join(YASM_DIR, 'build') + os.pathsep + os.getenv('PATH', ''),
+            'CFLAGS': '-ffunction-sections -fdata-sections ' + os.getenv('CFLAGS', ''),
+        }
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
             '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
-        ])
+        ], env=env)
         # build extensions
         super().run()
 
-    def build_cmake_dependency(self, path, options):
+    def build_cmake_dependency(self, path, options, env=None):
         cur_dir = pt.abspath(os.curdir)
         build_dir = pt.join(path, 'build')
         if not pt.exists(build_dir):
             os.makedirs(build_dir)
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
+        env = dict(os.environ, **(env or {}))
         subprocess.check_call([
             'cmake',
             '-G' + make_type(), '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
             pt.join(path)
-        ], stdout=sys.stdout, stderr=sys.stderr)
+        ], stdout=sys.stdout, stderr=sys.stderr, env=env)
         if not self.dry_run:
             subprocess.check_call(
                 ['cmake', '--build', '.', '--config', config],
-                stdout=sys.stdout, stderr=sys.stderr
+                stdout=sys.stdout, stderr=sys.stderr, env=env,
             )
         os.chdir(cur_dir)
 
@@ -212,7 +214,10 @@ def make_jpeg_module():
     extra_compile_args = []
     if PLATFORM != 'windows':
         extra_link_args.extend([
-            '-Wl,--strip-all,--exclude-libs,ALL,--gc-sections'
+            '-Wl,'  # following are linker options
+            '--strip-all,'  # Remove all symbols
+            '--exclude-libs,ALL,'  # Do not export symbols
+            '--gc-sections'  # Remove unused sections
         ])
         extra_compile_args.extend([
         ])
