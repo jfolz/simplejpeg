@@ -127,3 +127,19 @@ def test_decode_colorspace():
         np_im = np.array(im.convert('L'))[:, :, np.newaxis]
         sim = simplejpeg.decode_jpeg(data, 'GRAY')
         assert mean_absolute_difference(np_im, sim) < 1, f
+
+
+def test_decode_writable():
+    with pytest.raises(BufferError) as exc:
+        b = b'x' * (1024*1024*3)
+        for f, data, im in yield_reference_images():
+            simplejpeg.decode_jpeg(data, buffer=b)
+    assert 'writable' in str(exc.value)
+
+
+def test_decode_noncontiguous():
+    with pytest.raises(ValueError) as exc:
+        b = np.zeros((3, 1024, 1024), dtype=np.uint8)
+        for f, data, im in yield_reference_images():
+            simplejpeg.decode_jpeg(data, buffer=b.transpose((1, 2, 0)))
+    assert 'contiguous' in str(exc.value)

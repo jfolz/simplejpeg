@@ -4,6 +4,7 @@ import io
 
 import numpy as np
 from PIL import Image
+import pytest
 
 import simplejpeg
 
@@ -81,3 +82,10 @@ def test_encode_colorspace():
         decoded = np.array(Image.open(io.BytesIO(encoded)))
         np_im = _colorspace_to_rgb(np_im, colorspace)
         assert 0 < mean_absolute_difference(np_im, decoded) < 10
+
+
+def test_encode_noncontiguous():
+    with pytest.raises(ValueError) as exc:
+        im = np.zeros((3, 123, 235), dtype=np.uint8)
+        simplejpeg.encode_jpeg(im.transpose((1, 2, 0)))
+    assert 'contiguous' in str(exc.value)

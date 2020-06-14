@@ -10,6 +10,7 @@ from cpython.bytes cimport PyBytes_FromStringAndSize
 from cpython cimport PyObject_GetBuffer
 from cpython cimport PyBUF_SIMPLE
 from cpython cimport PyBUF_WRITABLE
+from cpython cimport PyBUF_ANY_CONTIGUOUS
 from cpython cimport PyBuffer_Release
 
 
@@ -242,6 +243,9 @@ def decode_jpeg_header(
     )
 
 
+cdef int DECODE_BUFFER_FLAGS = PyBUF_SIMPLE|PyBUF_WRITABLE|PyBUF_ANY_CONTIGUOUS
+
+
 def decode_jpeg(
         const unsigned char[:] data not None,
         str colorspace='rgb',
@@ -334,8 +338,9 @@ def decode_jpeg(
         out_p = &out[0, 0, 0]
     # attempt to create output array from given buffer
     else:
-        if PyObject_GetBuffer(buffer, &view, PyBUF_SIMPLE|PyBUF_WRITABLE) != 0:
-            raise ValueError("buffer does not support the buffer protocol")
+        if PyObject_GetBuffer(buffer, &view, DECODE_BUFFER_FLAGS) != 0:
+            raise ValueError('buffer object must support buffer interface '
+                             'and must be writable and contiguous')
         # check memoryview size and extract pointer
         bufferlen = view.len
         if bufferlen < outlen:
@@ -423,6 +428,8 @@ def encode_jpeg(
                     speeds up encoding by 4-5% for a minor loss in quality
     :return: encoded image as JPEG (JFIF) data
     """
+    if not image.is_c_contig():
+        raise ValueError('image must be C contiguous')
     cdef const unsigned char* image_p = &image[0, 0, 0]
     cdef int retcode
     cdef int height = image.shape[0]
