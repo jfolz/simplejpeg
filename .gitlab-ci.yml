@@ -99,11 +99,6 @@ import-appveyor:
   - ./check-artifacts.sh
 
 
-check:
-  <<: *x86_64
-  extends: .check
-
-
 publish:
   <<: *x86_64
   extends: .publish
