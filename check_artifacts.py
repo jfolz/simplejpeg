@@ -34,7 +34,6 @@ def wheel_version_platform(name):
 
 
 def check_wheels(package, dist_dir, python_versions, platforms):
-    print('Searching %s wheels...' % package)
     wheels = {wheel_version_platform(p)
               for p in dist_dir.glob(package + '*.whl')}
     missing = []
@@ -51,7 +50,9 @@ def check_wheels(package, dist_dir, python_versions, platforms):
 
 def check_source(package, dist_dir):
     source_archive = package + '.tar.gz'
-    if not (dist_dir / source_archive).is_file():
+    if (dist_dir / source_archive).is_file():
+        print('Found source distribution', source_archive, flush=True)
+    else:
         print('Error: Source distribution %s not found' % source_archive,
               file=sys.stderr, flush=True)
         sys.exit(1)
@@ -77,6 +78,9 @@ def main():
     args = parser.parse_args()
     package = 'simplejpeg-' + find_version('simplejpeg', '__init__.py')
     dist_dir = Path(args.distdir)
+    print('Locating %s artifacts in %s' % (package, dist_dir))
+    print('Python versions:', ', '.join(args.python_versions))
+    print('Platforms:', ', '.join(args.platforms))
     check_wheels(package, dist_dir, args.python_versions, args.platforms)
     sys.stdout.flush()
     check_source(package, dist_dir)
