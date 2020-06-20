@@ -1,3 +1,8 @@
+"""
+This script uses the AppVeyor API to check if the current build
+has succeeded and download all produced artifacts.
+"""
+
 import os
 import os.path as pt
 import sys

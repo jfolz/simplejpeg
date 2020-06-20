@@ -1,6 +1,7 @@
 stages:
   - build
   - import
+  - check
   - publish
 
 
@@ -14,13 +15,13 @@ stages:
 .always:
   extends: .artifacts
   artifacts:
-    expire_in: 8 hours
+    expire_in: 1 hour
 
 
 .devel:
   extends: .artifacts
   artifacts:
-    expire_in: 8 hours
+    expire_in: 1 hour
   except:
   - tags
 
@@ -28,15 +29,15 @@ stages:
 .release:
   extends: .artifacts
   artifacts:
-    expire_in: 1000 years
+    expire_in: 1 hour
   only:
   - tags
 
 
-.publish:
-  stage: publish
-  script:
-  - ./publish-wheels.sh
+.keep:
+  extends: .artifacts
+  artifacts:
+    expire_in: 1000 years
   only:
   - tags
 
@@ -55,6 +56,20 @@ stages:
   - yum update -y
   - yum install -y cmake
   - ./build-wheels.sh
+
+
+.publish:
+  extends: .keep
+  stage: publish
+  script:
+  - ./publish-wheels.sh
+
+
+.check:
+  extends: .always
+  stage: check
+  script:
+  - ./check-wheels.sh
 
 
 devel:
@@ -89,6 +104,11 @@ import-appveyor:
     - /opt/python/cp38-cp38/bin/python import_appveyor.py
     - /opt/python/cp38-cp38/bin/pip install -r build-requirements.txt
     - /opt/python/cp38-cp38/bin/python setup.py sdist --dist-dir=dist
+
+
+check:
+  <<: *x86_64
+  extends: .check
 
 
 publish:
