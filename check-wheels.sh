@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -x
 
-PYBIN=/opt/python/cp38-cp38m/bin
+PYBIN=/opt/python/cp38-cp38/bin
 "${PYBIN}/python" check_wheels.py \
     dist \
     --python-versions cp35 cp36 cp37 cp38 \
