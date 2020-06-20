@@ -6,6 +6,9 @@ set -e -x
 rm -rf /opt/python/cp27*
 rm -rf /opt/python/cp34*
 
+# Don't test Python 3.9 yet - missing dependencies
+rm -rf /opt/python/cp39*
+
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
     OLDPIP=$("${PYBIN}/pip" freeze --all | grep '^pip==' | tr -d '\n')
