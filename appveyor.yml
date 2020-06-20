@@ -15,7 +15,7 @@ environment:
       INTERPRETERS: "C:\\Python35-x64;C:\\Python36-x64;C:\\Python37-x64;C:\\Python38-x64"
 
 build_script:
-  - ps: .\build-wheels.ps1
+  - ps: .\build_wheels.ps1
 
 artifacts:
   - path: dist\*.whl

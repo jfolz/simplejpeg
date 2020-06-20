@@ -14,7 +14,7 @@ for PYBIN in /opt/python/*/bin; do
     OLDPIP=$("${PYBIN}/pip" freeze --all | grep '^pip==' | tr -d '\n')
     OLDWHEEL=$("${PYBIN}/pip" freeze --all | grep '^wheel==' | tr -d '\n')
     "${PYBIN}/pip" install -U pip wheel --no-warn-script-location
-    "${PYBIN}/pip" install -r build-requirements.txt
+    "${PYBIN}/pip" install -r build_requirements.txt
     "${PYBIN}/pip" wheel . -v -w wheelhouse/ --no-deps
     "${PYBIN}/pip" install --force "$OLDPIP" "$OLDWHEEL"
 done

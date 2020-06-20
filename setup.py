@@ -274,7 +274,7 @@ with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
     dependencies = [l.strip(' \n') for l in f]
 
 
-with open(pt.join(PACKAGE_DIR, 'build-requirements.txt')) as f:
+with open(pt.join(PACKAGE_DIR, 'build_requirements.txt')) as f:
     build_dependencies = [l.strip(' \n') for l in f]
 
 

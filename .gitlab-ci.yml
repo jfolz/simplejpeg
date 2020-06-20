@@ -54,14 +54,14 @@ stages:
   script:
   - yum update -y
   - yum install -y cmake
-  - ./build-wheels.sh
+  - ./build_wheels.sh
 
 
 .publish:
   extends: .keep
   stage: publish
   script:
-  - ./publish-wheels.sh
+  - ./publish_wheels.sh
 
 
 devel:
@@ -94,9 +94,9 @@ import-appveyor:
   extends: .always
   script:
   - /opt/python/cp38-cp38/bin/python import_appveyor.py
-  - /opt/python/cp38-cp38/bin/pip install -r build-requirements.txt
+  - /opt/python/cp38-cp38/bin/pip install -r build_requirements.txt
   - /opt/python/cp38-cp38/bin/python setup.py sdist --dist-dir=dist
-  - ./check-artifacts.sh
+  - ./check_artifacts.sh
 
 
 publish:
