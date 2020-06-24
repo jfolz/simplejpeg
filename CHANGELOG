@@ -5,13 +5,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
-## [1.3.5]
+## [1.3.6]
+### Changed
+- Update to libjpeg-turbo 2.0.5
+
+
+## [1.3.5] - 2020-06-20
 ### Changed
 - Improve error message in decode_jpeg for unsupported buffers
 
 ### Fixed
 - Request contiguous buffer in decode_jpeg
 - Check whether image is C contiguous in encode_jpeg
+
 
 ## [1.3.4] - 2020-06-01
 ### Added
@@ -35,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - ``min_width`` and ``min_height`` are now ignored if 0 as stated in the docs.
 - License missing from linux wheels.
+
 
 ## [1.3.1] - 2019-12-15
 ### Fixed
