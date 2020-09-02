@@ -3,8 +3,8 @@ branches:
     - master
 
 image:
-  - Visual Studio 2019
   - macOS
+  - Visual Studio 2019
 
 environment:
   VCVARSALL: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
@@ -30,7 +30,7 @@ for:
   -
     matrix:
       only:
-          - image: macOS
+        - image: macOS
 
     build_script:
       - ps: ./build_wheels_macos.sh
