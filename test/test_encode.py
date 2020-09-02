@@ -71,6 +71,15 @@ def _colorspace_to_rgb(im, colorspace):
     return out
 
 
+def test_encode_grayscale():
+    np.random.seed(486943)
+    im = np.random.randint(0, 255, (589, 486, 1), dtype=np.uint8)
+    # encode with simplejpeg, decode with Pillow
+    encoded = simplejpeg.encode_jpeg(im, 85, colorspace='gray')
+    decoded = np.array(Image.open(io.BytesIO(encoded)))[:, :, np.newaxis]
+    assert 0 < mean_absolute_difference(im, decoded) < 10
+
+
 def test_encode_colorspace():
     np.random.seed(9)
     im = np.random.randint(0, 255, (589, 486, 4), dtype=np.uint8)

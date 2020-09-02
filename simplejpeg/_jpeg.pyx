@@ -439,7 +439,9 @@ def encode_jpeg(
     if tjPixelSize[colorspace_] != channels:
         raise ValueError('%d channels does not match given colorspace %s'
                          % (channels, colorspace))
-    cdef int colorsubsampling_ = SUBSAMPLING[colorsubsampling]
+    cdef int colorsubsampling_ = TJSAMP_GRAY
+    if colorspace_ != TJPF_GRAY:
+        colorsubsampling_ = SUBSAMPLING[colorsubsampling]
     cdef unsigned char * jpegbuf = NULL
     cdef unsigned char ** jpegbufbuf = &jpegbuf
     cdef unsigned long jpegsize = 0
