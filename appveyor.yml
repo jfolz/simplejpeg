@@ -10,13 +10,11 @@ environment:
   VCVARSALL: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
   MACOSX_DEPLOYMENT_TARGET: "10.9"
   matrix:
-    # See appveyor docs for available Python versions:
-    # https://www.appveyor.com/docs/windows-images-software/#python
     - platform: x86
-      INTERPRETERS: "C:\\Python35;C:\\Python36;C:\\Python37;C:\\Python38"
     - platform: x64
-      INTERPRETERS: "C:\\Python35-x64;C:\\Python36-x64;C:\\Python37-x64;C:\\Python38-x64"
 
+# See appveyor docs for available Python versions:
+# https://www.appveyor.com/docs/windows-images-software/#python
 for:
   -
     matrix:
@@ -27,6 +25,20 @@ for:
     matrix:
       only:
         - image: Visual Studio 2019
+          platform: x64
+    environment:
+      INTERPRETERS: "C:\\Python35-x64;C:\\Python36-x64;C:\\Python37-x64;C:\\Python38-x64"
+    build_script:
+      - ps: .\build_wheels.ps1
+    artifacts:
+      - path: dist\*.whl
+  -
+    matrix:
+      only:
+        - image: Visual Studio 2019
+          platform: x86
+    environment:
+      INTERPRETERS: "C:\\Python35;C:\\Python36;C:\\Python37;C:\\Python38"
     build_script:
       - ps: .\build_wheels.ps1
     artifacts:
