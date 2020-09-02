@@ -16,10 +16,12 @@ for VENV in "${PYTHON_VENVS[@]}"; do
 done
 
 # Bundle external shared libraries into the wheels
+source ~/venv3.8/bin/activate
 pip install delocate
 for whl in wheelhouse/*.whl; do
     delocate-wheel -w dist -v "$whl"
 done
+deactivate
 
 # Install and test
 cd test
