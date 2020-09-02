@@ -216,7 +216,7 @@ def make_jpeg_module():
     ]
     extra_link_args = []
     extra_compile_args = []
-    if PLATFORM != 'windows':
+    if PLATFORM == 'linux':
         extra_link_args.extend([
             '-Wl,'  # following are linker options
             '--strip-all,'  # Remove all symbols
