@@ -6,7 +6,7 @@ $interpreters = $env:INTERPRETERS -split ";"
 
 # Compile wheels
 foreach ($python in $interpreters){
-    & $python\python.exe -m pip install -U pip wheel --no-warn-script-location
+    & $python\python.exe -m pip install -U pip --no-warn-script-location
     & $python\python.exe -m pip install -r build_requirements.txt --no-warn-script-location
     & $python\python.exe setup.py bdist_wheel --dist-dir=dist
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
