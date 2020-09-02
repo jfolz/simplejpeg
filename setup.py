@@ -301,22 +301,22 @@ class ConcatFiles:
         self.separator = separator
 
     def __enter__(self):
-        with open(self.output_file) as fp:
+        with open(self.output_file, encoding='utf-8') as fp:
             self.original_output = fp.read()
         content = [self.original_output]
         for f in self.files:
-            with open(f) as fp:
+            with open(f, encoding='utf-8') as fp:
                 content.extend([
                     '\n', '\n', self.separator,
                     'Content of: ' + f,
                     self.separator, '\n',
                     fp.read()
                 ])
-        with open(self.output_file, 'w') as fp:
+        with open(self.output_file, 'w', encoding='utf-8') as fp:
             fp.write('\n'.join(content))
 
     def __exit__(self, exception_type, exception_value, traceback):
-        with open(self.output_file, 'w') as fp:
+        with open(self.output_file, 'w', encoding='utf-8') as fp:
             fp.write(self.original_output)
         self.original_output = None
 
