@@ -110,12 +110,16 @@ class cmake_build_ext(build_ext):
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
-        # add YASM to the path
-        # make GCC put functions and data in separate sections
-        # the linker can then remove unused sections to reduce the size of the binary
+        cflags = ''
+        if PLATFORM == 'linux':
+            # make GCC put functions and data in separate sections
+            # the linker can then remove unused sections to reduce the size of the binary
+            cflags = '-ffunction-sections -fdata-sections '
         env = {
+            # add YASM to the path
             'PATH': pt.join(YASM_DIR, 'build') + os.pathsep + os.getenv('PATH', ''),
-            'CFLAGS': '-ffunction-sections -fdata-sections ' + os.getenv('CFLAGS', ''),
+            # custom CFLAGS - depends on platform
+            'CFLAGS': cflags + os.getenv('CFLAGS', ''),
         }
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
