@@ -10,9 +10,15 @@ for VENV in "${PYTHON_VENVS[@]}"; do
     OLDWHEEL=$("pip" freeze --all | grep '^wheel==' | tr -d '\n')
     pip install -U pip wheel --no-warn-script-location
     pip install -r build_requirements.txt
-    pip wheel . -v -w dist/ --no-deps
+    pip wheel . -v -w wheelhouse/ --no-deps
     pip install --force "$OLDPIP" "$OLDWHEEL"
     deactivate
+done
+
+# Bundle external shared libraries into the wheels
+pip install delocate
+for whl in wheelhouse/*.whl; do
+    delocate-wheel -w dist -v "$whl"
 done
 
 # Install and test
