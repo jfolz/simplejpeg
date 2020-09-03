@@ -8,7 +8,7 @@ image:
 
 environment:
   VCVARSALL: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
-  MACOSX_DEPLOYMENT_TARGET: "10.9"
+  MACOSX_DEPLOYMENT_TARGET: "10.6"
   matrix:
     - platform: x86
     - platform: x64
