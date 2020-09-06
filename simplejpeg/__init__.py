@@ -3,7 +3,7 @@ from ._jpeg import decode_jpeg
 from ._jpeg import decode_jpeg_header
 
 
-__version__ = '1.3.7'
+__version__ = '1.3.8'
 __version_info__ = __version__.split('.')
 
 

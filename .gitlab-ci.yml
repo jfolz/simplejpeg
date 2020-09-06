@@ -41,19 +41,26 @@ stages:
   - tags
 
 
-.x86_64: &x86_64
+.x86_64-manylinux1: &x86_64-manylinux1
+  image: quay.io/pypa/manylinux1_x86_64
+
+
+.x86_64-manylinux2010: &x86_64-manylinux2010
   image: quay.io/pypa/manylinux2010_x86_64
 
 
-.i686: &i686
+.i686-manylinux1: &i686-manylinux1
+  image: quay.io/pypa/manylinux1_i686
+
+
+.i686-manylinux2010: &i686-manylinux2010
   image: quay.io/pypa/manylinux2010_i686
 
 
 .build: &build
   stage: build
   script:
-  - yum update -y
-  - yum install -y cmake
+  - ./install_cmake.sh
   - ./build_wheels.sh
 
 
@@ -64,32 +71,56 @@ stages:
   - ./publish_wheels.sh
 
 
-devel:
-  <<: *x86_64
+devel-x86_64-manylinux1:
+  <<: *x86_64-manylinux1
   <<: *build
   extends: .devel
 
 
-devel-i686:
-  <<: *i686
+devel-x86_64-manylinux2010:
+  <<: *x86_64-manylinux2010
   <<: *build
   extends: .devel
 
 
-release:
-  <<: *x86_64
+devel-i686-manylinux1:
+  <<: *i686-manylinux1
+  <<: *build
+  extends: .devel
+
+
+devel-i686-manylinux2010:
+  <<: *i686-manylinux2010
+  <<: *build
+  extends: .devel
+
+
+release-x86_64-manylinux1:
+  <<: *x86_64-manylinux1
   <<: *build
   extends: .release
 
 
-release-i686:
-  <<: *i686
+release-x86_64-manylinux2010:
+  <<: *x86_64-manylinux2010
+  <<: *build
+  extends: .release
+
+
+release-i686-manylinux1:
+  <<: *i686-manylinux1
+  <<: *build
+  extends: .release
+
+
+release-i686-manylinux2010:
+  <<: *i686-manylinux2010
   <<: *build
   extends: .release
 
 
 import-appveyor:
-  <<: *x86_64
+  <<: *x86_64-manylinux2010
   stage: import
   extends: .always
   script:
@@ -100,6 +131,12 @@ import-appveyor:
 
 
 publish:
-  <<: *x86_64
+  <<: *x86_64-manylinux2010
   extends: .publish
-  needs: ["release", "release-i686", "import-appveyor"]
+  needs: [
+    "release-x86_64-manylinux1",
+    "release-x86_64-manylinux2010",
+    "release-i686-manylinux1",
+    "release-i686-manylinux2010",
+    "import-appveyor"
+  ]
