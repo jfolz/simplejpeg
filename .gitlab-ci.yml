@@ -57,10 +57,6 @@ stages:
   image: quay.io/pypa/manylinux2010_i686
 
 
-.aarch64-manylinux2014: &aarch64-manylinux2014
-  image: quay.io/pypa/manylinux2014_aarch64
-
-
 .build: &build
   stage: build
   script:
@@ -99,15 +95,6 @@ devel-i686-manylinux2010:
   extends: .devel
 
 
-devel-aarch64-manylinux2014:
-  image: docker:latest
-  stage: build
-  script:
-  - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-  - docker run --privileged -v `pwd`:`pwd` -w `pwd` quay.io/pypa/manylinux2014_aarch64 /bin/bash -c "./install_cmake.sh && ./build_wheels.sh"
-  extends: .devel
-
-
 release-x86_64-manylinux1:
   <<: *x86_64-manylinux1
   <<: *build
@@ -129,15 +116,6 @@ release-i686-manylinux1:
 release-i686-manylinux2010:
   <<: *i686-manylinux2010
   <<: *build
-  extends: .release
-
-
-release-aarch64-manylinux2014:
-  image: docker:latest
-  stage: build
-  script:
-  - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-  - docker run --privileged -v `pwd`:`pwd` -w `pwd` quay.io/pypa/manylinux2014_aarch64 /bin/bash -c "./install_cmake.sh && ./build_wheels.sh"
   extends: .release
 
 
