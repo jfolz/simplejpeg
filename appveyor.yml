@@ -1,7 +1,3 @@
-branches:
-  only:
-    - master
-
 image:
   - macOS
   - Visual Studio 2019
@@ -27,7 +23,7 @@ for:
         - image: Visual Studio 2019
           platform: x64
     environment:
-      INTERPRETERS: "C:\\Python35-x64;C:\\Python36-x64;C:\\Python37-x64;C:\\Python38-x64"
+      INTERPRETERS: "C:\\Python35-x64;C:\\Python36-x64;C:\\Python37-x64;C:\\Python38-x64;C:\\Python39-x64"
     build_script:
       - ps: .\build_wheels.ps1
     artifacts:
@@ -38,7 +34,7 @@ for:
         - image: Visual Studio 2019
           platform: x86
     environment:
-      INTERPRETERS: "C:\\Python35;C:\\Python36;C:\\Python37;C:\\Python38"
+      INTERPRETERS: "C:\\Python35;C:\\Python36;C:\\Python37;C:\\Python38;C:\\Python39"
     build_script:
       - ps: .\build_wheels.ps1
     artifacts:
@@ -48,7 +44,7 @@ for:
       only:
         - image: macOS
     environment:
-      INTERPRETERS: "3.5-dev 3.6-dev 3.7-dev 3.8-dev"
+      INTERPRETERS: "3.5-dev 3.6-dev 3.7-dev 3.8-dev 3.9-dev"
     build_script:
       - ps: ./build_wheels_macos.sh
     artifacts:
