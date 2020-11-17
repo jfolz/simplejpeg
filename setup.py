@@ -30,7 +30,7 @@ ARCH = 'x64' if IS64BIT else 'x86'
 YASM_VERSION = '1.3.0'
 YASM_SOURCE = 'yasm-%s.tar.gz' % YASM_VERSION
 YASM_URL = 'https://github.com/yasm/yasm/releases/download/v%s/' % YASM_VERSION + YASM_SOURCE
-JPEG_VERSION = '2.0.5'
+JPEG_VERSION = '2.0.6'
 JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
 JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
 
