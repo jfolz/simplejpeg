@@ -41,20 +41,36 @@ stages:
   - tags
 
 
-.x86_64-manylinux1: &x86_64-manylinux1
+.manylinux1_x86_64: &manylinux1_x86_64
   image: quay.io/pypa/manylinux1_x86_64
 
 
-.x86_64-manylinux2010: &x86_64-manylinux2010
+.manylinux2010_x86_64: &manylinux2010_x86_64
   image: quay.io/pypa/manylinux2010_x86_64
 
 
-.i686-manylinux1: &i686-manylinux1
+.manylinux2014_x86_64: &manylinux2014_x86_64
+  image: quay.io/pypa/manylinux2014_x86_64
+
+
+.manylinux1_i686: &manylinux1_i686
   image: quay.io/pypa/manylinux1_i686
 
 
-.i686-manylinux2010: &i686-manylinux2010
+.manylinux2010_i686: &manylinux2010_i686
   image: quay.io/pypa/manylinux2010_i686
+
+
+.manylinux2014_i686: &manylinux2014_i686
+  image: quay.io/pypa/manylinux2014_i686
+
+
+.manylinux2014_aarch64: &manylinux2014_aarch64
+  image: quay.io/pypa/manylinux2014_aarch64
+
+
+.manylinux2014_armv7l: &manylinux2014_armv7l
+  image: quay.io/pypa/manylinux2014_armv7l
 
 
 .build: &build
@@ -62,6 +78,12 @@ stages:
   script:
   - ./install_cmake.sh
   - ./build_wheels.sh
+
+.source: &source
+  stage: build
+  script:
+  - /opt/python/cp39-cp39/bin/pip install -r build_requirements.txt
+  - /opt/python/cp39-cp39/bin/python setup.py sdist --dist-dir=dist
 
 
 .publish:
@@ -71,72 +93,109 @@ stages:
   - ./publish_wheels.sh
 
 
-devel-x86_64-manylinux1:
-  <<: *x86_64-manylinux1
+devel-source:
+  <<: *manylinux2014_x86_64
+  <<: *source
+  extends: .devel
+
+
+devel-manylinux1_x86_64:
+  <<: *manylinux1_x86_64
   <<: *build
   extends: .devel
 
 
-devel-x86_64-manylinux2010:
-  <<: *x86_64-manylinux2010
+devel-manylinux2010_x86_64:
+  <<: *manylinux2010_x86_64
   <<: *build
   extends: .devel
 
 
-devel-i686-manylinux1:
-  <<: *i686-manylinux1
+devel-manylinux2014_x86_64:
+  <<: *manylinux2014_x86_64
   <<: *build
   extends: .devel
 
 
-devel-i686-manylinux2010:
-  <<: *i686-manylinux2010
+devel-manylinux1_i686:
+  <<: *manylinux1_i686
   <<: *build
   extends: .devel
 
 
-release-x86_64-manylinux1:
-  <<: *x86_64-manylinux1
+devel-manylinux2010_i686:
+  <<: *manylinux2010_i686
+  <<: *build
+  extends: .devel
+
+
+devel-manylinux2014_i686:
+  <<: *manylinux2014_i686
+  <<: *build
+  extends: .devel
+
+
+release-source:
+  <<: *manylinux2014_x86_64
+  <<: *source
+  extends: .release
+
+
+release-manylinux1_x86_64:
+  <<: *manylinux1_x86_64
   <<: *build
   extends: .release
 
 
-release-x86_64-manylinux2010:
-  <<: *x86_64-manylinux2010
+release-manylinux2010_x86_64:
+  <<: *manylinux2010_x86_64
   <<: *build
   extends: .release
 
 
-release-i686-manylinux1:
-  <<: *i686-manylinux1
+release-manylinux2014_x86_64:
+  <<: *manylinux2014_x86_64
   <<: *build
   extends: .release
 
 
-release-i686-manylinux2010:
-  <<: *i686-manylinux2010
+release-manylinux1_i686:
+  <<: *manylinux1_i686
+  <<: *build
+  extends: .release
+
+
+release-manylinux2010_i686:
+  <<: *manylinux2010_i686
+  <<: *build
+  extends: .release
+
+
+release-manylinux2014_i686:
+  <<: *manylinux2014_i686
   <<: *build
   extends: .release
 
 
 import-appveyor:
-  <<: *x86_64-manylinux2010
+  <<: *manylinux2014_x86_64
   stage: import
   extends: .always
   script:
-  - /opt/python/cp38-cp38/bin/python import_appveyor.py
-  - /opt/python/cp38-cp38/bin/pip install -r build_requirements.txt
-  - /opt/python/cp38-cp38/bin/python setup.py sdist --dist-dir=dist
+  - /opt/python/cp39-cp39/bin/python import_appveyor.py
   - ./check_artifacts.sh
 
 
 publish:
-  <<: *x86_64-manylinux2010
+  <<: *manylinux2014_x86_64
   extends: .publish
   needs: [
-    "release-x86_64-manylinux1",
-    "release-x86_64-manylinux2010",
-    "release-i686-manylinux1",
-    "release-i686-manylinux2010",
+    "release-source",
+    "release-manylinux1_x86_64",
+    "release-manylinux2010_x86_64",
+    "release-manylinux2014_x86_64",
+    "release-manylinux1_i686",
+    "release-manylinux2010_i686",
+    "release-manylinux2014_i686",
     "import-appveyor"
   ]
