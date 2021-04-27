@@ -163,6 +163,12 @@ release-manylinux2010_x86_64:
   extends: .release
 
 
+release-manylinux2014_i686:
+  <<: *manylinux2014_x86_64
+  <<: *build
+  extends: .release
+
+
 release-manylinux_2_24_aarch64:
   <<: *manylinux_2_24_aarch64
   <<: *build
