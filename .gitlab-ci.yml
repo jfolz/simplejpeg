@@ -41,40 +41,28 @@ stages:
   - tags
 
 
-.manylinux1_x86_64: &manylinux1_x86_64
-  image: quay.io/pypa/manylinux1_x86_64
-
-
-.manylinux2010_x86_64: &manylinux2010_x86_64
-  image: quay.io/pypa/manylinux2010_x86_64
-
-
-.manylinux2014_x86_64: &manylinux2014_x86_64
-  image: quay.io/pypa/manylinux2014_x86_64
-
-
 .manylinux1_i686: &manylinux1_i686
   image: quay.io/pypa/manylinux1_i686
+
+
+.manylinux1_x86_64: &manylinux1_x86_64
+  image: quay.io/pypa/manylinux1_x86_64
 
 
 .manylinux2010_i686: &manylinux2010_i686
   image: quay.io/pypa/manylinux2010_i686
 
 
-.manylinux2014_i686: &manylinux2014_i686
-  image: quay.io/pypa/manylinux2014_i686
+.manylinux2010_x86_64: &manylinux2010_x86_64
+  image: quay.io/pypa/manylinux2010_x86_64
 
 
-.manylinux2014_aarch64: &manylinux2014_aarch64
-  image: quay.io/pypa/manylinux2014_aarch64
-  tags:
-    - arm
+.manylinux_2_24_i686: &manylinux_2_24_i686
+  image: quay.io/pypa/manylinux_2_24_i686
 
 
-.manylinux2014_armv7l: &manylinux2014_armv7l
-  image: quay.io/pypa/manylinux2014_armv7l
-  tags:
-    - arm
+.manylinux_2_24_x86_64: &manylinux_2_24_x86_64
+  image: quay.io/pypa/manylinux_2_24_x86_64
 
 
 .manylinux_2_24_aarch64: &manylinux_2_24_aarch64
@@ -104,7 +92,7 @@ stages:
 
 
 devel-source:
-  <<: *manylinux2014_x86_64
+  <<: *manylinux_2_24_x86_64
   <<: *source
   extends: .devel
 
@@ -121,8 +109,8 @@ devel-manylinux2010_x86_64:
   extends: .devel
 
 
-devel-manylinux2014_x86_64:
-  <<: *manylinux2014_x86_64
+devel-manylinux_2_24_x86_64:
+  <<: *manylinux_2_24_x86_64
   <<: *build
   extends: .devel
 
@@ -139,8 +127,8 @@ devel-manylinux2010_i686:
   extends: .devel
 
 
-devel-manylinux2014_i686:
-  <<: *manylinux2014_i686
+devel-manylinux_2_24_i686:
+  <<: *manylinux_2_24_i686
   <<: *build
   extends: .devel
 
@@ -152,31 +140,19 @@ devel-manylinux_2_24_aarch64:
 
 
 release-source:
-  <<: *manylinux2014_x86_64
+  <<: *manylinux_2_24_x86_64
   <<: *source
-  extends: .release
-
-
-release-manylinux1_x86_64:
-  <<: *manylinux1_x86_64
-  <<: *build
-  extends: .release
-
-
-release-manylinux2010_x86_64:
-  <<: *manylinux2010_x86_64
-  <<: *build
-  extends: .release
-
-
-release-manylinux2014_x86_64:
-  <<: *manylinux2014_x86_64
-  <<: *build
   extends: .release
 
 
 release-manylinux1_i686:
   <<: *manylinux1_i686
+  <<: *build
+  extends: .release
+
+
+release-manylinux1_x86_64:
+  <<: *manylinux1_x86_64
   <<: *build
   extends: .release
 
@@ -187,14 +163,32 @@ release-manylinux2010_i686:
   extends: .release
 
 
-release-manylinux2014_i686:
-  <<: *manylinux2014_i686
+release-manylinux2010_x86_64:
+  <<: *manylinux2010_x86_64
+  <<: *build
+  extends: .release
+
+
+release-manylinux_2_24_i686:
+  <<: *manylinux_2_24_i686
+  <<: *build
+  extends: .release
+
+
+release-manylinux_2_24_x86_64:
+  <<: *manylinux_2_24_x86_64
+  <<: *build
+  extends: .release
+
+
+release-manylinux_2_24_aarch64:
+  <<: *manylinux_2_24_aarch64
   <<: *build
   extends: .release
 
 
 import-appveyor:
-  <<: *manylinux2014_x86_64
+  <<: *manylinux_2_24_x86_64
   stage: import
   extends: .always
   script:
@@ -203,15 +197,16 @@ import-appveyor:
 
 
 publish:
-  <<: *manylinux2014_x86_64
+  <<: *manylinux_2_24_x86_64
   extends: .publish
   needs: [
     "release-source",
-    "release-manylinux1_x86_64",
-    "release-manylinux2010_x86_64",
-    "release-manylinux2014_x86_64",
     "release-manylinux1_i686",
+    "release-manylinux1_x86_64",
     "release-manylinux2010_i686",
-    "release-manylinux2014_i686",
+    "release-manylinux2010_x86_64",
+    "release-manylinux_2_24_i686",
+    "release-manylinux_2_24_x86_64",
+    "release-manylinux_2_24_aarch64",
     "import-appveyor"
   ]
