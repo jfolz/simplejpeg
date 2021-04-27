@@ -10,7 +10,7 @@ foreach ($python in $interpreters){
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
     & $python\python.exe -m pip install -r build_requirements.txt --no-warn-script-location
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
-    & $python\python.exe setup.py bdist_wheel --dist-dir=dist
+    & $python\python.exe setup.py bdist_wheel --dist-dir=dist --use-feature=in-tree-build
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
 }
 

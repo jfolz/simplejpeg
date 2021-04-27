@@ -11,7 +11,7 @@ rm -rf /opt/python/cp35*
 for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install -U pip --no-warn-script-location
     "${PYBIN}/pip" install -r build_requirements.txt
-    "${PYBIN}/pip" wheel . -v -w wheelhouse/ --no-deps
+    "${PYBIN}/pip" wheel . -v -w wheelhouse/ --no-deps --use-feature=in-tree-build
 done
 
 # Bundle external shared libraries into the wheels

@@ -11,7 +11,7 @@ for PYVER in ${INTERPRETERS}; do
     pyenv global "${PYVER}"
     pip install -U pip
     pip install -r build_requirements.txt
-    pip wheel . -v -w wheelhouse/ --no-deps
+    pip wheel . -v -w wheelhouse/ --no-deps --use-feature=in-tree-build
 done
 
 # Bundle external shared libraries into the wheels
