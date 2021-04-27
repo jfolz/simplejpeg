@@ -67,10 +67,20 @@ stages:
 
 .manylinux2014_aarch64: &manylinux2014_aarch64
   image: quay.io/pypa/manylinux2014_aarch64
+  tags:
+    - arm
 
 
 .manylinux2014_armv7l: &manylinux2014_armv7l
   image: quay.io/pypa/manylinux2014_armv7l
+  tags:
+    - arm
+
+
+.manylinux_2_24_aarch64: &manylinux_2_24_aarch64
+  image: quay.io/pypa/manylinux_2_24_aarch64
+  tags:
+    - arm
 
 
 .build: &build
@@ -131,6 +141,12 @@ devel-manylinux2010_i686:
 
 devel-manylinux2014_i686:
   <<: *manylinux2014_i686
+  <<: *build
+  extends: .devel
+
+
+devel-manylinux_2_24_aarch64:
+  <<: *manylinux_2_24_aarch64
   <<: *build
   extends: .devel
 
