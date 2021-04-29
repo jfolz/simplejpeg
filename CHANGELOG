@@ -7,8 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.6.0]
 ### Changed
-- Build against and requre numpy 1.20.
-- Drop Python 3.6 support since there are no 1.20 wheels for it
+- Build against and require numpy 1.20.
+- Drop Python 3.6 support since there are no numpy 1.20 wheels for it
 
 
 ## [1.5.0]
