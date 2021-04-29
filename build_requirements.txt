@@ -1,5 +1,4 @@
 wheel
-setuptools==50.0.3
-cython==0.29.21
-numpy==1.17.5; python_version < '3.9' and platform_machine!='aarch64' and platform_machine!='armv7l'
-numpy==1.19.5; python_version >= '3.9' or platform_machine=='aarch64' or platform_machine=='armv7l'
+setuptools>=50.0.3
+cython==0.29.23
+numpy==1.20.2
