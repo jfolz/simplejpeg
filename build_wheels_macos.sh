@@ -25,7 +25,7 @@ done
 cd test
 for PYVER in ${INTERPRETERS}; do
     pyenv global "${PYVER}"
-    pip install -r ../test_requirements.txt
+    pip install --only-binary ":all:" -r ../test_requirements.txt
     pip install simplejpeg --no-index -f ../dist
     python -m pytest -vv
 done
