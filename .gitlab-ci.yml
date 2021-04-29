@@ -3,6 +3,9 @@ stages:
   - import
   - publish
 
+variables:
+  PYVERS: cp37|cp38|cp39
+
 
 .artifacts:
   artifacts:
@@ -43,10 +46,14 @@ stages:
 
 .manylinux1_i686: &manylinux1_i686
   image: quay.io/pypa/manylinux1_i686
+  variables:
+    PYVERS: cp37|cp38
 
 
 .manylinux1_x86_64: &manylinux1_x86_64
   image: quay.io/pypa/manylinux1_x86_64
+  variables:
+    PYVERS: cp37|cp38
 
 
 .manylinux2010_x86_64: &manylinux2010_x86_64
@@ -80,7 +87,7 @@ stages:
 .source: &source
   stage: build
   script:
-  - /opt/python/cp39-cp39/bin/pip install -r build_requirements.txt
+  - /opt/python/cp39-cp39/bin/pip install --only-binary ":all:" -r build_requirements.txt
   - /opt/python/cp39-cp39/bin/python setup.py sdist --dist-dir=dist
 
 

@@ -2,10 +2,10 @@
 $ErrorActionPreference = "Continue";
 
 # the list of Python interpreters
-$interpreters = $env:INTERPRETERS -split ";"
+$pyvers = $env:PYVERS -split ";"
 
 # Compile wheels
-foreach ($python in $interpreters){
+foreach ($python in $pyvers){
     & $python\python.exe -m pip install -U pip --no-warn-script-location
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
     & $python\python.exe -m pip install --only-binary ":all:" -r build_requirements.txt --no-warn-script-location
@@ -16,7 +16,7 @@ foreach ($python in $interpreters){
 
 # Install and test
 cd test
-foreach ($python in $interpreters){
+foreach ($python in $pyvers){
     & $python\python.exe -m pip install --only-binary ":all:" -r ..\test_requirements.txt --no-warn-script-location
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
     & $python\python.exe -m pip install simplejpeg --no-index -f ..\dist

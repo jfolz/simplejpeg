@@ -6,7 +6,7 @@ brew install pyenv
 eval "$(pyenv init -)"
 
 # Compile wheels
-for PYVER in ${INTERPRETERS}; do
+for PYVER in ${PYVERS}; do
     pyenv install "${PYVER}"
     pyenv global "${PYVER}"
     pip install -U pip
@@ -23,7 +23,7 @@ done
 
 # Install and test
 cd test
-for PYVER in ${INTERPRETERS}; do
+for PYVER in ${PYVERS}; do
     pyenv global "${PYVER}"
     pip install --only-binary ":all:" -r ../test_requirements.txt
     pip install simplejpeg --no-index -f ../dist
