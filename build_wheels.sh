@@ -10,7 +10,7 @@ rm -rf /opt/python/cp35*
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
     "${PYBIN}/pip" install -U pip --no-warn-script-location
-    "${PYBIN}/pip" install -r build_requirements.txt
+    "${PYBIN}/pip" install --only-binary ":all:" -r build_requirements.txt
     "${PYBIN}/pip" wheel . -v -w wheelhouse/ --no-deps --use-feature=in-tree-build
 done
 

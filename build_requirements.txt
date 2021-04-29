@@ -1,4 +1,4 @@
 wheel
 setuptools>=50.0.3
 cython==0.29.23
-numpy==1.20.2
+numpy

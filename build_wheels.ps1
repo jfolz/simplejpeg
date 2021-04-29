@@ -8,7 +8,7 @@ $interpreters = $env:INTERPRETERS -split ";"
 foreach ($python in $interpreters){
     & $python\python.exe -m pip install -U pip --no-warn-script-location
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
-    & $python\python.exe -m pip install -r build_requirements.txt --no-warn-script-location
+    & $python\python.exe -m pip install --only-binary ":all:" -r build_requirements.txt --no-warn-script-location
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
     & $python\python.exe -m pip wheel . -v -w dist/ --no-deps --use-feature=in-tree-build
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
