@@ -12,7 +12,7 @@ foreach ($python in $pyvers){
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
     & $python\python.exe -m pip wheel . -v -w dist/ --no-deps --use-feature=in-tree-build
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
-    & $python\python.exe -m pip uninstall -y -r build_requirements.txt
+    & $python\python.exe -m pip uninstall -y numpy
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
 }
 
