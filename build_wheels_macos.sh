@@ -8,11 +8,11 @@ eval "$(pyenv init -)"
 # Compile wheels
 for PYVER in ${PYVERS}; do
     pyenv install "${PYVER}"
-    pyenv global "${PYVER}"
+    pyenv shell "${PYVER}"
     pip install -U pip
     pip install --only-binary ":all:" -r build_requirements.txt
     pip wheel . -v -w wheelhouse/ --no-deps --use-feature=in-tree-build
-    pip uninstall -y numpy
+    pip uninstall -y numpy oldest-supported-numpy
 done
 
 # Bundle external shared libraries into the wheels
