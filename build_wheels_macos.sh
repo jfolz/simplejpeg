@@ -12,6 +12,7 @@ for PYVER in ${PYVERS}; do
     pip install -U pip
     pip install --only-binary ":all:" -r build_requirements.txt
     pip wheel . -v -w wheelhouse/ --no-deps --use-feature=in-tree-build
+    pip uninstall -r build_requirements.txt
 done
 
 # Bundle external shared libraries into the wheels

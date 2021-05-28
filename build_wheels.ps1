@@ -12,6 +12,8 @@ foreach ($python in $pyvers){
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
     & $python\python.exe -m pip wheel . -v -w dist/ --no-deps --use-feature=in-tree-build
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
+    & $python\python.exe -m pip uninstall -r build_requirements.txt
+    if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
 }
 
 # Install and test
