@@ -6,7 +6,7 @@ shopt -s extglob
 for PYBIN in /opt/python/@(${PYVERS})*/bin; do
     "${PYBIN}/pip" install -U pip --no-warn-script-location
     "${PYBIN}/pip" install -q build
-    "${PYBIN}/python" -m build --wheel
+    "${PYBIN}/python" -m build --wheel --outdir wheelhouse
 done
 
 # Bundle external shared libraries into the wheels

@@ -11,7 +11,7 @@ for PYVER in ${PYVERS}; do
     pyenv global "${PYVER}"
     pip install -U pip
     pip install -q build
-    python -m build --wheel
+    python -m build --wheel --outdir wheelhouse
 done
 
 # Bundle external shared libraries into the wheels
