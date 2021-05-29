@@ -4,9 +4,7 @@ shopt -s extglob
 
 # Compile wheels
 for PYBIN in /opt/python/@(${PYVERS})*/bin; do
-    "${PYBIN}/pip" install -U pip --no-warn-script-location
-    "${PYBIN}/pip" install --only-binary ":all:" -r build_requirements.txt
-    "${PYBIN}/pip" wheel . -v -w wheelhouse/ --no-deps --use-feature=in-tree-build
+    "${PYBIN}/pip" wheel . -w wheelhouse/ --no-deps --use-feature=in-tree-build
     "${PYBIN}/pip" uninstall -y numpy oldest-supported-numpy
 done
 

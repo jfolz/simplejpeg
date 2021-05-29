@@ -9,9 +9,7 @@ eval "$(pyenv init --path)"
 for PYVER in ${PYVERS}; do
     pyenv install "${PYVER}"
     pyenv global "${PYVER}"
-    pip install -U pip
-    pip install --only-binary ":all:" -r build_requirements.txt
-    pip wheel . -v -w wheelhouse/ --no-deps --use-feature=in-tree-build
+    pip wheel . -w wheelhouse/ --no-deps --use-feature=in-tree-build
     pip uninstall -y numpy oldest-supported-numpy
 done
 
