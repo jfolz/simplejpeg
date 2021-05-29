@@ -35,7 +35,7 @@ def wheel_version_platforms(name):
 
 
 def check_wheels(package, dist_dir, python_versions, platforms, exclude):
-    exclude = set(ex.split('-') for ex in exclude)
+    exclude = set(tuple(ex.split('-')) for ex in exclude)
     wheels = set(it.chain.from_iterable(
         wheel_version_platforms(p)
         for p in dist_dir.glob(package + '*.whl')
