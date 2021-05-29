@@ -278,10 +278,6 @@ with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
     dependencies = [l.strip(' \n') for l in f]
 
 
-with open(pt.join(PACKAGE_DIR, 'build_requirements.txt')) as f:
-    build_dependencies = [l.strip(' \n') for l in f]
-
-
 with open(pt.join(PACKAGE_DIR, 'README.rst')) as f:
     description = f.read()
 
@@ -348,7 +344,6 @@ with ConcatFiles(*LICENSE_FILES):
         keywords='the fastest JPEG encoding decoding package in town',
         packages=packages,
         package_data=package_data,
-        setup_requires=build_dependencies,
         install_requires=dependencies,
         ext_modules=ext_modules,
         cmdclass={'build_ext': cmake_build_ext},

@@ -86,8 +86,7 @@ variables:
 .source: &source
   stage: build
   script:
-  - /opt/python/cp39-cp39/bin/pip install --only-binary ":all:" -r build_requirements.txt
-  - /opt/python/cp39-cp39/bin/python setup.py sdist --dist-dir=dist
+  - ./build_sdist.sh
 
 
 .publish:

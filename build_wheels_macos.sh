@@ -10,7 +10,8 @@ for PYVER in ${PYVERS}; do
     pyenv install "${PYVER}"
     pyenv global "${PYVER}"
     pip install -U pip
-    pip wheel . -w wheelhouse/ --no-deps --use-feature=in-tree-build
+    pip install -q build
+    python -m build --wheel
 done
 
 # Bundle external shared libraries into the wheels

@@ -8,7 +8,9 @@ $pyvers = $env:PYVERS -split ";"
 foreach ($python in $pyvers){
     & $python\python.exe -m pip install -U pip --no-warn-script-location
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
-    & $python\python.exe -m pip wheel . -w dist/ --no-deps --use-feature=in-tree-build
+    & $python\python.exe -m pip install -q build
+    if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
+    & $python\python.exe -m build --wheel
     if ($LASTEXITCODE -ne 0) { throw "build failed with exit code $LASTEXITCODE" }
 }
 
