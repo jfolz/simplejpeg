@@ -5,6 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.6.1]
+### Changed
+- Update the build system:
+    - Use PyPA build to... build
+    - Add pyproject.toml to specify build requirements
+    - Build against oldest-supported-numpy
+- Require any version of numpy installed
+- Add back Python 3.6 support
+
+
 ## [1.6.0]
 ### Changed
 - Build against and require numpy 1.20.
@@ -103,7 +113,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Initial public release.
 
 
-[Unreleased]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.6.0...master
+[Unreleased]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.6.1...master
+[1.6.1]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.6.0...1.6.1
 [1.6.0]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.5.0...1.6.0
 [1.5.0]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.4.1...1.5.0
 [1.4.1]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.4.0...1.4.1
