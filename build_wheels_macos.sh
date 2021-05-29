@@ -9,14 +9,14 @@ eval "$(pyenv init --path)"
 for PYVER in ${PYVERS}; do
     pyenv install "${PYVER}"
     pyenv global "${PYVER}"
-    pip install -U pip
-    pip install -q build
+    python -m pip install -U pip
+    python -m pip install -q build
     python -m build --wheel --outdir wheelhouse
 done
 
 # Bundle external shared libraries into the wheels
-pyenv global 3.8-dev
-pip install delocate
+pyenv global 3.9-dev
+python -m pip install delocate
 for whl in wheelhouse/*.whl; do
     delocate-wheel -w dist -v "${whl}"
 done
