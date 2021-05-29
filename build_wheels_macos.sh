@@ -18,7 +18,7 @@ done
 pyenv global 3.9-dev
 python -m pip install delocate
 for whl in wheelhouse/*.whl; do
-    delocate-wheel -w dist -v "${whl}"
+    python -m delocate.cmd.delocate_wheel -w dist -v "${whl}"
 done
 
 # Install and test
