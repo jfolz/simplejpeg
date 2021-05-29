@@ -81,7 +81,6 @@ variables:
 .build: &build
   stage: build
   script:
-  - ./install_cmake.sh
   - ./build_wheels.sh
 
 .source: &source
