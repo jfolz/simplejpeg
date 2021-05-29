@@ -5,3 +5,4 @@ recursive-include simplejpeg *.py *.pyi *.h *.c *.pyx
 recursive-include test *
 prune test/images/original
 include LICENSE *requirements.txt
+include pyproject.toml

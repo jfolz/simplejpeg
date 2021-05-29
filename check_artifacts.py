@@ -28,17 +28,21 @@ def find_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 
-def wheel_version_platform(name):
+def wheel_version_platforms(name):
     parts = name.stem.split('-')
-    return parts[2], parts[4]  # (python_version, platform)
+    for tag in parts[-1].split('.'):
+        yield parts[2], tag  # (python_version, platform)
 
 
-def check_wheels(package, dist_dir, python_versions, platforms):
-    wheels = {wheel_version_platform(p)
-              for p in dist_dir.glob(package + '*.whl')}
+def check_wheels(package, dist_dir, python_versions, platforms, exclude):
+    exclude = set(ex.split('-') for ex in exclude)
+    wheels = set(it.chain.from_iterable(
+        wheel_version_platforms(p)
+        for p in dist_dir.glob(package + '*.whl')
+    ))
     missing = []
     for combination in it.product(python_versions, platforms):
-        if combination not in wheels:
+        if combination not in exclude and combination not in wheels:
             missing.append(combination)
     found = ', '.join('%s %s' % w for w in sorted(wheels))
     print('Found wheels:', found, flush=True)
@@ -74,6 +78,12 @@ def main():
         nargs='+',
         help='Supported platforms.'
     )
+    parser.add_argument(
+        '-e', '--exclude',
+        nargs='+',
+        help='Platform-tag combinations to exclude from check, '
+             'e.g., cp39-manylinux1_x86_64'
+    )
 
     args = parser.parse_args()
     package = 'simplejpeg-' + find_version('simplejpeg', '__init__.py')
@@ -81,7 +91,8 @@ def main():
     print('Locating %s artifacts in %s' % (package, dist_dir))
     print('Python versions:', ', '.join(args.python_versions))
     print('Platforms:', ', '.join(args.platforms))
-    check_wheels(package, dist_dir, args.python_versions, args.platforms)
+    print('Exclude:', ', '.join(args.exclude))
+    check_wheels(package, dist_dir, args.python_versions, args.platforms, args.exclude)
     sys.stdout.flush()
     check_source(package, dist_dir)
 
