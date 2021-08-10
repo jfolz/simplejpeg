@@ -2,6 +2,9 @@
 set -e -x
 shopt -s extglob
 
+echo "Available Python versions:"
+ls -lh /opt/python/
+
 # Compile wheels
 for PYBIN in /opt/python/@(${PYVERS})*/bin; do
     "${PYBIN}/pip" install -U pip --no-warn-script-location
