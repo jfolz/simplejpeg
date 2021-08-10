@@ -5,6 +5,12 @@ shopt -s extglob
 echo "Available Python versions:"
 ls -lh /opt/python/
 
+echo "Selected Python versions:"
+echo ${PYVERS}
+
+echo "Matching Python versions:"
+echo /opt/python/@(${PYVERS})*/bin
+
 # Compile wheels
 for PYBIN in /opt/python/@(${PYVERS})*/bin; do
     "${PYBIN}/pip" install -U pip --no-warn-script-location
