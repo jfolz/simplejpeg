@@ -36,4 +36,5 @@ PYBIN=/opt/python/cp39-cp39/bin
               cp310-manylinux_2_24_i686 \
               cp310-manylinux2010_i686 \
               cp310-manylinux2010_x86_64 \
-              cp310-manylinux2014_i686
+              cp310-manylinux2014_i686 \
+              cp310-win32
