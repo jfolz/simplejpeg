@@ -56,16 +56,32 @@ variables:
     PYVERS: cp36|cp37|cp38|cp39
 
 
+.manylinux2010_i686: &manylinux2010_i686
+  image: quay.io/pypa/manylinux2010_i686
+  variables:
+    PYVERS: cp36|cp37|cp38|cp39
+
+
 .manylinux2010_x86_64: &manylinux2010_x86_64
   image: quay.io/pypa/manylinux2010_x86_64
+  variables:
+    PYVERS: cp36|cp37|cp38|cp39
 
 
 .manylinux2014_i686: &manylinux2014_i686
   image: quay.io/pypa/manylinux2014_i686
+  variables:
+    PYVERS: cp36|cp37|cp38|cp39
+
+
+.manylinux2014_x86_64: &manylinux2014_x86_64
+  image: quay.io/pypa/manylinux2014_x86_64
 
 
 .manylinux_2_24_i686: &manylinux_2_24_i686
   image: quay.io/pypa/manylinux_2_24_i686
+  variables:
+    PYVERS: cp36|cp37|cp38|cp39
 
 
 .manylinux_2_24_x86_64: &manylinux_2_24_x86_64
@@ -120,8 +136,20 @@ devel-manylinux2010_x86_64:
   extends: .devel
 
 
+devel-manylinux2010_i686:
+  <<: *manylinux2010_i686
+  <<: *build
+  extends: .devel
+
+
 devel-manylinux2014_i686:
   <<: *manylinux2014_i686
+  <<: *build
+  extends: .devel
+
+
+devel-manylinux2014_x86_64:
+  <<: *manylinux2014_x86_64
   <<: *build
   extends: .devel
 
@@ -162,6 +190,12 @@ release-manylinux1_x86_64:
   extends: .release
 
 
+release-manylinux2010_i686:
+  <<: *manylinux2010_i686
+  <<: *build
+  extends: .release
+
+
 release-manylinux2010_x86_64:
   <<: *manylinux2010_x86_64
   <<: *build
@@ -170,6 +204,12 @@ release-manylinux2010_x86_64:
 
 release-manylinux2014_i686:
   <<: *manylinux2014_i686
+  <<: *build
+  extends: .release
+
+
+release-manylinux2014_x86_64:
+  <<: *manylinux2014_x86_64
   <<: *build
   extends: .release
 
@@ -208,10 +248,12 @@ publish:
     "release-source",
     "release-manylinux1_i686",
     "release-manylinux1_x86_64",
+    "release-manylinux2010_i686",
     "release-manylinux2010_x86_64",
     "release-manylinux2014_i686",
+    "release-manylinux2014_x86_64",
+    "release-manylinux_2_24_aarch64",
     "release-manylinux_2_24_i686",
     "release-manylinux_2_24_x86_64",
-    "release-manylinux_2_24_aarch64",
     "import-appveyor"
   ]
