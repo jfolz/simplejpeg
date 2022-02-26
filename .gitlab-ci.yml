@@ -4,7 +4,7 @@ stages:
   - publish
 
 variables:
-  PYVERS: cp36|cp37|cp38|cp39
+  PYVERS: cp36|cp37|cp38|cp39|cp310
 
 
 .artifacts:

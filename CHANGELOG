@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.6.4]
 ### Changed
+- Add Python 3.10 support.
 - Update to libjpeg-turbo 2.1.3.
 
 
