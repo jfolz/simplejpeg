@@ -8,6 +8,7 @@ import tarfile
 import sysconfig
 import subprocess
 
+from cmake import CMAKE_BIN_DIR
 from setuptools import setup
 from setuptools import find_packages
 from setuptools import Extension
@@ -139,8 +140,9 @@ class cmake_build_ext(build_ext):
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
         env = dict(os.environ, **(env or {}))
+        cmake = os.path.join(CMAKE_BIN_DIR, 'cmake')
         subprocess.check_call([
-            'cmake',
+            cmake,
             '-G' + make_type(), '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
@@ -148,7 +150,7 @@ class cmake_build_ext(build_ext):
         ], stdout=sys.stdout, stderr=sys.stderr, env=env)
         if not self.dry_run:
             subprocess.check_call(
-                ['cmake', '--build', '.', '--config', config],
+                [cmake, '--build', '.', '--config', config],
                 stdout=sys.stdout, stderr=sys.stderr, env=env,
             )
         os.chdir(cur_dir)
