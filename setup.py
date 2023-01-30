@@ -21,7 +21,15 @@ except ImportError:
     def cythonize(*_, **__):
         pass
     HAVE_CYTHON = False
-import numpy as np
+
+
+class NumpyImport:
+    def __repr__(self):
+        import numpy as np
+
+        return np.get_include()
+
+    __fspath__ = __repr__
 
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
@@ -201,7 +209,7 @@ def _staticlib():
 
 def make_jpeg_module():
     include_dirs = [
-        np.get_include(),
+        NumpyImport(),
         pt.join(JPEG_DIR),
         pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
