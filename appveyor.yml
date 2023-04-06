@@ -19,37 +19,37 @@ environment:
 for:
   -
     matrix:
+      only:
+        - image: Visual Studio 2019
+          platform: x64
+    environment:
+      PYVERS: "C:\\Python37-x64;C:\\Python38-x64;C:\\Python39-x64;C:\\Python310-x64;C:\\Python311-x64"
+    build_script:
+      - ps: .\build_wheels.ps1
+    artifacts:
+      - path: dist\*.whl
+  -
+    matrix:
+      only:
+        - image: Visual Studio 2019
+          platform: x86
+    environment:
+      PYVERS: "C:\\Python37;C:\\Python38;C:\\Python39;C:\\Python310;C:\\Python311"
+    build_script:
+      - ps: .\build_wheels.ps1
+    artifacts:
+      - path: dist\*.whl
+  -
+    matrix:
       exclude:
         - image: macOS
           platform: x86
   -
     matrix:
       only:
-        - image: Visual Studio 2019
-          platform: x64
-    environment:
-      PYVERS: "C:\\Python36-x64;C:\\Python37-x64;C:\\Python38-x64;C:\\Python39-x64;C:\\Python310-x64"
-    build_script:
-      - ps: .\build_wheels.ps1
-    artifacts:
-      - path: dist\*.whl
-  -
-    matrix:
-      only:
-        - image: Visual Studio 2019
-          platform: x86
-    environment:
-      PYVERS: "C:\\Python36;C:\\Python37;C:\\Python38;C:\\Python39"
-    build_script:
-      - ps: .\build_wheels.ps1
-    artifacts:
-      - path: dist\*.whl
-  -
-    matrix:
-      only:
         - image: macOS
     environment:
-      PYVERS: "3.6-dev 3.7-dev 3.8-dev 3.9-dev 3.10-dev"
+      PYVERS: "3.7-dev 3.8-dev 3.9-dev 3.10-dev 3.11-dev"
     build_script:
       - ps: ./build_wheels_macos.sh
     artifacts:
