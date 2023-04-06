@@ -46,22 +46,33 @@ variables:
 
 .manylinux1_i686: &manylinux1_i686
   image: quay.io/pypa/manylinux1_i686
+  variables:
+    PYVERS: cp37|cp38|cp39
+
 
 
 .manylinux1_x86_64: &manylinux1_x86_64
   image: quay.io/pypa/manylinux1_x86_64
+  variables:
+    PYVERS: cp37|cp38|cp39
 
 
 .manylinux2010_i686: &manylinux2010_i686
   image: quay.io/pypa/manylinux2010_i686
+  variables:
+    PYVERS: cp37|cp38|cp39
 
 
 .manylinux2010_x86_64: &manylinux2010_x86_64
   image: quay.io/pypa/manylinux2010_x86_64
+  variables:
+    PYVERS: cp37|cp38|cp39
 
 
 .manylinux2014_i686: &manylinux2014_i686
   image: quay.io/pypa/manylinux2014_i686
+  variables:
+    PYVERS: cp37|cp38|cp39
 
 
 .manylinux2014_x86_64: &manylinux2014_x86_64
@@ -70,6 +81,8 @@ variables:
 
 .manylinux_2_24_i686: &manylinux_2_24_i686
   image: quay.io/pypa/manylinux_2_24_i686
+  variables:
+    PYVERS: cp37|cp38|cp39
 
 
 .manylinux_2_24_x86_64: &manylinux_2_24_x86_64

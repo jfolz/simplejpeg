@@ -28,6 +28,12 @@ PYBIN=/opt/python/cp39-cp39/bin
               cp310-manylinux1_x86_64 \
               cp310-manylinux_2_5_i686 \
               cp310-manylinux_2_5_x86_64 \
+              cp310-manylinux2010_i686 \
+              cp310-manylinux2010_x86_64 \
+              cp310-manylinux_2_12_i686 \
+              cp310-manylinux_2_12_x86_64 \
+              cp310-manylinux2014_i686 \
+              cp310-manylinux_2_24_i686 \
               cp311-manylinux1_i686 \
               cp311-manylinux1_x86_64 \
               cp311-manylinux_2_5_i686 \
@@ -35,4 +41,6 @@ PYBIN=/opt/python/cp39-cp39/bin
               cp311-manylinux2010_i686 \
               cp311-manylinux2010_x86_64 \
               cp311-manylinux_2_12_i686 \
-              cp311-manylinux_2_12_x86_64
+              cp311-manylinux_2_12_x86_64 \
+              cp311-manylinux2014_i686 \
+              cp311-manylinux_2_24_i686
