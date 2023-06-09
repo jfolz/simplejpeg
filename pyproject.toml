@@ -5,6 +5,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
 environment = "PIP_ONLY_BINARY=:all:"
-skip = "{cp36-*,*-win32,*_i686,pp*_aarch64,*musllinux*}"
+skip = "{cp36-*,*-win32,*_i686,pp*,*musllinux*}"
 test-requires = "pytest>=5.3.2 numpy Pillow>=7.0.0"
 test-command = "pytest {project}/test -vv"
