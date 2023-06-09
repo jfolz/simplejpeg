@@ -112,7 +112,7 @@ class cmake_build_ext(build_ext):
     def run(self):
         flags = []
         if PLATFORM == 'darwin':
-            flags.append('-DCMAKE_OSX_ARCHITECTURES=' + platform.machine())
+            flags.append('-DCMAKE_OSX_ARCHITECTURES=' + os.getenv('CIBW_ARCHS_MACOS', 'x86_64'))
         if PLATFORM == 'windows':
             # print errors to stdout, since powershell interprets a single
             # character printed to stderr as a failure
