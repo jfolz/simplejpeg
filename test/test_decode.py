@@ -130,7 +130,8 @@ def test_decode_colorspace():
 
 
 def test_decode_writable():
-    with pytest.raises(BufferError) as exc:
+    # unfortunately PyPy raises ValueError
+    with pytest.raises((BufferError, ValueError)) as exc:
         b = b'x' * (1024*1024*3)
         for f, data, im in yield_reference_images():
             simplejpeg.decode_jpeg(data, buffer=b)
