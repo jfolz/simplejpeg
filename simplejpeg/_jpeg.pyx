@@ -37,6 +37,9 @@ cdef extern from "turbojpeg.h" nogil:
     # TJ encoding/decoding flags
     cdef int TJFLAG_NOREALLOC, TJFLAG_FASTDCT, TJFLAG_FASTUPSAMPLE
 
+    # TJ error enum
+    cdef int TJERR_WARNING, TJERR_FATAL
+
     cdef tjhandle tjInitDecompress()
 
     cdef tjhandle tjInitCompress()
@@ -44,6 +47,8 @@ cdef extern from "turbojpeg.h" nogil:
     cdef void tjFree (unsigned char * buffer)
 
     cdef int tjDestroy(tjhandle handle)
+
+    cdef int tjGetErrorCode(tjhandle handle)
 
     cdef char* tjGetErrorStr2(tjhandle handle)
 
@@ -191,21 +196,27 @@ def decode_jpeg_header(
         int min_height=0,
         int min_width=0,
         float min_factor=1,
+        bint strict=True,
 ):
     """
     Decode the header of a JPEG image.
     Returns height and width in pixels
     and colorspace and subsampling as string.
 
-    :param data: JPEG data
-    :param min_height: height should be >= this minimum
-                       height in pixels; values <= 0 are ignored
-    :param min_width: width should be >= this minimum
-                      width in pixels; values <= 0 are ignored
-    :param min_factor: minimum scaling factor when decoding to smaller
-                       size; factors smaller than 2 may take longer to
-                       decode; default 1
-    :return: height, width, colorspace, color subsampling
+    Parameters:
+        data: JPEG data
+        min_height: height should be >= this minimum
+                    height in pixels; values <= 0 are ignored
+        min_width: width should be >= this minimum
+                   width in pixels; values <= 0 are ignored
+        min_factor: minimum scaling factor when decoding to smaller
+                    ize; factors smaller than 2 may take longer to
+                    decode; default 1
+        strict: if True, raise ValueError for recoverable errors;
+                default True
+
+    Returns:
+        height, width, colorspace, color subsampling
     """
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
@@ -228,7 +239,7 @@ def decode_jpeg_header(
             &jpegSubsamp,
             &jpegColorspace
         )
-        if retcode != 0:
+        if retcode != 0 and (strict or tjGetErrorCode(decoder) == TJERR_FATAL):
             with gil:
                 msg = __tj_error(decoder)
                 tjDestroy(decoder)
@@ -255,33 +266,40 @@ def decode_jpeg(
         int min_width=0,
         float min_factor=1,
         buffer=None,
+        bint strict=True,
 ):
     """
     Decode a JPEG (JFIF) string.
     Returns a numpy array.
 
-    :param data: JPEG data
-    :param colorspace: target colorspace, any of the following:
-                       'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
-                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB';
-                       'CMYK' may be used for images already in CMYK space.
-    :param fastdct: If True, use fastest DCT method;
-                    speeds up decoding by 4-5% for a minor loss in quality
-    :param fastupsample: If True, use fastest color upsampling method;
-                         speeds up decoding by 4-5% for a minor loss
-                         in quality
-    :param min_height: height should be >= this minimum in pixels;
-                       values <= 0 are ignored
-    :param min_width: width should be >= this minimum in pixels;
-                      values <= 0 are ignored
-    :param min_factor: minimum scaling factor (original size / decoded size);
-                       factors smaller than 2 may take longer to decode;
-                       default 1
-    :param buffer: use given object as output buffer;
-                   must support the buffer protocol and be writable, e.g.,
-                   numpy ndarray or bytearray;
-                   use decode_jpeg_header to find out required minimum size
-    :return: image as numpy array
+    Parameters:
+        data: JPEG data
+        colorspace: target colorspace, any of the following:
+                   'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
+                   'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB';
+                   'CMYK' may be used for images already in CMYK space.
+        fastdct: If True, use fastest DCT method;
+                 speeds up decoding by 4-5% for a minor loss in quality
+        fastupsample: If True, use fastest color upsampling method;
+                      speeds up decoding by 4-5% for a minor loss
+                      in quality
+        min_height: height should be >= this minimum in pixels;
+                    values <= 0 are ignored
+        min_width: width should be >= this minimum in pixels;
+                   values <= 0 are ignored
+        min_factor: minimum scaling factor (original size / decoded size);
+                    factors smaller than 2 may take longer to decode;
+                    default 1
+        buffer: use given object as output buffer;
+                must support the buffer protocol and be writable, e.g.,
+                numpy ndarray or bytearray;
+                use decode_jpeg_header to find out required minimum size
+                if image dimensions are unknown
+        strict: if True, raise ValueError for recoverable errors;
+                default True
+
+    Returns:
+        image as numpy array
     """
     cdef unsigned char test = 5
     cdef const unsigned char* data_p = &data[0]
@@ -382,7 +400,7 @@ def decode_jpeg(
             tmp_colorspace,
             flags
         )
-        if retcode != 0:
+        if retcode != 0 and (strict or tjGetErrorCode(decoder) == TJERR_FATAL):
             with gil:
                 msg = __tj_error(decoder)
                 tjDestroy(decoder)
@@ -417,16 +435,19 @@ def encode_jpeg(
     Encode an image to JPEG (JFIF) string.
     Returns JPEG (JFIF) data.
 
-    :param image: uncompressed image as uint8 array
-    :param quality: JPEG quantization factor
-    :param colorspace: source colorspace; one of
-                       'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
-                       'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.
-    :param colorsubsampling: subsampling factor for color channels; one of
-                             '444', '422', '420', '440', '411', 'Gray'.
-    :param fastdct: If True, use fastest DCT method;
-                    speeds up encoding by 4-5% for a minor loss in quality
-    :return: encoded image as JPEG (JFIF) data
+    Parameters:
+        image: uncompressed image as uint8 array
+        quality: JPEG quantization factor
+        colorspace: source colorspace; one of
+                   'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
+                   'GRAY', 'RGBA', 'BGRA', 'ABGR', 'ARGB', 'CMYK'.
+        colorsubsampling: subsampling factor for color channels; one of
+                          '444', '422', '420', '440', '411', 'Gray'.
+        fastdct: If True, use fastest DCT method;
+                 speeds up encoding by 4-5% for a minor loss in quality
+
+    Returns:
+        encoded image as JPEG (JFIF) data
     """
     if not image.is_c_contig():
         raise ValueError('image must be C contiguous')

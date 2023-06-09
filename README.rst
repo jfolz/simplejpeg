@@ -108,6 +108,9 @@ and colorspace and subsampling as string.
 - min_factor:
   minimum downsampling factor when decoding to smaller size;
   factors smaller than 2 may take longer to decode
+- strict:
+  if True, raise ValueError for recoverable errors;
+  default True
 - returns: ``(height: int, width: int, colorspace: str, color subsampling: str)``
 
 
@@ -161,6 +164,9 @@ Returns the image as numpy array in the requested colorspace.
   must support the buffer protocol and be writable, e.g.,
   numpy ndarray or bytearray;
   use decode_jpeg_header to find out required minimum size
+- strict:
+  if True, raise ValueError for recoverable errors;
+  default True
 - returns: image as ``numpy.ndarray``
 
 
