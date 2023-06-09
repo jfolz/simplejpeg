@@ -1,6 +1,24 @@
 [project]
 name = "simplejpeg"
+description = "A simple package for fast JPEG encoding and decoding."
+readme = "README.rst"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+]
 requires-python = ">=3.7"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Joachim Folz", email = "joachim.folz@dfki.de"},
+]
+keywords= ["the", "fastest", "JPEG", "encoding", "decoding", "package", "in", "town"]
+dynamic = ["dependencies", "version"]
+
+[project.urls]
+Documentation = "https://gitlab.com/jfolz/simplejpeg/blob/master/README.rst"
+Source = "https://gitlab.com/jfolz/simplejpeg"
+Tracker = "https://gitlab.com/jfolz/simplejpeg/issues"
 
 [build-system]
 requires = ["setuptools>=50.0.3", "wheel", "cmake>=3.6.3,<=3.22.5", "cython==0.29.35", "oldest-supported-numpy"]
@@ -9,5 +27,6 @@ build-backend = "setuptools.build_meta"
 [tool.cibuildwheel]
 environment = "PIP_ONLY_BINARY=:all:"
 skip = "{*-win32,*_i686,pp*,*musllinux*}"
+build-verbosity = 1
 test-requires = "pytest>=5.3.2 numpy Pillow>=7.0.0"
 test-command = "pytest {project}/test -vv"

@@ -290,10 +290,6 @@ with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
     dependencies = [l.strip(' \n') for l in f]
 
 
-with open(pt.join(PACKAGE_DIR, 'README.rst')) as f:
-    description = f.read()
-
-
 class ConcatFiles:
     """
     Context manager that appends an arbitrary number of files to the end
@@ -338,31 +334,10 @@ with ConcatFiles(*LICENSE_FILES):
     setup(
         name='simplejpeg',
         version=find_version('simplejpeg', '__init__.py'),
-        author='Joachim Folz',
-        author_email='joachim.folz@dfki.de',
-        license='MIT',
-        classifiers=[
-            'Development Status :: 5 - Production/Stable',
-            'Intended Audience :: Science/Research',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7',
-            'Programming Language :: Python :: 3.8',
-            'Programming Language :: Python :: 3.9',
-            'License :: OSI Approved :: MIT License',
-        ],
-        description='A simple package for fast JPEG encoding and decoding.',
-        long_description=description,
-        long_description_content_type='text/x-rst; charset=UTF-8',
-        keywords='the fastest JPEG encoding decoding package in town',
         packages=packages,
         package_data=package_data,
         install_requires=dependencies,
         ext_modules=ext_modules,
         cmdclass={'build_ext': cmake_build_ext},
         zip_safe=False,
-        project_urls={
-            'Documentation': 'https://gitlab.com/jfolz/simplejpeg/blob/master/README.rst',
-            'Source': 'https://gitlab.com/jfolz/simplejpeg',
-            'Tracker': 'https://gitlab.com/jfolz/simplejpeg/issues',
-        },
     )
