@@ -1,7 +1,9 @@
 *.o
 *.so
 *.pyc
+*.egg-info
 __pycache__
 build
+dist
 lib
 wheelhouse
