@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, windows-2019, macos-11]
+        os: [ubuntu-22.04, windows-2019]
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
@@ -20,7 +20,22 @@ jobs:
         uses: pypa/cibuildwheel@v2.13.0
         env:
           CIBW_ARCHS_LINUX: x86_64 aarch64
-          CIBW_ARCHS_MACOS: x86_64 arm64
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./wheelhouse/*.whl
+  build_wheels_macos:
+    name: Build wheels on ${{ matrix.os }} ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
+        os: [macos-11]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v2.13.0
+        env:
+          CIBW_ARCHS_MACOS: ${{ matrix.arch }}
       - uses: actions/upload-artifact@v3
         with:
           path: ./wheelhouse/*.whl
@@ -35,7 +50,7 @@ jobs:
       with:
         path: dist/*.tar.gz
   upload_all:
-    needs: [build_wheels, make_sdist]
+    needs: [build_wheels, build_wheels_macos, make_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
     steps:
