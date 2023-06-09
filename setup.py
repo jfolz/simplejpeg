@@ -34,6 +34,7 @@ class NumpyImport:
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
+BUILD_DIR = 'build_' + platform.machine()
 IS64BIT = sys.maxsize > 2**32
 ARCH = 'x64' if IS64BIT else 'x86'
 YASM_VERSION = '1.3.0'
@@ -126,7 +127,7 @@ class cmake_build_ext(build_ext):
             cflags = '-ffunction-sections -fdata-sections '
         env = {
             # add YASM to the path
-            'PATH': pt.join(YASM_DIR, 'build') + os.pathsep + os.getenv('PATH', ''),
+            'PATH': pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', ''),
             # custom CFLAGS - depends on platform
             'CFLAGS': cflags + os.getenv('CFLAGS', ''),
         }
@@ -142,7 +143,8 @@ class cmake_build_ext(build_ext):
 
     def build_cmake_dependency(self, path, options, env=None):
         cur_dir = pt.abspath(os.curdir)
-        build_dir = pt.join(path, 'build')
+        # TODO make build dir depend on arch
+        build_dir = pt.join(path, BUILD_DIR)
         if not pt.exists(build_dir):
             os.makedirs(build_dir)
         os.chdir(build_dir)
@@ -195,7 +197,7 @@ def normalize_windows_paths(*file_paths):
 
 
 def _libdir():
-    return pt.join(JPEG_DIR, 'build')
+    return pt.join(JPEG_DIR, BUILD_DIR)
 
 
 def _staticlib():
