@@ -34,7 +34,8 @@ class NumpyImport:
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
-BUILD_DIR = 'build_' + platform.machine()
+MACHINE = os.getenv('CIBW_ARCHS_MACOS', platform.machine())
+BUILD_DIR = 'build_' + MACHINE
 IS64BIT = sys.maxsize > 2**32
 ARCH = 'x64' if IS64BIT else 'x86'
 YASM_VERSION = '1.3.0'
@@ -112,7 +113,7 @@ class cmake_build_ext(build_ext):
     def run(self):
         flags = []
         if PLATFORM == 'darwin':
-            flags.append('-DCMAKE_OSX_ARCHITECTURES=' + os.getenv('CIBW_ARCHS_MACOS', 'x86_64'))
+            flags.append('-DCMAKE_OSX_ARCHITECTURES=' + MACHINE)
         if PLATFORM == 'windows':
             # print errors to stdout, since powershell interprets a single
             # character printed to stderr as a failure
