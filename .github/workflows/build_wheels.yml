@@ -13,6 +13,8 @@ jobs:
         include:
           - os: macos-11
             arch: arm64
+          - os: windows-2019
+            arch: win32
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
