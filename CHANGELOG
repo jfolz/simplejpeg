@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add "strict" argument to decode_jpeg/decode_jpeg_header.
 ### Changed
-- Drop i686 and win32 support.
+- Drop i686 support.
+- Drop manylinux1 support.
 
 
 ## [1.6.6]
