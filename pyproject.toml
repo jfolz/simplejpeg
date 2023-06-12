@@ -27,8 +27,6 @@ build-backend = "setuptools.build_meta"
 [tool.cibuildwheel]
 environment = "PIP_ONLY_BINARY=:all:"
 skip = "{*_i686,pp*,*musllinux*}"
-archs-linux = "x86_64 aarch64"
-archs-windows = "AMD64 x86"
 build-verbosity = 1
 test-requires = "pytest>=5.3.2 numpy Pillow>=7.0.0"
 test-command = "pytest {project}/test -vv"

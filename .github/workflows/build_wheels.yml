@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-2019, macos-11]
+        os: [ubuntu-latest, macos-11, windows-2019]
         arch: [x86_64]
         include:
           - os: macos-11
@@ -23,6 +23,7 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.13.1
         env:
+          CIBW_ARCHS_LINUX: x86_64 aarch64
           CIBW_ARCHS_MACOS: ${{ matrix.arch }}
       - uses: actions/upload-artifact@v3
         with:
