@@ -86,6 +86,7 @@ decode_jpeg_header
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
+        strict: bool=True,
     ) -> (SupportsInt, SupportsInt, Text, Text)
 
 
@@ -129,6 +130,7 @@ decode_jpeg
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
         buffer: SupportsBuffer=None,
+        strict: bool=True,
     ) -> np.ndarray
 
 Decode a JPEG image given as JPEG (JFIF) data from memory.
