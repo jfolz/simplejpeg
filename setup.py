@@ -34,10 +34,18 @@ class NumpyImport:
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
-MACHINE = os.getenv('CIBW_ARCHS_MACOS', platform.machine())
-BUILD_DIR = 'build_' + MACHINE
+# build output dir is machine-specific
+BUILD_DIR = 'build_' + platform.machine()
 IS64BIT = sys.maxsize > 2**32
 ARCH = 'x64' if IS64BIT else 'x86'
+if PLATFORM == 'darwin':
+    # From pybind cmake example:
+    # https://github.com/pybind/cmake_example/blob/0e3d4496b4eb1ca904c2f2f5278c5f375f035097/setup.py#L100
+    # Cross-compile support for macOS - respect ARCHFLAGS if set
+    ARCHFLAGS = re.findall(r"-arch (\S+)", os.environ.get("ARCHFLAGS", ""))
+    # if archflags is given we build in specific subdir
+    if ARCHFLAGS:
+        BUILD_DIR = 'build_' + '_'.join(ARCHFLAGS)
 YASM_VERSION = '1.3.0'
 YASM_SOURCE = 'yasm-%s.tar.gz' % YASM_VERSION
 YASM_URL = 'https://github.com/yasm/yasm/releases/download/v%s/' % YASM_VERSION + YASM_SOURCE
@@ -113,7 +121,8 @@ class cmake_build_ext(build_ext):
     def run(self):
         flags = []
         if PLATFORM == 'darwin':
-            flags.append('-DCMAKE_OSX_ARCHITECTURES=' + MACHINE)
+            if ARCHFLAGS:
+                flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
         if PLATFORM == 'windows':
             # print errors to stdout, since powershell interprets a single
             # character printed to stderr as a failure
