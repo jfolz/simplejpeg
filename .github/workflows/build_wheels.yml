@@ -43,7 +43,7 @@ jobs:
   upload_all:
     needs: [build_wheels, make_sdist]
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'published'
+    if: github.ref_type == 'tag'
     steps:
     - uses: actions/download-artifact@v3
       with:
@@ -53,3 +53,14 @@ jobs:
       with:
         user: __token__
         password: ${{ secrets.pypi_password }}
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: ${{ github.ref_name }}
+        tag_name: ${{ github.ref }}
+        body_path: CHANGELOG.md
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
