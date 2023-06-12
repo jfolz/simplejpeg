@@ -35,7 +35,7 @@ class NumpyImport:
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
 # build output dir is machine-specific
-BUILD_DIR = 'build_' + platform.machine()
+BUILD_DIR = 'build_' + '_'.join(platform.architecture())
 IS64BIT = sys.maxsize > 2**32
 ARCH = 'x64' if IS64BIT else 'x86'
 if PLATFORM == 'darwin':
