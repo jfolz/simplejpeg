@@ -12,7 +12,7 @@ license = {file = "LICENSE"}
 authors = [
   {name = "Joachim Folz", email = "joachim.folz@dfki.de"},
 ]
-keywords= ["the", "fastest", "JPEG", "encoding", "decoding", "package", "in", "town"]
+keywords = ["the", "fastest", "JPEG", "encoding", "decoding", "package", "in", "town"]
 dynamic = ["dependencies", "version"]
 
 [project.urls]
