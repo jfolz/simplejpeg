@@ -49,7 +49,7 @@ if PLATFORM == 'darwin':
 YASM_VERSION = '1.3.0'
 YASM_SOURCE = 'yasm-%s.tar.gz' % YASM_VERSION
 YASM_URL = 'https://github.com/yasm/yasm/releases/download/v%s/' % YASM_VERSION + YASM_SOURCE
-JPEG_VERSION = '2.1.5.1'
+JPEG_VERSION = '3.0.0'
 JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
 JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
 
@@ -178,36 +178,6 @@ class cmake_build_ext(build_ext):
         os.chdir(cur_dir)
 
 
-def remove_c_comments(*file_paths):
-    """
-    https://stackoverflow.com/a/241506/6862913
-    """
-    def replacer(match):
-        s = match.group(0)
-        return ' ' if s.startswith('/') else s
-    pattern = re.compile(
-        r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
-        re.DOTALL | re.MULTILINE
-    )
-    for fp in file_paths:
-        with open(fp) as f:
-            text = f.read()
-        new_text = re.sub(pattern, replacer, text)
-        if new_text != text:
-            with open(fp, 'w') as f:
-                f.write(new_text)
-
-
-def normalize_windows_paths(*file_paths):
-    for fp in file_paths:
-        with open(fp) as f:
-            text = f.read()
-        new_text = text.replace(r'\\', '/')
-        if new_text != text:
-            with open(fp, 'w') as f:
-                f.write(new_text)
-
-
 def _libdir():
     return pt.join(JPEG_DIR, BUILD_DIR)
 
@@ -232,8 +202,6 @@ def make_jpeg_module():
     for cython_file in cython_files:
         if pt.exists(cython_file):
             cythonize(cython_file)
-    remove_c_comments(pt.join('simplejpeg', '_jpeg.c'))
-    normalize_windows_paths(pt.join('simplejpeg', '_jpeg.c'))
     sources = [
         pt.join('simplejpeg', '_jpeg.c'),
         pt.join('simplejpeg', '_color.c')
@@ -257,6 +225,7 @@ def make_jpeg_module():
         extra_objects=static_libs,
         extra_link_args=extra_link_args,
         extra_compile_args=extra_compile_args,
+        define_macros=[('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')],
     )
 
 
