@@ -249,11 +249,9 @@ def find_version(*file_paths):
     raise RuntimeError('Unable to find version string.')
 
 
-def find_package_data(packages):
+def find_package_data(packages, patterns):
     package_data = {
-        package: [
-            '*.pyi'
-        ]
+        package: patterns
         for package in packages
     }
     return package_data
@@ -264,7 +262,8 @@ packages = find_packages(
 )
 
 
-package_data = find_package_data(packages)
+include_package_data = find_package_data(packages, ('*.pyi',))
+exclude_package_data = find_package_data(packages, ('*.h', '*.c', '*.pyx'))
 
 
 with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
@@ -316,7 +315,8 @@ with ConcatFiles(*LICENSE_FILES):
         name='simplejpeg',
         version=find_version('simplejpeg', '__init__.py'),
         packages=packages,
-        package_data=package_data,
+        package_data=include_package_data,
+        exclude_package_data=exclude_package_data,
         install_requires=dependencies,
         ext_modules=ext_modules,
         cmdclass={'build_ext': cmake_build_ext},
