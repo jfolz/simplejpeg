@@ -44,18 +44,18 @@ jobs:
     needs: [build_wheels, make_sdist]
     permissions:
       contents: write
+      id-token: write
     runs-on: ubuntu-latest
     if: github.ref_type == 'tag'
+    environment: release
     steps:
     - uses: actions/download-artifact@v3
       with:
         name: artifact
         path: dist
-    - uses: pypa/gh-action-pypi-publish@v1.8.8
-      with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
-    - name: release
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@v1.8.8
+    - name: Create Github Release
       uses: actions/create-release@v1
       id: create_release
       with:
