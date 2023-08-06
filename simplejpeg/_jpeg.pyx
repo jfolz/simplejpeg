@@ -301,7 +301,6 @@ def decode_jpeg(
     Returns:
         image as numpy array
     """
-    cdef unsigned char test = 5
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
     cdef int retcode
@@ -340,7 +339,6 @@ def decode_jpeg(
         is_cmyk = 1
 
     # some variables that may be needed
-    cdef np.npy_intp tmplen = height * width * tjPixelSize[tmp_colorspace]
     cdef np.npy_intp outlen = height * width * tjPixelSize[output_colorspace]
     cdef np.ndarray[np.uint8_t, ndim = 3] tmp
     cdef np.ndarray[np.uint8_t, ndim = 3] out
