@@ -21,7 +21,7 @@ Source = "https://gitlab.com/jfolz/simplejpeg"
 Tracker = "https://gitlab.com/jfolz/simplejpeg/issues"
 
 [build-system]
-requires = ["setuptools>=50.0.3", "wheel", "cmake>=3.6.3", "cython==3.0.0", "oldest-supported-numpy"]
+requires = ["setuptools>=50.0.3", "wheel", "cmake>=3.6.3", "cython~=3.0.0", "oldest-supported-numpy"]
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
