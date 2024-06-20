@@ -34,6 +34,7 @@ class NumpyImport:
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 PLATFORM = platform.system().lower()
+NPY_API_VERSION = 'NPY_1_19_API_VERSION'
 # build output dir is machine-specific
 BUILD_DIR = 'build_' + '_'.join(platform.architecture())
 IS64BIT = sys.maxsize > 2**32
@@ -208,6 +209,10 @@ def make_jpeg_module():
     ]
     extra_link_args = []
     extra_compile_args = []
+    macros = [
+        ('NPY_NO_DEPRECATED_API', NPY_API_VERSION),
+        ('NPY_TARGET_VERSION', NPY_API_VERSION),
+    ]
     if PLATFORM == 'linux':
         extra_link_args.extend([
             '-Wl,'  # following are linker options
@@ -225,7 +230,7 @@ def make_jpeg_module():
         extra_objects=static_libs,
         extra_link_args=extra_link_args,
         extra_compile_args=extra_compile_args,
-        define_macros=[('NPY_NO_DEPRECATED_API', 'NPY_1_7_API_VERSION')],
+        define_macros=macros,
     )
 
 

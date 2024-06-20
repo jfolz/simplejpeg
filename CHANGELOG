@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [1.7.4] - 2024-06-20
+### Changed
+- Depend on numpy>=1.19.0.
+- Build against numpy>=2.0.0.
+- Drop Python 3.7 and 3.8 support.
+
+
 ## [1.7.3] - 2024-06-20
 ### Changed
 - Update to libjpeg-turbo 3.0.3.
@@ -170,7 +177,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Initial public release.
 
 
-[Unreleased]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.7.3...master
+[Unreleased]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.7.4...master
+[1.7.4]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.7.3...1.7.4
 [1.7.3]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.7.2...1.7.3
 [1.7.2]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.7.1...1.7.2
 [1.7.1]: https://gitlab.com/jfolz/simplejpeg/-/compare/1.7.0...1.7.1
