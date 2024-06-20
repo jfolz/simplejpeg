@@ -27,6 +27,7 @@ jobs:
           CIBW_ARCHS_MACOS: ${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
         with:
+          name: wheels-${{ matrix.runs-on }}
           path: ./wheelhouse/*.whl
           if-no-files-found: error
   make_sdist:
@@ -38,6 +39,7 @@ jobs:
       run: pipx run build --sdist
     - uses: actions/upload-artifact@v4
       with:
+        name: sdist
         path: dist/*.tar.gz
         if-no-files-found: error
   upload_all:
