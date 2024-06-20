@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update to libjpeg-turbo 3.0.3.
 - Depend on numpy<2.
+### Fixed
+- Declare calc_height_width noexcept (fixed Cython warnings)
 
 
 ## [1.7.2] - 2023-09-08

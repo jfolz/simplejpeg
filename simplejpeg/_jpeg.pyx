@@ -165,7 +165,7 @@ cdef void calc_height_width(
         int min_height,
         int min_width,
         float min_factor,
-) nogil:
+) noexcept nogil:
     # find the minimum scaling factor that satisfies
     # both min_width and min_height (if given).
     cdef int numscalingfactors
