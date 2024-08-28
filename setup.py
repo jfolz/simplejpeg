@@ -88,7 +88,7 @@ def make_type():
 
 
 class cmake_build_ext(build_ext):
-    def run(self):
+    def build_extensions(self):
         flags = []
         if PLATFORM == 'darwin':
             if ARCHFLAGS:
@@ -113,7 +113,7 @@ class cmake_build_ext(build_ext):
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
         ])
         # build extensions
-        super().run()
+        super().build_extensions()
 
     def build_cmake_dependency(self, path, options):
         cur_dir = pt.abspath(os.curdir)
