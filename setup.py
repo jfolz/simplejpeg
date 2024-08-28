@@ -89,6 +89,11 @@ def make_type():
 
 class cmake_build_ext(build_ext):
     def build_extensions(self):
+        # force initialize the compiler
+        try:
+            self.compiler.initialize()
+        except AttributeError:
+            print("setuptools compiler does not need initialization")
         flags = []
         if PLATFORM == 'darwin':
             if ARCHFLAGS:
