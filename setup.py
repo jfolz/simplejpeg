@@ -101,23 +101,21 @@ class cmake_build_ext(build_ext):
             # make GCC put functions and data in separate sections
             # the linker can then remove unused sections to reduce the size of the binary
             cflags = '-ffunction-sections -fdata-sections '
-        env = {
-            # add YASM to the path
-            'PATH': pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', ''),
-            # custom CFLAGS - depends on platform
-            'CFLAGS': cflags + os.getenv('CFLAGS', ''),
-        }
+        # add YASM to the path
+        os.environ['PATH'] = pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', '')
+        # custom CFLAGS - depends on platform
+        os.environ['CFLAGS'] = cflags + os.getenv('CFLAGS', '')
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
             '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
-        ], env=env)
+        ])
         # build extensions
         super().run()
 
-    def build_cmake_dependency(self, path, options, env=None):
+    def build_cmake_dependency(self, path, options):
         cur_dir = pt.abspath(os.curdir)
         # TODO make build dir depend on arch
         build_dir = pt.join(path, BUILD_DIR)
@@ -125,20 +123,16 @@ class cmake_build_ext(build_ext):
             os.makedirs(build_dir)
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
-        env = dict(os.environ, **(env or {}))
         cmake = os.path.join(CMAKE_BIN_DIR, 'cmake')
-        subprocess.check_call([
+        self.compiler.spawn([
             cmake,
             '-G' + make_type(), '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
             pt.join(path)
-        ], stdout=sys.stdout, stderr=sys.stderr, env=env)
+        ])
         if not self.dry_run:
-            subprocess.check_call(
-                [cmake, '--build', '.', '--config', config],
-                stdout=sys.stdout, stderr=sys.stderr, env=env,
-            )
+            self.compiler.spawn([cmake, '--build', '.', '--config', config])
         os.chdir(cur_dir)
 
 
