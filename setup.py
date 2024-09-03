@@ -76,12 +76,15 @@ if OS == 'darwin':
     # if archflags is given we build in specific subdir
     if ARCHFLAGS:
         BUILD_DIR = 'build_' + '_'.join(ARCHFLAGS)
+
 YASM_VERSION = '1.3.0'
 YASM_SOURCE = 'yasm-%s.tar.gz' % YASM_VERSION
 YASM_URL = 'https://github.com/yasm/yasm/releases/download/v%s/' % YASM_VERSION + YASM_SOURCE
 JPEG_VERSION = '3.0.3'
 JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
 JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
+
+SKIP_BUILD_NAME = 'skip_build'
 
 
 def untar_url(url, filename):
@@ -124,8 +127,23 @@ def update_env_msvc():
         os.environ[key.upper()] = value
 
 
+def touch(path):
+    with open(path, 'w') as f:
+        pass
+
+
 class cmake_build_ext(build_ext):
     def run(self):
+        skip_path = pt.join(_libdir(), SKIP_BUILD_NAME)
+        if not pt.exists(skip_path) or os.getenv('FORCE_BUILD'):
+            self.build_cmake_dependencies()
+            touch(skip_path)
+        else:
+            print('Dependencies already built, skipping')
+        # build extensions
+        super().run()
+
+    def build_cmake_dependencies(self):
         flags = []
         if OS == 'darwin':
             if ARCHFLAGS:
@@ -136,26 +154,37 @@ class cmake_build_ext(build_ext):
             '-DBUILD_SHARED_LIBS=OFF'
         ])
 
-        cflags = ''
+        cflags = os.getenv('CFLAGS', '')
+        ldflags = os.getenv('LDFLAGS', '')
         if OS == 'linux':
             # make GCC put functions and data in separate sections
             # the linker can then remove unused sections to reduce the size of the binary
-            cflags = '-flto -ffunction-sections -fdata-sections '
-        # add YASM to the path
-        os.environ['PATH'] = pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', '')
-        # custom CFLAGS - depends on platform
-        os.environ['CFLAGS'] = cflags + os.getenv('CFLAGS', '')
+            #cflags = '-flto -ffunction-sections -fdata-sections ' + cflags
+            cflags = '-flto ' + cflags
+            ldflags = (
+                '-flto '
+                '-Wl,'  # following are linker options
+                '--strip-all,'  # Remove all symbols
+                '--exclude-libs,ALL,'  # Do not export symbols
+                '--gc-sections '  # Remove unused sections'
+            ) + ldflags
+        env = {
+            # add YASM to the path
+            'PATH': pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', ''),
+            # custom CFLAGS - depends on platform
+            'CFLAGS': cflags,
+            # custom LDFLAGS - depends on platform
+            'LDFLAGS': ldflags,
+        }
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
             '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
             '-DENABLE_SHARED=0',
             '-DREQUIRE_SIMD=1',
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
-        ])
-        # build extensions
-        super().run()
+        ], env=env)
 
-    def build_cmake_dependency(self, path, options):
+    def build_cmake_dependency(self, path, options, env=None):
         cur_dir = pt.abspath(os.curdir)
         # TODO make build dir depend on arch
         build_dir = pt.join(path, BUILD_DIR)
@@ -163,6 +192,7 @@ class cmake_build_ext(build_ext):
             os.makedirs(build_dir)
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
+        env = dict(os.environ, **(env or {}))
         cmake = pt.join(CMAKE_BIN_DIR, 'cmake')
         subprocess.check_call([
             cmake,
@@ -170,11 +200,11 @@ class cmake_build_ext(build_ext):
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
             pt.join(path)
-        ], stdout=sys.stdout, stderr=sys.stderr)
+        ], stdout=sys.stdout, stderr=sys.stderr, env=env)
         if not self.dry_run:
             subprocess.check_call([
                 cmake, '--build', '.', '--config', config
-            ], stdout=sys.stdout, stderr=sys.stderr)
+            ], stdout=sys.stdout, stderr=sys.stderr, env=env)
         os.chdir(cur_dir)
 
 
