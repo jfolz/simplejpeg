@@ -32,44 +32,13 @@ class NumpyImport:
     __fspath__ = __repr__
 
 
-WINDOWS_ARCH_MAP_32bit = {
-    'x86': 'x86',
-    'x86_64': 'x86',
-    'x64': 'x86',
-    'amd64': 'x86',
-    'AMD64': 'x86',
-}
-
-
-WINDOWS_ARCH_MAP_64bit = {
-    'x86_64': 'AMD64',
-    'x64': 'AMD64',
-    'amd64': 'AMD64',
-    'AMD64': 'AMD64',
-}
-
-
-def determine_arch():
-    machine = platform.machine()
-    try:
-        if OS == "windows":
-            if IS64BIT:
-                return WINDOWS_ARCH_MAP_64bit[machine]
-            else:
-                return WINDOWS_ARCH_MAP_32bit[machine]
-        else:
-            return platform.machine()
-    except KeyError:
-        raise RuntimeError(f'unsupported OS and machine combination: {OS}, {machine}')
-
-
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 OS = platform.system().lower()
 NPY_API_VERSION = 'NPY_1_19_API_VERSION'
 # build output dir is machine-specific
 BUILD_DIR = 'build_' + '_'.join(platform.architecture())
 IS64BIT = sys.maxsize > 2**32
-ARCH = determine_arch()
+ARCH = platform.machine()
 if OS == 'darwin':
     # From pybind cmake example:
     # https://github.com/pybind/cmake_example/blob/0e3d4496b4eb1ca904c2f2f5278c5f375f035097/setup.py#L100
@@ -121,15 +90,6 @@ def make_type():
         raise RuntimeError('Platform not supported: %s, %s' % (OS, ARCH))
 
 
-def update_env_msvc():
-    from setuptools.msvc import EnvironmentInfo
-    print(f'Setting up environment for MSVC on {ARCH}')
-    env = EnvironmentInfo(ARCH).return_env()
-    for key, value in env.items():
-        print(f"{key}={value}")
-        os.environ[key.upper()] = value
-
-
 def touch(path):
     with open(path, 'w') as f:
         pass
@@ -151,9 +111,6 @@ class cmake_build_ext(build_ext):
         if OS == 'darwin':
             if ARCHFLAGS:
                 flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
-        if OS == 'windows':
-            #update_env_msvc()
-            pass
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
@@ -161,10 +118,9 @@ class cmake_build_ext(build_ext):
         cflags = os.getenv('CFLAGS', '')
         ldflags = os.getenv('LDFLAGS', '')
         if OS == 'linux':
-            # make GCC put functions and data in separate sections
-            # the linker can then remove unused sections to reduce the size of the binary
-            #cflags = '-flto -ffunction-sections -fdata-sections ' + cflags
+            # enable LTO
             cflags = '-flto ' + cflags
+            # same as extension
             ldflags = (
                 '-flto '
                 '-Wl,'  # following are linker options
@@ -190,7 +146,6 @@ class cmake_build_ext(build_ext):
 
     def build_cmake_dependency(self, path, options, env=None):
         cur_dir = pt.abspath(os.curdir)
-        # TODO make build dir depend on arch
         build_dir = pt.join(path, BUILD_DIR)
         if not pt.exists(build_dir):
             os.makedirs(build_dir)
@@ -254,7 +209,7 @@ def make_jpeg_module():
             '--gc-sections'  # Remove unused sections
         ])
         extra_compile_args.extend([
-            '-flto',
+            '-flto',  # enable LTO
         ])
     return Extension(
         'simplejpeg._jpeg',
