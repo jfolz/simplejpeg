@@ -35,6 +35,7 @@ class NumpyImport:
 WINDOWS_ARCH_MAP_32bit = {
     'x86': 'x86',
     'x86_64': 'x86',
+    'x64': 'x86',
     'amd64': 'x86',
     'AMD64': 'x86',
 }
@@ -42,6 +43,7 @@ WINDOWS_ARCH_MAP_32bit = {
 
 WINDOWS_ARCH_MAP_64bit = {
     'x86_64': 'AMD64',
+    'x64': 'AMD64',
     'amd64': 'AMD64',
     'AMD64': 'AMD64',
 }
@@ -150,7 +152,8 @@ class cmake_build_ext(build_ext):
             if ARCHFLAGS:
                 flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
         if OS == 'windows':
-            update_env_msvc()
+            #update_env_msvc()
+            pass
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
