@@ -29,7 +29,7 @@ Tracker = "https://gitlab.com/jfolz/simplejpeg/issues"
 
 [build-system]
 requires = [
-    "setuptools>=74.1.0",
+    "setuptools>=74.1.1",
     "wheel",
     "cmake>=3.6.3",
     "cython~=3.0.0",
