@@ -32,14 +32,43 @@ class NumpyImport:
     __fspath__ = __repr__
 
 
+WINDOWS_ARCH_MAP_32bit = {
+    'x86': 'x86',
+    'x86_64': 'x86',
+    'amd64': 'x86',
+    'AMD64': 'x86',
+}
+
+
+WINDOWS_ARCH_MAP_64bit = {
+    'x86_64': 'AMD64',
+    'amd64': 'AMD64',
+    'AMD64': 'AMD64',
+}
+
+
+def determine_arch():
+    machine = platform.machine()
+    try:
+        if OS == "windows":
+            if IS64BIT:
+                return WINDOWS_ARCH_MAP_64bit[machine]
+            else:
+                return WINDOWS_ARCH_MAP_32bit[machine]
+        else:
+            return platform.machine()
+    except KeyError:
+        raise RuntimeError(f'unsupported OS and machine combination: {OS}, {machine}')
+
+
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
-PLATFORM = platform.system().lower()
+OS = platform.system().lower()
 NPY_API_VERSION = 'NPY_1_19_API_VERSION'
 # build output dir is machine-specific
 BUILD_DIR = 'build_' + '_'.join(platform.architecture())
 IS64BIT = sys.maxsize > 2**32
-ARCH = platform.machine()
-if PLATFORM == 'darwin':
+ARCH = determine_arch()
+if OS == 'darwin':
     # From pybind cmake example:
     # https://github.com/pybind/cmake_example/blob/0e3d4496b4eb1ca904c2f2f5278c5f375f035097/setup.py#L100
     # Cross-compile support for macOS - respect ARCHFLAGS if set
@@ -79,12 +108,12 @@ def cvar(name):
 
 
 def make_type():
-    if PLATFORM in ('linux', 'darwin'):
+    if OS in ('linux', 'darwin'):
         return 'Unix Makefiles'
-    elif PLATFORM == 'windows':
+    elif OS == 'windows':
         return 'NMake Makefiles'
     else:
-        raise RuntimeError('Platform not supported: %s, %s' % (PLATFORM, ARCH))
+        raise RuntimeError('Platform not supported: %s, %s' % (OS, ARCH))
 
 
 def update_env_msvc():
@@ -98,20 +127,20 @@ def update_env_msvc():
 class cmake_build_ext(build_ext):
     def run(self):
         flags = []
-        if PLATFORM == 'darwin':
+        if OS == 'darwin':
             if ARCHFLAGS:
                 flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
-        if PLATFORM == 'windows':
+        if OS == 'windows':
             update_env_msvc()
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
 
         cflags = ''
-        if PLATFORM == 'linux':
+        if OS == 'linux':
             # make GCC put functions and data in separate sections
             # the linker can then remove unused sections to reduce the size of the binary
-            cflags = '-ffunction-sections -fdata-sections '
+            cflags = '-flto -ffunction-sections -fdata-sections '
         # add YASM to the path
         os.environ['PATH'] = pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', '')
         # custom CFLAGS - depends on platform
@@ -154,12 +183,12 @@ def _libdir():
 
 
 def _staticlib():
-    if PLATFORM in ('linux', 'darwin'):
+    if OS in ('linux', 'darwin'):
         return 'libturbojpeg.a'
-    elif PLATFORM == 'windows':
+    elif OS == 'windows':
         return 'turbojpeg-static.lib'
     else:
-        raise RuntimeError('Platform not supported: %s, %s' % (PLATFORM, ARCH))
+        raise RuntimeError('Platform not supported: %s, %s' % (OS, ARCH))
 
 
 def make_jpeg_module():
@@ -183,7 +212,7 @@ def make_jpeg_module():
         ('NPY_NO_DEPRECATED_API', NPY_API_VERSION),
         ('NPY_TARGET_VERSION', NPY_API_VERSION),
     ]
-    if PLATFORM == 'linux':
+    if OS == 'linux':
         extra_link_args.extend([
             '-Wl,'  # following are linker options
             '--strip-all,'  # Remove all symbols
@@ -191,6 +220,7 @@ def make_jpeg_module():
             '--gc-sections'  # Remove unused sections
         ])
         extra_compile_args.extend([
+            '-flto',
         ])
     return Extension(
         'simplejpeg._jpeg',
