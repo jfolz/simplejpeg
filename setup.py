@@ -124,6 +124,7 @@ def update_env_msvc():
     print(f'Setting up environment for MSVC on {ARCH}')
     env = EnvironmentInfo(ARCH).return_env()
     for key, value in env.items():
+        print(f"{key}={value}")
         os.environ[key.upper()] = value
 
 
