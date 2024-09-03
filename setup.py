@@ -38,7 +38,7 @@ NPY_API_VERSION = 'NPY_1_19_API_VERSION'
 # build output dir is machine-specific
 BUILD_DIR = 'build_' + '_'.join(platform.architecture())
 IS64BIT = sys.maxsize > 2**32
-ARCH = 'x64' if IS64BIT else 'x86'
+ARCH = platform.machine()
 if PLATFORM == 'darwin':
     # From pybind cmake example:
     # https://github.com/pybind/cmake_example/blob/0e3d4496b4eb1ca904c2f2f5278c5f375f035097/setup.py#L100
@@ -87,20 +87,25 @@ def make_type():
         raise RuntimeError('Platform not supported: %s, %s' % (PLATFORM, ARCH))
 
 
+def update_env_msvc():
+    from setuptools.msvc import EnvironmentInfo
+    env = EnvironmentInfo(ARCH).return_env()
+    for key, value in env.items():
+        os.environ[key.upper()] = value
+
+
 class cmake_build_ext(build_ext):
-    def build_extensions(self):
-        # force initialize the compiler
-        try:
-            self.compiler.initialize()
-        except AttributeError:
-            print("setuptools compiler does not need initialization")
+    def run(self):
         flags = []
         if PLATFORM == 'darwin':
             if ARCHFLAGS:
                 flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
+        if PLATFORM == 'windows':
+            update_env_msvc()
         self.build_cmake_dependency(YASM_DIR, [
             '-DBUILD_SHARED_LIBS=OFF'
         ])
+
         cflags = ''
         if PLATFORM == 'linux':
             # make GCC put functions and data in separate sections
@@ -118,7 +123,7 @@ class cmake_build_ext(build_ext):
             '-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
         ])
         # build extensions
-        super().build_extensions()
+        super().run()
 
     def build_cmake_dependency(self, path, options):
         cur_dir = pt.abspath(os.curdir)
@@ -128,16 +133,18 @@ class cmake_build_ext(build_ext):
             os.makedirs(build_dir)
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
-        cmake = os.path.join(CMAKE_BIN_DIR, 'cmake')
-        self.compiler.spawn([
+        cmake = pt.join(CMAKE_BIN_DIR, 'cmake')
+        subprocess.check_call([
             cmake,
             '-G' + make_type(), '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
             pt.join(path)
-        ])
+        ], stdout=sys.stdout, stderr=sys.stderr)
         if not self.dry_run:
-            self.compiler.spawn([cmake, '--build', '.', '--config', config])
+            subprocess.check_call([
+                cmake, '--build', '.', '--config', config
+            ], stdout=sys.stdout, stderr=sys.stderr)
         os.chdir(cur_dir)
 
 

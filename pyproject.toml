@@ -8,11 +8,18 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 requires-python = ">=3.9"
-license = {file = "LICENSE"}
-authors = [
-  {name = "Joachim Folz", email = "joachim.folz@dfki.de"},
+license = { file = "LICENSE" }
+authors = [{ name = "Joachim Folz", email = "joachim.folz@dfki.de" }]
+keywords = [
+    "the",
+    "fastest",
+    "JPEG",
+    "encoding",
+    "decoding",
+    "package",
+    "in",
+    "town",
 ]
-keywords = ["the", "fastest", "JPEG", "encoding", "decoding", "package", "in", "town"]
 dynamic = ["dependencies", "version"]
 
 [project.urls]
@@ -21,7 +28,13 @@ Source = "https://gitlab.com/jfolz/simplejpeg"
 Tracker = "https://gitlab.com/jfolz/simplejpeg/issues"
 
 [build-system]
-requires = ["setuptools>=50.0.3", "wheel", "cmake>=3.6.3", "cython~=3.0.0", "numpy>=2.0.0"]
+requires = [
+    "setuptools>=74.1.0",
+    "wheel",
+    "cmake>=3.6.3",
+    "cython~=3.0.0",
+    "numpy>=2.0.0",
+]
 build-backend = "setuptools.build_meta"
 
 [tool.cibuildwheel]
