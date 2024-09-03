@@ -89,6 +89,7 @@ def make_type():
 
 def update_env_msvc():
     from setuptools.msvc import EnvironmentInfo
+    print(f'Setting up environment for MSVC on {ARCH}')
     env = EnvironmentInfo(ARCH).return_env()
     for key, value in env.items():
         os.environ[key.upper()] = value
