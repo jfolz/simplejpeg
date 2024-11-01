@@ -28,7 +28,7 @@ jobs:
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.21.2
+        uses: pypa/cibuildwheel@v2.21.3
         env:
           CIBW_ARCHS_LINUX: ${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
