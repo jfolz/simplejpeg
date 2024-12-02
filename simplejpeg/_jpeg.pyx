@@ -447,12 +447,13 @@ def encode_jpeg(
     Returns:
         encoded image as JPEG (JFIF) data
     """
-    if not image.is_c_contig():
-        raise ValueError('image must be C contiguous')
+    if len(image.strides) < 3 or image.strides[2] != 1 or image.strides[1] != image.shape[2]:
+        raise ValueError('image must have C contiguous rows')
     cdef const unsigned char* image_p = &image[0, 0, 0]
     cdef int retcode
     cdef int height = image.shape[0]
     cdef int width = image.shape[1]
+    cdef int pitch = image.strides[0]
     cdef int channels = image.shape[2]
     cdef int colorspace_ = PIXELFORMATS[colorspace]
     if tjPixelSize[colorspace_] != channels:
@@ -477,7 +478,7 @@ def encode_jpeg(
             encoder,
             image_p,
             width,
-            0,
+            pitch,
             height,
             colorspace_,
             jpegbufbuf,
