@@ -98,3 +98,39 @@ def test_encode_noncontiguous():
         im = np.zeros((3, 123, 235), dtype=np.uint8)
         simplejpeg.encode_jpeg(im.transpose((1, 2, 0)))
     assert 'contiguous' in str(exc.value)
+
+
+def test_encode_decode_padding_start():
+    np.random.seed(9)
+    im = np.random.randint(0, 255, (600, 1000, 3), dtype=np.uint8)
+    # Make an image that has padding bytes at the start of each row
+    im = im[:, 200:, :]
+    # encode with simplejpeg, decode with Pillow
+    encoded = simplejpeg.encode_jpeg(im, 85)
+    decoded = np.array(Image.open(io.BytesIO(encoded)))
+    assert decoded.shape == (600, 800, 3)
+    assert 0 < mean_absolute_difference(im, decoded) < 10
+
+
+def test_encode_decode_padding_end():
+    np.random.seed(9)
+    im = np.random.randint(0, 255, (600, 1000, 3), dtype=np.uint8)
+    # Make an image that has padding bytes at the end of each row
+    im = im[:, :800, :]
+    # encode with simplejpeg, decode with Pillow
+    encoded = simplejpeg.encode_jpeg(im, 85)
+    decoded = np.array(Image.open(io.BytesIO(encoded)))
+    assert decoded.shape == (600, 800, 3)
+    assert 0 < mean_absolute_difference(im, decoded) < 10
+
+
+def test_encode_decode_padding_both():
+    np.random.seed(9)
+    im = np.random.randint(0, 255, (600, 1000, 3), dtype=np.uint8)
+    # Make an image that has padding bytes at the start and end of each row
+    im = im[:, 100:900, :]
+    # encode with simplejpeg, decode with Pillow
+    encoded = simplejpeg.encode_jpeg(im, 85)
+    decoded = np.array(Image.open(io.BytesIO(encoded)))
+    assert decoded.shape == (600, 800, 3)
+    assert 0 < mean_absolute_difference(im, decoded) < 10
