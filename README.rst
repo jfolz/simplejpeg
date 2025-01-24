@@ -140,7 +140,8 @@ Returns the image as numpy array in the requested colorspace.
 
 - data:
   JPEG data in memory; must support buffer interface
-  (e.g., ``bytes``, ``memoryview``)
+  (e.g., ``bytes``, ``memoryview``);
+  row must be C-contiguous
 - colorspace:
   target colorspace, any of the following:
   'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
