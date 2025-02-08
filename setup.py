@@ -51,7 +51,7 @@ if OS == 'darwin':
 YASM_VERSION = '1.3.0'
 YASM_SOURCE = 'yasm-%s.tar.gz' % YASM_VERSION
 YASM_URL = 'https://github.com/yasm/yasm/releases/download/v%s/' % YASM_VERSION + YASM_SOURCE
-JPEG_VERSION = '3.0.3'
+JPEG_VERSION = '3.1.0'
 JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
 JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
 
@@ -186,7 +186,7 @@ def _staticlib():
 def make_jpeg_module():
     include_dirs = [
         NumpyImport(),
-        pt.join(JPEG_DIR),
+        pt.join(JPEG_DIR, 'src'),
         pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
     static_libs = [pt.join(_libdir(), _staticlib())]
