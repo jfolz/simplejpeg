@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Allow encoding cropped arrays (thanks @davidplowman).
 - Add encode_jpeg_yuv_planes function to from YUV planes (thanks @davidplowman).
-- Add SKIP_YASM_BUILD environment variable to skip building YASM
+- Add SKIP_YASM_BUILD environment variable to skip building Yasm
 
 
 ## [1.7.6] - 2024-09-03
