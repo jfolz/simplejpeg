@@ -60,6 +60,13 @@ Installation
   Then run ``pip install simplejpeg`` to install from source.
 - You can also run ``python setup.py bdist_wheel`` etc. as usual.
 
+Normally the Yasm assembler is built first, but you can define
+the environment variable ``SKIP_YASM_BUILD`` to skip it.
+You can bring your own Yasm or Nasm assembler, just make sure
+it's on the PATH so cmake can find it.
+This can speed up compilation and help with cross-compiling,
+since the assembler will run on the host machine.
+
 
 
 Usage

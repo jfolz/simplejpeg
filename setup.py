@@ -56,6 +56,7 @@ JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
 JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
 
 SKIP_BUILD_NAME = 'skip_build'
+SKIP_YASM_BUILD = 'SKIP_YASM_BUILD' in os.environ
 
 
 def untar_url(url, filename):
@@ -74,7 +75,8 @@ def untar_url(url, filename):
 
 # download sources
 YASM_DIR = untar_url(YASM_URL, pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE))
-JPEG_DIR = untar_url(JPEG_URL, pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE))
+if not SKIP_YASM_BUILD:
+    JPEG_DIR = untar_url(JPEG_URL, pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE))
 
 
 def cvar(name):
@@ -111,9 +113,10 @@ class cmake_build_ext(build_ext):
         if OS == 'darwin':
             if ARCHFLAGS:
                 flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
-        self.build_cmake_dependency(YASM_DIR, [
-            '-DBUILD_SHARED_LIBS=OFF'
-        ])
+        if not SKIP_YASM_BUILD:
+            self.build_cmake_dependency(YASM_DIR, [
+                '-DBUILD_SHARED_LIBS=OFF'
+            ])
 
         cflags = os.getenv('CFLAGS', '')
         ldflags = os.getenv('LDFLAGS', '')
