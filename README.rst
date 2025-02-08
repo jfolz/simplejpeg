@@ -209,6 +209,61 @@ Returns JPEG (JFIF) data.
 
 
 
+encode_jpeg_yuv_planes
+~~~~~~~~~~~~~~~~~~~~~~
+
+::
+
+    def encode_jpeg_yuv_planes(
+            Y: np.ndarray,
+            U: np.ndarray,
+            V: np.ndarray,
+            quality: SupportsInt=85,
+            fastdct: Any=False,
+    ) -> bytes
+
+Encode an image given as three numpy arrays to JPEG (JFIF) bytes.
+The color subsampling is deduced from the size of the three arrays.
+Returns JPEG (JFIF) data.
+
+- Y:
+  uncompressed Y plane as uint8 array
+- U:
+  uncompressed U plane as uint8 array
+- V:
+  uncompressed V plane as uint8 array
+- quality:
+  JPEG quantization factor;
+  0\-100, higher equals better quality
+- fastdct:
+  If True, use fastest DCT method;
+  usually no observable difference
+- returns: ``bytes`` object of encoded image as JPEG (JFIF) data
+
+*Using encode_jpeg_yuv_planes with OpenCV*
+
+OpenCV has limited support for YUV420 images, but where it does it
+will normally represent a ``W x H`` image (``W`` and ``H`` both
+assumed even) as an array of height ``H + H // 2`` and width ``W``.
+
+Of these, the first ``H`` rows are the Y plane. Thereafter follow ``H
+// 2`` lots of ``W // 2`` bytes (the U plane), and then the same again
+for the V plane. Note how we have two rows of U or V in every *array*
+row. To unpack such an image for passing to ``encode_jpeg_yuv_planes``
+use:
+
+::
+
+    Y = image[:H]
+    U = image.reshape(H * 3, W // 2)[H * 2: H * 2 + H // 2]
+    V = image.reshape(H * 3, W // 2)[H * 2 + H // 2:]
+
+``encode_jpeg_yuv_planes`` saves us from having to convert first to
+RGB and then (within ``encode_jpeg``) back to YUV, all of which costs
+time and memory when dealing with large images on resource constrained
+platforms.
+
+
 is_jpeg
 ~~~~~~~
 

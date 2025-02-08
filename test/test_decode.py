@@ -53,16 +53,14 @@ def test_decode_buffer():
 def test_decode_buffer_insufficient():
     for f, data, im in yield_reference_images():
         b = bytearray(len(im.getdata()) - 1)
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(ValueError, match='too small') as excinfo:
             simplejpeg.decode_jpeg(data, buffer=b)
-        assert 'too small' in str(excinfo.value)
 
 
 def test_decode_truncated():
     for f, data, im in yield_reference_images():
-        with pytest.raises(ValueError) as excinfo:
+        with pytest.raises(ValueError, match='Premature end of JPEG file') as excinfo:
             simplejpeg.decode_jpeg(data[:-1])
-        assert str(excinfo.value) == 'Premature end of JPEG file'
 
 
 def test_decode_fastdct():
@@ -131,16 +129,14 @@ def test_decode_colorspace():
 
 def test_decode_writable():
     # unfortunately PyPy raises ValueError
-    with pytest.raises((BufferError, ValueError)) as exc:
-        b = b'x' * (1024*1024*3)
-        for f, data, im in yield_reference_images():
+    b = b'x' * (1024*1024*3)
+    for f, data, im in yield_reference_images():
+        with pytest.raises((BufferError, ValueError), match='writable'):
             simplejpeg.decode_jpeg(data, buffer=b)
-    assert 'writable' in str(exc.value)
 
 
 def test_decode_noncontiguous():
-    with pytest.raises(ValueError) as exc:
-        b = np.zeros((3, 1024, 1024), dtype=np.uint8)
-        for f, data, im in yield_reference_images():
+    b = np.zeros((3, 1024, 1024), dtype=np.uint8)
+    for f, data, im in yield_reference_images():
+        with pytest.raises(ValueError, match='contiguous'):
             simplejpeg.decode_jpeg(data, buffer=b.transpose((1, 2, 0)))
-    assert 'contiguous' in str(exc.value)
