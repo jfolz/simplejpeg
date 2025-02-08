@@ -235,12 +235,12 @@ def test_encode_yuv_noncontiguous_V():
 def test_encode_yuv_missing_U():
     width, height = 100, 100
     Y, _, V = np.zeros((3, height, width), dtype=np.uint8)
-    with pytest.raises(ValueError, match='U \(missing\) and V \(present\)'):
+    with pytest.raises(ValueError, match=r'U \(missing\) and V \(present\)'):
         simplejpeg.encode_jpeg_yuv_planes(Y, None, V)
 
 
 def test_encode_yuv_missing_V():
     width, height = 100, 100
     Y, U, _ = np.zeros((3, height, width), dtype=np.uint8)
-    with pytest.raises(ValueError, match='U \(present\) and V \(missing\)'):
+    with pytest.raises(ValueError, match=r'U \(present\) and V \(missing\)'):
         simplejpeg.encode_jpeg_yuv_planes(Y, U, None)
