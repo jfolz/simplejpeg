@@ -523,7 +523,9 @@ def encode_jpeg_yuv_planes(
         bint fastdct=False,
 ):
     """
-    Encode an image in YUV planar format to JPEG (JFIF) string.
+    Encode an image in a YUV planar format to JPEG (JFIF) string.
+    U and V planes may be None to encode grayscale, but if one is given,
+    the other must be as well.
     Returns JPEG (JFIF) data.
 
     Parameters:
@@ -531,8 +533,6 @@ def encode_jpeg_yuv_planes(
         U: uncompressed U plane of the YUV image as uint8 array
         V: uncompressed V plane of the YUV image as uint8 array
         quality: JPEG quantization factor
-        colorsubsampling: subsampling factor for color channels; one of
-                          '444', '422', '420', 'Gray'.
         fastdct: If True, use fastest DCT method;
                  speeds up encoding by 4-5% for a minor loss in quality
 

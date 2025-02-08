@@ -113,13 +113,15 @@ def encode_jpeg(
 
 def encode_jpeg_yuv_planes(
         Y: np.ndarray,
-        U: np.ndarray,
-        V: np.ndarray,
+        U: np.ndarray | None,
+        V: np.ndarray | None,
         quality: SupportsInt=85,
         fastdct: Any=False,
 ) -> bytes:
     """
     Encode an image in a YUV planar format to JPEG (JFIF) string.
+    U and V planes may be None to encode grayscale, but if one is given,
+    the other must be as well.
     Returns JPEG (JFIF) data.
 
     Parameters:
