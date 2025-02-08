@@ -23,9 +23,9 @@ keywords = [
 dynamic = ["dependencies", "version"]
 
 [project.urls]
-Documentation = "https://gitlab.com/jfolz/simplejpeg/blob/master/README.rst"
-Source = "https://gitlab.com/jfolz/simplejpeg"
-Tracker = "https://gitlab.com/jfolz/simplejpeg/issues"
+Documentation = "https://github.com/jfolz/simplejpeg/blob/master/README.rst"
+Source = "https://github.com/jfolz/simplejpeg"
+Tracker = "https://github.com/jfolz/simplejpeg/issues"
 
 [build-system]
 requires = [
