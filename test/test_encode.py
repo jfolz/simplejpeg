@@ -12,6 +12,10 @@ import simplejpeg
 ROOT = pt.abspath(pt.dirname(__file__))
 
 
+def decode_pil(encoded):
+    return np.array(Image.open(io.BytesIO(encoded)))
+
+
 def mean_absolute_difference(a, b):
     return np.abs(a.astype(np.float32) - b.astype(np.float32)).mean()
 
@@ -28,7 +32,7 @@ def test_encode_decode():
     im = np.random.randint(0, 255, (1689, 1000, 3), dtype=np.uint8)
     # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 85)
-    decoded = np.array(Image.open(io.BytesIO(encoded)))
+    decoded = decode_pil(encoded)
     assert 0 < mean_absolute_difference(im, decoded) < 10
     # encode with Pillow, decode with simplejpeg
     bio = io.BytesIO()
@@ -76,7 +80,7 @@ def test_encode_grayscale():
     im = np.random.randint(0, 255, (589, 486, 1), dtype=np.uint8)
     # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 85, colorspace='gray')
-    decoded = np.array(Image.open(io.BytesIO(encoded)))[:, :, np.newaxis]
+    decoded = decode_pil(encoded)[:, :, np.newaxis]
     assert 0 < mean_absolute_difference(im, decoded) < 10
 
 
@@ -88,16 +92,15 @@ def test_encode_colorspace():
         np_im = np.ascontiguousarray(im[:, :, :len(colorspace)])
         # encode with simplejpeg, decode with Pillow
         encoded = simplejpeg.encode_jpeg(np_im, 85, colorspace=colorspace)
-        decoded = np.array(Image.open(io.BytesIO(encoded)))
+        decoded = decode_pil(encoded)
         np_im = _colorspace_to_rgb(np_im, colorspace)
         assert 0 < mean_absolute_difference(np_im, decoded) < 10
 
 
 def test_encode_noncontiguous():
-    with pytest.raises(ValueError) as exc:
-        im = np.zeros((3, 123, 235), dtype=np.uint8)
+    im = np.zeros((3, 123, 235), dtype=np.uint8)
+    with pytest.raises(ValueError, match='contiguous rows'):
         simplejpeg.encode_jpeg(im.transpose((1, 2, 0)))
-    assert 'contiguous' in str(exc.value)
 
 
 def test_encode_decode_padding_start():
@@ -107,7 +110,7 @@ def test_encode_decode_padding_start():
     im = im[:, 200:, :]
     # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 85)
-    decoded = np.array(Image.open(io.BytesIO(encoded)))
+    decoded = decode_pil(encoded)
     assert decoded.shape == (600, 800, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 10
 
@@ -119,7 +122,7 @@ def test_encode_decode_padding_end():
     im = im[:, :800, :]
     # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 85)
-    decoded = np.array(Image.open(io.BytesIO(encoded)))
+    decoded = decode_pil(encoded)
     assert decoded.shape == (600, 800, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 10
 
@@ -131,6 +134,6 @@ def test_encode_decode_padding_both():
     im = im[:, 100:900, :]
     # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 85)
-    decoded = np.array(Image.open(io.BytesIO(encoded)))
+    decoded = decode_pil(encoded)
     assert decoded.shape == (600, 800, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 10

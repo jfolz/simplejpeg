@@ -109,3 +109,27 @@ def encode_jpeg(
         encoded image as JPEG (JFIF) data
     """
     return b''
+
+
+def encode_jpeg_yuv_planes(
+        Y: np.ndarray,
+        U: np.ndarray,
+        V: np.ndarray,
+        quality: SupportsInt=85,
+        fastdct: Any=False,
+) -> bytes:
+    """
+    Encode an image in a YUV planar format to JPEG (JFIF) string.
+    Returns JPEG (JFIF) data.
+
+    Parameters:
+        Y: uncompressed Y plane of the YUV image as uint8 array
+        U: uncompressed U plane of the YUV image as uint8 array
+        V: uncompressed V plane of the YUV image as uint8 array
+        quality: JPEG quantization factor
+        fastdct: If True, use fastest DCT method;
+                 speeds up encoding by 4-5% for a minor loss in quality
+
+    Returns:
+        encoded image as JPEG (JFIF) data
+    """

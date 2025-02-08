@@ -32,7 +32,7 @@ cdef extern from "turbojpeg.h" nogil:
     # TJ color subsampling constants
     cdef int TJSAMP_444, TJSAMP_422, TJSAMP_420
     cdef int TJSAMP_GRAY, TJSAMP_440, TJSAMP_411
-    cdef int TJ_NUMSAMP
+    cdef int TJSAMP_UNKNOWN, TJ_NUMSAMP
 
     # TJ encoding/decoding flags
     cdef int TJFLAG_NOREALLOC, TJFLAG_FASTDCT, TJFLAG_FASTUPSAMPLE
@@ -87,6 +87,19 @@ cdef extern from "turbojpeg.h" nogil:
 		int jpegQual,
 		int flags
 	)
+
+    cdef int tjCompressFromYUVPlanes(
+        tjhandle handle,
+        const unsigned char **srcPlanes,
+        int width,
+        const int *strides,
+        int height,
+        int jpegSubsamp,
+        unsigned char ** jpegBuf,
+        unsigned long * jpegSize,
+        int jpegQual,
+        int flags
+    )
 
     cdef const int* tjPixelSize
 
@@ -488,6 +501,151 @@ def encode_jpeg(
             jpegbufbuf,
             &jpegsize,
             colorsubsampling_,
+            quality,
+            flags
+        )
+        if retcode != 0:
+            with gil:
+                msg = __tj_error(encoder)
+                tjDestroy(encoder)
+                raise ValueError(msg)
+    jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
+    tjFree(jpegbuf)
+    tjDestroy(encoder)
+    return jpeg
+
+
+def encode_jpeg_yuv_planes(
+        const unsigned char[:, :] Y not None,
+        const unsigned char[:, :] U,
+        const unsigned char[:, :] V,
+        int quality=85,
+        bint fastdct=False,
+):
+    """
+    Encode an image in YUV planar format to JPEG (JFIF) string.
+    Returns JPEG (JFIF) data.
+
+    Parameters:
+        Y: uncompressed Y plane of the YUV image as uint8 array
+        U: uncompressed U plane of the YUV image as uint8 array
+        V: uncompressed V plane of the YUV image as uint8 array
+        quality: JPEG quantization factor
+        colorsubsampling: subsampling factor for color channels; one of
+                          '444', '422', '420', 'Gray'.
+        fastdct: If True, use fastest DCT method;
+                 speeds up encoding by 4-5% for a minor loss in quality
+
+    Returns:
+        encoded image as JPEG (JFIF) data
+    """
+    cdef const unsigned char** planes = [
+        &Y[0,0],
+        &U[0,0],
+        &V[0,0],
+    ]
+    cdef int retcode
+    cdef int height = Y.shape[0]
+    cdef int width = Y.shape[1]
+    cdef int strides[3]
+    cdef int colorsubsampling_ = TJSAMP_UNKNOWN
+    cdef unsigned char * jpegbuf = NULL
+    cdef unsigned char ** jpegbufbuf = &jpegbuf
+    cdef unsigned long jpegsize = 0
+    cdef int flags
+    cdef tjhandle encoder
+
+    if U is None and V is None:
+        colorsubsampling_ = TJSAMP_GRAY
+    elif U is None or V is None:
+        raise ValueError(
+            f'either both U {"(missing)" if U is None else "(present)"} and V '
+            f'{"(missing)" if V is None else "(present)"} planes must be given, or neither'
+        )
+    elif U.shape[0] != V.shape[0] or U.shape[1] != V.shape[1]:
+        raise ValueError(
+            f'U and V planes must have matching shape, got {U.shape} and {V.shape}'
+        )
+    elif U.shape[0] == height:
+        # Subsampling schemes with full vertical resolution:
+        #
+        # 4:4:4 - full resolution
+        # oooo
+        # oooo
+        #
+        # 4:2:2 - half horizontal resolution
+        # o-o-
+        # o-o-
+        #
+        # 4:1:1 - quarter horizontal resolution
+        # o----
+        # o----
+        #
+        if U.shape[1] == width:
+            colorsubsampling_ = TJSAMP_444
+        elif U.shape[1] * 2 in (width, width+1):
+            colorsubsampling_ = TJSAMP_422
+        elif U.shape[1] * 4 in (width, width+1, width+2, width+3):
+            colorsubsampling_ = TJSAMP_411
+    elif U.shape[0] * 2 in (height, height+1):
+        # Subsampling schemes with half vertical resolution:
+        #
+        # 4:4:0 - half vertical resolution
+        # oooo
+        # ----
+        #
+        # 4:2:0 - half horizontal and vertical resolution
+        # o-o-
+        # ----
+        #
+        if U.shape[1] == width:
+            colorsubsampling_ = TJSAMP_440
+        elif U.shape[1] * 2 in (width, width+1):
+            colorsubsampling_ = TJSAMP_420
+
+    if colorsubsampling_ == TJSAMP_UNKNOWN:
+        raise ValueError(
+            'cannot determine chroma subsampling for planes of shape '
+            f'Y={Y.shape} U={U.shape} V={V.shape}'
+        )
+
+    if Y.strides is None:
+        strides[0] = 0
+    elif len(Y.strides) >= 2 and Y.strides[1] == 1:
+        strides[0] = Y.strides[0]
+    else:
+        raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
+
+    if U is None or U.strides is None:
+        strides[1] = 0
+    elif len(U.strides) >= 2 and U.strides[1] == 1:
+        strides[1] = U.strides[0]
+    else:
+        raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
+
+    if V is None or V.strides is None:
+        strides[2] = 0
+    elif len(V.strides) >= 2 and V.strides[1] == 1:
+        strides[2] = V.strides[0]
+    else:
+        raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
+
+    with nogil:
+        encoder = tjInitCompress()
+        if encoder == NULL:
+            raise RuntimeError('could not create JPEG encoder')
+        flags = 0
+        if fastdct:
+            flags |= TJFLAG_FASTDCT
+        retcode = tjCompressFromYUVPlanes(
+            encoder,
+            planes,
+            width,
+            strides,
+            height,
+            colorsubsampling_,
+            jpegbufbuf,
+            &jpegsize,
             quality,
             flags
         )
