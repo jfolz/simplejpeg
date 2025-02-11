@@ -2,6 +2,7 @@ import os
 import os.path as pt
 import re
 import platform
+import shutil
 import sys
 import urllib.request
 import tarfile
@@ -9,7 +10,6 @@ import sysconfig
 import subprocess
 import hashlib
 
-from cmake import CMAKE_BIN_DIR
 from setuptools import setup
 from setuptools import find_packages
 from setuptools import Extension
@@ -183,7 +183,12 @@ class cmake_build_ext(build_ext):
         os.chdir(build_dir)
         config = 'Debug' if self.debug else 'Release'
         env = dict(os.environ, **(env or {}))
-        cmake = pt.join(CMAKE_BIN_DIR, 'cmake')
+        try:
+            from cmake import CMAKE_BIN_DIR
+            cmake = pt.join(CMAKE_BIN_DIR, 'cmake')
+        except ImportError:
+            cmake = shutil.which('cmake')
+
         subprocess.check_call([
             cmake,
             '-G' + make_type(), '-Wno-dev',
@@ -330,6 +335,11 @@ class ConcatFiles:
         self.original_output = None
 
 
+setup_requires = []
+if shutil.which('cmake') is None:
+    setup_requires += ['cmake>=3.6.3']
+
+
 LICENSE_FILES = [
     'LICENSE',
     pt.join(JPEG_DIR, 'LICENSE.md'),
@@ -342,6 +352,7 @@ with ConcatFiles(*LICENSE_FILES):
         packages=packages,
         package_data=include_package_data,
         exclude_package_data=exclude_package_data,
+        setup_requires=setup_requires,
         install_requires=dependencies,
         ext_modules=ext_modules,
         cmdclass={'build_ext': cmake_build_ext},
