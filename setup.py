@@ -7,6 +7,7 @@ import urllib.request
 import tarfile
 import sysconfig
 import subprocess
+import hashlib
 
 from cmake import CMAKE_BIN_DIR
 from setuptools import setup
@@ -59,13 +60,32 @@ SKIP_BUILD_NAME = 'skip_build'
 SKIP_YASM_BUILD = 'SKIP_YASM_BUILD' in os.environ
 
 
-def untar_url(url, filename):
+def verify_file(path, reference_digest, read_size=128*1024):
+    h = hashlib.sha3_256()
+    with open(path, 'rb') as fp:
+        while True:
+            data = fp.read(read_size)
+            if not data:
+                break
+            h.update(data)
+    digest = h.hexdigest()
+    if reference_digest != digest:
+        raise RuntimeError(
+            f'Verification of {path} failed, '
+            f'expected sha3_256 hash {reference_digest}, '
+            f'got {digest}'
+        )
+
+
+def untar_url(url, filename, reference_digest):
     path = filename.rstrip('.tar.gz')
+    if not pt.exists(filename):
+        os.makedirs(pt.dirname(filename), exist_ok=True)
+        print('downloading', url)
+        urllib.request.urlretrieve(url, filename)
     if not pt.exists(path):
-        if not pt.exists(filename):
-            os.makedirs(pt.dirname(filename), exist_ok=True)
-            print('downloading', url)
-            urllib.request.urlretrieve(url, filename)
+        print('verifying', filename)
+        verify_file(filename, reference_digest)
         os.makedirs(pt.dirname(filename), exist_ok=True)
         with tarfile.open(filename) as t:
             print('extracting', filename)
@@ -75,8 +95,16 @@ def untar_url(url, filename):
 
 # download sources
 if not SKIP_YASM_BUILD:
-    YASM_DIR = untar_url(YASM_URL, pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE))
-JPEG_DIR = untar_url(JPEG_URL, pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE))
+    YASM_DIR = untar_url(
+        YASM_URL,
+        pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE),
+        '56bf07340b7a3bbfec94f89894db2c0d487d534d90c99241ba45b70feaa1a0f3',
+    )
+JPEG_DIR = untar_url(
+    JPEG_URL,
+    pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE),
+    '104ff4419619633dd3fb60746d871440d560be0c24780eeca444b6f0a7cf9178',
+)
 
 
 def cvar(name):
