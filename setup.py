@@ -74,9 +74,9 @@ def untar_url(url, filename):
 
 
 # download sources
-YASM_DIR = untar_url(YASM_URL, pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE))
 if not SKIP_YASM_BUILD:
-    JPEG_DIR = untar_url(JPEG_URL, pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE))
+    YASM_DIR = untar_url(YASM_URL, pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE))
+JPEG_DIR = untar_url(JPEG_URL, pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE))
 
 
 def cvar(name):
