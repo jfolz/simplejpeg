@@ -34,8 +34,8 @@ requires = [
     "cython~=3.0.0",
     "numpy>=2.0.0",
 ]
-backend-path = ["."]
-build-backend = "_custom_build"
+backend-path = ["custom_build_backend"]
+build-backend = "custom_build_meta"
 
 [tool.cibuildwheel]
 environment = "PIP_ONLY_BINARY=:all:"
