@@ -31,11 +31,11 @@ Tracker = "https://github.com/jfolz/simplejpeg/issues"
 requires = [
     "setuptools>=74.1.1",
     "wheel",
-    "cmake>=3.6.3",
     "cython~=3.0.0",
     "numpy>=2.0.0",
 ]
-build-backend = "setuptools.build_meta"
+backend-path = ["custom_build_backend"]
+build-backend = "custom_build_meta"
 
 [tool.cibuildwheel]
 environment = "PIP_ONLY_BINARY=:all:"
