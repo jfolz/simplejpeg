@@ -187,7 +187,7 @@ class cmake_build_ext(build_ext):
             from cmake import CMAKE_BIN_DIR
             cmake = pt.join(CMAKE_BIN_DIR, 'cmake')
         except ImportError:
-            cmake = shutil.which('cmake')
+            cmake = 'cmake'
 
         subprocess.check_call([
             cmake,
