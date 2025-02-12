@@ -2,7 +2,6 @@ import os
 import os.path as pt
 import re
 import platform
-import shutil
 import sys
 import urllib.request
 import tarfile
@@ -335,11 +334,6 @@ class ConcatFiles:
         self.original_output = None
 
 
-setup_requires = []
-if shutil.which('cmake') is None:
-    setup_requires += ['cmake>=3.6.3']
-
-
 LICENSE_FILES = [
     'LICENSE',
     pt.join(JPEG_DIR, 'LICENSE.md'),
@@ -352,7 +346,6 @@ with ConcatFiles(*LICENSE_FILES):
         packages=packages,
         package_data=include_package_data,
         exclude_package_data=exclude_package_data,
-        setup_requires=setup_requires,
         install_requires=dependencies,
         ext_modules=ext_modules,
         cmdclass={'build_ext': cmake_build_ext},
