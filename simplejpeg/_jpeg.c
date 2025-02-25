@@ -3497,7 +3497,7 @@ static const char __pyx_k_RGB[] = "RGB";
 static const char __pyx_k_U_2[] = " U=";
 static const char __pyx_k_V_2[] = " V=";
 static const char __pyx_k__13[] = ", ";
-static const char __pyx_k__34[] = "?";
+static const char __pyx_k__38[] = "?";
 static const char __pyx_k_abc[] = "abc";
 static const char __pyx_k_and[] = " and ";
 static const char __pyx_k_got[] = " (got ";
@@ -3692,6 +3692,10 @@ static const char __pyx_k_U_plane_must_have_C_contiguous_r[] = "U plane must hav
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
 static const char __pyx_k_V_plane_must_have_C_contiguous_r[] = "V plane must have C contiguous rows, but strides are ";
 static const char __pyx_k_Y_plane_must_have_C_contiguous_r[] = "Y plane must have C contiguous rows, but strides are ";
+static const char __pyx_k_broadcasting_U_plane_rows_is_not[] = "broadcasting U plane rows is not supported";
+static const char __pyx_k_broadcasting_V_plane_rows_is_not[] = "broadcasting V plane rows is not supported";
+static const char __pyx_k_broadcasting_Y_plane_rows_is_not[] = "broadcasting Y plane rows is not supported";
+static const char __pyx_k_broadcasting_rows_is_not_support[] = "broadcasting rows is not supported";
 static const char __pyx_k_buffer_object_must_support_buffe[] = "buffer object must support buffer interface and must be writable and contiguous";
 static const char __pyx_k_cannot_determine_chroma_subsampl[] = "cannot determine chroma subsampling for planes of shape Y=";
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension ";
@@ -3966,7 +3970,7 @@ typedef struct {
   PyObject *__pyx_kp_u__13;
   PyObject *__pyx_kp_u__2;
   PyObject *__pyx_n_s__3;
-  PyObject *__pyx_n_s__34;
+  PyObject *__pyx_n_s__38;
   PyObject *__pyx_kp_u__6;
   PyObject *__pyx_kp_u__7;
   PyObject *__pyx_n_s_abc;
@@ -3976,6 +3980,10 @@ typedef struct {
   PyObject *__pyx_n_s_append;
   PyObject *__pyx_n_s_asyncio_coroutines;
   PyObject *__pyx_n_s_base;
+  PyObject *__pyx_kp_u_broadcasting_U_plane_rows_is_not;
+  PyObject *__pyx_kp_u_broadcasting_V_plane_rows_is_not;
+  PyObject *__pyx_kp_u_broadcasting_Y_plane_rows_is_not;
+  PyObject *__pyx_kp_u_broadcasting_rows_is_not_support;
   PyObject *__pyx_n_s_buffer;
   PyObject *__pyx_kp_u_buffer_object_must_support_buffe;
   PyObject *__pyx_n_s_bufferlen;
@@ -4157,15 +4165,19 @@ typedef struct {
   PyObject *__pyx_tuple__22;
   PyObject *__pyx_tuple__23;
   PyObject *__pyx_tuple__24;
+  PyObject *__pyx_tuple__25;
   PyObject *__pyx_tuple__26;
+  PyObject *__pyx_tuple__27;
   PyObject *__pyx_tuple__28;
   PyObject *__pyx_tuple__30;
   PyObject *__pyx_tuple__32;
-  PyObject *__pyx_codeobj__25;
-  PyObject *__pyx_codeobj__27;
+  PyObject *__pyx_tuple__34;
+  PyObject *__pyx_tuple__36;
   PyObject *__pyx_codeobj__29;
   PyObject *__pyx_codeobj__31;
   PyObject *__pyx_codeobj__33;
+  PyObject *__pyx_codeobj__35;
+  PyObject *__pyx_codeobj__37;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -4299,7 +4311,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_kp_u__13);
   Py_CLEAR(clear_module_state->__pyx_kp_u__2);
   Py_CLEAR(clear_module_state->__pyx_n_s__3);
-  Py_CLEAR(clear_module_state->__pyx_n_s__34);
+  Py_CLEAR(clear_module_state->__pyx_n_s__38);
   Py_CLEAR(clear_module_state->__pyx_kp_u__6);
   Py_CLEAR(clear_module_state->__pyx_kp_u__7);
   Py_CLEAR(clear_module_state->__pyx_n_s_abc);
@@ -4309,6 +4321,10 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_append);
   Py_CLEAR(clear_module_state->__pyx_n_s_asyncio_coroutines);
   Py_CLEAR(clear_module_state->__pyx_n_s_base);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_broadcasting_U_plane_rows_is_not);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_broadcasting_V_plane_rows_is_not);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_broadcasting_Y_plane_rows_is_not);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_broadcasting_rows_is_not_support);
   Py_CLEAR(clear_module_state->__pyx_n_s_buffer);
   Py_CLEAR(clear_module_state->__pyx_kp_u_buffer_object_must_support_buffe);
   Py_CLEAR(clear_module_state->__pyx_n_s_bufferlen);
@@ -4490,15 +4506,19 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_tuple__22);
   Py_CLEAR(clear_module_state->__pyx_tuple__23);
   Py_CLEAR(clear_module_state->__pyx_tuple__24);
+  Py_CLEAR(clear_module_state->__pyx_tuple__25);
   Py_CLEAR(clear_module_state->__pyx_tuple__26);
+  Py_CLEAR(clear_module_state->__pyx_tuple__27);
   Py_CLEAR(clear_module_state->__pyx_tuple__28);
   Py_CLEAR(clear_module_state->__pyx_tuple__30);
   Py_CLEAR(clear_module_state->__pyx_tuple__32);
-  Py_CLEAR(clear_module_state->__pyx_codeobj__25);
-  Py_CLEAR(clear_module_state->__pyx_codeobj__27);
+  Py_CLEAR(clear_module_state->__pyx_tuple__34);
+  Py_CLEAR(clear_module_state->__pyx_tuple__36);
   Py_CLEAR(clear_module_state->__pyx_codeobj__29);
   Py_CLEAR(clear_module_state->__pyx_codeobj__31);
   Py_CLEAR(clear_module_state->__pyx_codeobj__33);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__35);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__37);
   return 0;
 }
 #endif
@@ -4610,7 +4630,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_kp_u__13);
   Py_VISIT(traverse_module_state->__pyx_kp_u__2);
   Py_VISIT(traverse_module_state->__pyx_n_s__3);
-  Py_VISIT(traverse_module_state->__pyx_n_s__34);
+  Py_VISIT(traverse_module_state->__pyx_n_s__38);
   Py_VISIT(traverse_module_state->__pyx_kp_u__6);
   Py_VISIT(traverse_module_state->__pyx_kp_u__7);
   Py_VISIT(traverse_module_state->__pyx_n_s_abc);
@@ -4620,6 +4640,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_append);
   Py_VISIT(traverse_module_state->__pyx_n_s_asyncio_coroutines);
   Py_VISIT(traverse_module_state->__pyx_n_s_base);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_broadcasting_U_plane_rows_is_not);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_broadcasting_V_plane_rows_is_not);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_broadcasting_Y_plane_rows_is_not);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_broadcasting_rows_is_not_support);
   Py_VISIT(traverse_module_state->__pyx_n_s_buffer);
   Py_VISIT(traverse_module_state->__pyx_kp_u_buffer_object_must_support_buffe);
   Py_VISIT(traverse_module_state->__pyx_n_s_bufferlen);
@@ -4801,15 +4825,19 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_tuple__22);
   Py_VISIT(traverse_module_state->__pyx_tuple__23);
   Py_VISIT(traverse_module_state->__pyx_tuple__24);
+  Py_VISIT(traverse_module_state->__pyx_tuple__25);
   Py_VISIT(traverse_module_state->__pyx_tuple__26);
+  Py_VISIT(traverse_module_state->__pyx_tuple__27);
   Py_VISIT(traverse_module_state->__pyx_tuple__28);
   Py_VISIT(traverse_module_state->__pyx_tuple__30);
   Py_VISIT(traverse_module_state->__pyx_tuple__32);
-  Py_VISIT(traverse_module_state->__pyx_codeobj__25);
-  Py_VISIT(traverse_module_state->__pyx_codeobj__27);
+  Py_VISIT(traverse_module_state->__pyx_tuple__34);
+  Py_VISIT(traverse_module_state->__pyx_tuple__36);
   Py_VISIT(traverse_module_state->__pyx_codeobj__29);
   Py_VISIT(traverse_module_state->__pyx_codeobj__31);
   Py_VISIT(traverse_module_state->__pyx_codeobj__33);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__35);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__37);
   return 0;
 }
 #endif
@@ -5027,7 +5055,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_kp_u__13 __pyx_mstate_global->__pyx_kp_u__13
 #define __pyx_kp_u__2 __pyx_mstate_global->__pyx_kp_u__2
 #define __pyx_n_s__3 __pyx_mstate_global->__pyx_n_s__3
-#define __pyx_n_s__34 __pyx_mstate_global->__pyx_n_s__34
+#define __pyx_n_s__38 __pyx_mstate_global->__pyx_n_s__38
 #define __pyx_kp_u__6 __pyx_mstate_global->__pyx_kp_u__6
 #define __pyx_kp_u__7 __pyx_mstate_global->__pyx_kp_u__7
 #define __pyx_n_s_abc __pyx_mstate_global->__pyx_n_s_abc
@@ -5037,6 +5065,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_append __pyx_mstate_global->__pyx_n_s_append
 #define __pyx_n_s_asyncio_coroutines __pyx_mstate_global->__pyx_n_s_asyncio_coroutines
 #define __pyx_n_s_base __pyx_mstate_global->__pyx_n_s_base
+#define __pyx_kp_u_broadcasting_U_plane_rows_is_not __pyx_mstate_global->__pyx_kp_u_broadcasting_U_plane_rows_is_not
+#define __pyx_kp_u_broadcasting_V_plane_rows_is_not __pyx_mstate_global->__pyx_kp_u_broadcasting_V_plane_rows_is_not
+#define __pyx_kp_u_broadcasting_Y_plane_rows_is_not __pyx_mstate_global->__pyx_kp_u_broadcasting_Y_plane_rows_is_not
+#define __pyx_kp_u_broadcasting_rows_is_not_support __pyx_mstate_global->__pyx_kp_u_broadcasting_rows_is_not_support
 #define __pyx_n_s_buffer __pyx_mstate_global->__pyx_n_s_buffer
 #define __pyx_kp_u_buffer_object_must_support_buffe __pyx_mstate_global->__pyx_kp_u_buffer_object_must_support_buffe
 #define __pyx_n_s_bufferlen __pyx_mstate_global->__pyx_n_s_bufferlen
@@ -5218,15 +5250,19 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_tuple__22 __pyx_mstate_global->__pyx_tuple__22
 #define __pyx_tuple__23 __pyx_mstate_global->__pyx_tuple__23
 #define __pyx_tuple__24 __pyx_mstate_global->__pyx_tuple__24
+#define __pyx_tuple__25 __pyx_mstate_global->__pyx_tuple__25
 #define __pyx_tuple__26 __pyx_mstate_global->__pyx_tuple__26
+#define __pyx_tuple__27 __pyx_mstate_global->__pyx_tuple__27
 #define __pyx_tuple__28 __pyx_mstate_global->__pyx_tuple__28
 #define __pyx_tuple__30 __pyx_mstate_global->__pyx_tuple__30
 #define __pyx_tuple__32 __pyx_mstate_global->__pyx_tuple__32
-#define __pyx_codeobj__25 __pyx_mstate_global->__pyx_codeobj__25
-#define __pyx_codeobj__27 __pyx_mstate_global->__pyx_codeobj__27
+#define __pyx_tuple__34 __pyx_mstate_global->__pyx_tuple__34
+#define __pyx_tuple__36 __pyx_mstate_global->__pyx_tuple__36
 #define __pyx_codeobj__29 __pyx_mstate_global->__pyx_codeobj__29
 #define __pyx_codeobj__31 __pyx_mstate_global->__pyx_codeobj__31
 #define __pyx_codeobj__33 __pyx_mstate_global->__pyx_codeobj__33
+#define __pyx_codeobj__35 __pyx_mstate_global->__pyx_codeobj__35
+#define __pyx_codeobj__37 __pyx_mstate_global->__pyx_codeobj__37
 /* #### Code section: module_code ### */
 
 /* "carray.to_py":114
@@ -23795,8 +23831,8 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
   int __pyx_v_retcode;
   int __pyx_v_height;
   int __pyx_v_width;
-  int __pyx_v_pitch;
   int __pyx_v_channels;
+  int __pyx_v_pitch;
   int __pyx_v_colorspace_;
   int __pyx_v_colorsubsampling_;
   unsigned char *__pyx_v_jpegbuf;
@@ -23813,12 +23849,13 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
   Py_ssize_t __pyx_t_3;
   PyObject *__pyx_t_4 = NULL;
   int __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  int __pyx_t_7;
-  Py_UCS4 __pyx_t_8;
-  PyObject *__pyx_t_9 = NULL;
+  int __pyx_t_6;
+  Py_ssize_t __pyx_t_7;
+  int __pyx_t_8;
+  Py_UCS4 __pyx_t_9;
   PyObject *__pyx_t_10 = NULL;
-  int __pyx_t_11;
+  PyObject *__pyx_t_11 = NULL;
+  int __pyx_t_12;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -23844,7 +23881,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  *     cdef int retcode
  *     cdef int height = image.shape[0]             # <<<<<<<<<<<<<<
  *     cdef int width = image.shape[1]
- *     cdef int pitch
+ *     cdef int channels = image.shape[2]
  */
   __pyx_v_height = (__pyx_v_image.shape[0]);
 
@@ -23852,166 +23889,197 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  *     cdef int retcode
  *     cdef int height = image.shape[0]
  *     cdef int width = image.shape[1]             # <<<<<<<<<<<<<<
- *     cdef int pitch
- *     if image.strides is None:
+ *     cdef int channels = image.shape[2]
+ * 
  */
   __pyx_v_width = (__pyx_v_image.shape[1]);
 
-  /* "simplejpeg/_jpeg.pyx":468
+  /* "simplejpeg/_jpeg.pyx":467
+ *     cdef int height = image.shape[0]
  *     cdef int width = image.shape[1]
+ *     cdef int channels = image.shape[2]             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int pitch
+ */
+  __pyx_v_channels = (__pyx_v_image.shape[2]);
+
+  /* "simplejpeg/_jpeg.pyx":470
+ * 
  *     cdef int pitch
  *     if image.strides is None:             # <<<<<<<<<<<<<<
  *         pitch = 0
- *     elif len(image.strides) >= 3 and image.strides[1] == image.shape[2] and image.strides[2] == 1:
+ *     elif image.strides[0] == 0:
  */
-  __pyx_t_4 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_image.strides, 8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 468, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_image.strides, 8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 470, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = (__pyx_t_4 == Py_None);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_5) {
 
-    /* "simplejpeg/_jpeg.pyx":469
+    /* "simplejpeg/_jpeg.pyx":471
  *     cdef int pitch
  *     if image.strides is None:
  *         pitch = 0             # <<<<<<<<<<<<<<
- *     elif len(image.strides) >= 3 and image.strides[1] == image.shape[2] and image.strides[2] == 1:
- *         pitch = image.strides[0]
+ *     elif image.strides[0] == 0:
+ *         raise ValueError('broadcasting rows is not supported')
  */
     __pyx_v_pitch = 0;
 
-    /* "simplejpeg/_jpeg.pyx":468
- *     cdef int width = image.shape[1]
+    /* "simplejpeg/_jpeg.pyx":470
+ * 
  *     cdef int pitch
  *     if image.strides is None:             # <<<<<<<<<<<<<<
  *         pitch = 0
- *     elif len(image.strides) >= 3 and image.strides[1] == image.shape[2] and image.strides[2] == 1:
+ *     elif image.strides[0] == 0:
  */
     goto __pyx_L3;
   }
 
-  /* "simplejpeg/_jpeg.pyx":470
+  /* "simplejpeg/_jpeg.pyx":472
  *     if image.strides is None:
  *         pitch = 0
- *     elif len(image.strides) >= 3 and image.strides[1] == image.shape[2] and image.strides[2] == 1:             # <<<<<<<<<<<<<<
- *         pitch = image.strides[0]
- *     else:
+ *     elif image.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting rows is not supported')
+ *     elif image.strides[1] != channels or image.strides[2] not in (0, 1):
  */
-  __pyx_t_4 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_image.strides, 8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 470, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = PyObject_Length(__pyx_t_4); if (unlikely(__pyx_t_6 == ((Py_ssize_t)-1))) __PYX_ERR(0, 470, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_7 = (__pyx_t_6 >= 3);
-  if (__pyx_t_7) {
-  } else {
-    __pyx_t_5 = __pyx_t_7;
-    goto __pyx_L4_bool_binop_done;
-  }
-  __pyx_t_7 = ((__pyx_v_image.strides[1]) == (__pyx_v_image.shape[2]));
-  if (__pyx_t_7) {
-  } else {
-    __pyx_t_5 = __pyx_t_7;
-    goto __pyx_L4_bool_binop_done;
-  }
-  __pyx_t_7 = ((__pyx_v_image.strides[2]) == 1);
-  __pyx_t_5 = __pyx_t_7;
-  __pyx_L4_bool_binop_done:;
-  if (likely(__pyx_t_5)) {
+  __pyx_t_5 = ((__pyx_v_image.strides[0]) == 0);
+  if (unlikely(__pyx_t_5)) {
 
-    /* "simplejpeg/_jpeg.pyx":471
+    /* "simplejpeg/_jpeg.pyx":473
  *         pitch = 0
- *     elif len(image.strides) >= 3 and image.strides[1] == image.shape[2] and image.strides[2] == 1:
- *         pitch = image.strides[0]             # <<<<<<<<<<<<<<
- *     else:
+ *     elif image.strides[0] == 0:
+ *         raise ValueError('broadcasting rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif image.strides[1] != channels or image.strides[2] not in (0, 1):
  *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
  */
-    __pyx_v_pitch = (__pyx_v_image.strides[0]);
-
-    /* "simplejpeg/_jpeg.pyx":470
- *     if image.strides is None:
- *         pitch = 0
- *     elif len(image.strides) >= 3 and image.strides[1] == image.shape[2] and image.strides[2] == 1:             # <<<<<<<<<<<<<<
- *         pitch = image.strides[0]
- *     else:
- */
-    goto __pyx_L3;
-  }
-
-  /* "simplejpeg/_jpeg.pyx":473
- *         pitch = image.strides[0]
- *     else:
- *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))             # <<<<<<<<<<<<<<
- *     cdef int channels = image.shape[2]
- *     cdef int colorspace_ = PIXELFORMATS[colorspace]
- */
-  /*else*/ {
-    __pyx_t_4 = PyTuple_New(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 473, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = 0;
-    __pyx_t_8 = 127;
-    __Pyx_INCREF(__pyx_kp_u_image_must_have_C_contiguous_row);
-    __pyx_t_6 += 51;
-    __Pyx_GIVEREF(__pyx_kp_u_image_must_have_C_contiguous_row);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_image_must_have_C_contiguous_row);
-    __pyx_t_9 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_image.strides, 8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 473, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_9), __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 473, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) : __pyx_t_8;
-    __pyx_t_6 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_10);
-    __Pyx_GIVEREF(__pyx_t_10);
-    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_10);
-    __pyx_t_10 = 0;
-    __Pyx_INCREF(__pyx_kp_u_for_shape);
-    __pyx_t_6 += 11;
-    __Pyx_GIVEREF(__pyx_kp_u_for_shape);
-    PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_kp_u_for_shape);
-    __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_image.shape, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 473, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_9 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_10), __pyx_empty_unicode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 473, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) : __pyx_t_8;
-    __pyx_t_6 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_9);
-    __Pyx_GIVEREF(__pyx_t_9);
-    PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_t_9);
-    __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_4, 4, __pyx_t_6, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 473, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 473, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __PYX_ERR(0, 473, __pyx_L1_error)
+
+    /* "simplejpeg/_jpeg.pyx":472
+ *     if image.strides is None:
+ *         pitch = 0
+ *     elif image.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting rows is not supported')
+ *     elif image.strides[1] != channels or image.strides[2] not in (0, 1):
+ */
+  }
+
+  /* "simplejpeg/_jpeg.pyx":474
+ *     elif image.strides[0] == 0:
+ *         raise ValueError('broadcasting rows is not supported')
+ *     elif image.strides[1] != channels or image.strides[2] not in (0, 1):             # <<<<<<<<<<<<<<
+ *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
+ *     else:
+ */
+  __pyx_t_6 = ((__pyx_v_image.strides[1]) != __pyx_v_channels);
+  if (!__pyx_t_6) {
+  } else {
+    __pyx_t_5 = __pyx_t_6;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_7 = (__pyx_v_image.strides[2]);
+  __pyx_t_8 = (__pyx_t_7 != 0);
+  if (__pyx_t_8) {
+  } else {
+    __pyx_t_6 = __pyx_t_8;
+    goto __pyx_L6_bool_binop_done;
+  }
+  __pyx_t_8 = (__pyx_t_7 != 1);
+  __pyx_t_6 = __pyx_t_8;
+  __pyx_L6_bool_binop_done:;
+  __pyx_t_8 = __pyx_t_6;
+  __pyx_t_5 = __pyx_t_8;
+  __pyx_L4_bool_binop_done:;
+  if (unlikely(__pyx_t_5)) {
+
+    /* "simplejpeg/_jpeg.pyx":475
+ *         raise ValueError('broadcasting rows is not supported')
+ *     elif image.strides[1] != channels or image.strides[2] not in (0, 1):
+ *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))             # <<<<<<<<<<<<<<
+ *     else:
+ *         pitch = image.strides[0]
+ */
+    __pyx_t_4 = PyTuple_New(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 475, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_7 = 0;
+    __pyx_t_9 = 127;
+    __Pyx_INCREF(__pyx_kp_u_image_must_have_C_contiguous_row);
+    __pyx_t_7 += 51;
+    __Pyx_GIVEREF(__pyx_kp_u_image_must_have_C_contiguous_row);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_image_must_have_C_contiguous_row);
+    __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_image.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 475, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_11 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_10), __pyx_empty_unicode); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 475, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __pyx_t_9 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_11) > __pyx_t_9) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_11) : __pyx_t_9;
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_11);
+    __Pyx_GIVEREF(__pyx_t_11);
+    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_11);
+    __pyx_t_11 = 0;
+    __Pyx_INCREF(__pyx_kp_u_for_shape);
+    __pyx_t_7 += 11;
+    __Pyx_GIVEREF(__pyx_kp_u_for_shape);
+    PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_kp_u_for_shape);
+    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_image.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 475, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __pyx_t_10 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_empty_unicode); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 475, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __pyx_t_9 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) > __pyx_t_9) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) : __pyx_t_9;
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_10);
+    __Pyx_GIVEREF(__pyx_t_10);
+    PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_t_10);
+    __pyx_t_10 = 0;
+    __pyx_t_10 = __Pyx_PyUnicode_Join(__pyx_t_4, 4, __pyx_t_7, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 475, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_10); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 475, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __PYX_ERR(0, 475, __pyx_L1_error)
+
+    /* "simplejpeg/_jpeg.pyx":474
+ *     elif image.strides[0] == 0:
+ *         raise ValueError('broadcasting rows is not supported')
+ *     elif image.strides[1] != channels or image.strides[2] not in (0, 1):             # <<<<<<<<<<<<<<
+ *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
+ *     else:
+ */
+  }
+
+  /* "simplejpeg/_jpeg.pyx":477
+ *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
+ *     else:
+ *         pitch = image.strides[0]             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int colorspace_ = PIXELFORMATS[colorspace]
+ */
+  /*else*/ {
+    __pyx_v_pitch = (__pyx_v_image.strides[0]);
   }
   __pyx_L3:;
 
-  /* "simplejpeg/_jpeg.pyx":474
- *     else:
- *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
- *     cdef int channels = image.shape[2]             # <<<<<<<<<<<<<<
- *     cdef int colorspace_ = PIXELFORMATS[colorspace]
- *     if tjPixelSize[colorspace_] != channels:
- */
-  __pyx_v_channels = (__pyx_v_image.shape[2]);
-
-  /* "simplejpeg/_jpeg.pyx":475
- *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
- *     cdef int channels = image.shape[2]
+  /* "simplejpeg/_jpeg.pyx":479
+ *         pitch = image.strides[0]
+ * 
  *     cdef int colorspace_ = PIXELFORMATS[colorspace]             # <<<<<<<<<<<<<<
  *     if tjPixelSize[colorspace_] != channels:
  *         raise ValueError('%d channels does not match given colorspace %s'
  */
-  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 475, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_PIXELFORMATS, __pyx_v_colorspace); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 475, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 479, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_colorspace_ = __pyx_t_11;
+  __pyx_v_colorspace_ = __pyx_t_12;
 
-  /* "simplejpeg/_jpeg.pyx":476
- *     cdef int channels = image.shape[2]
+  /* "simplejpeg/_jpeg.pyx":480
+ * 
  *     cdef int colorspace_ = PIXELFORMATS[colorspace]
  *     if tjPixelSize[colorspace_] != channels:             # <<<<<<<<<<<<<<
  *         raise ValueError('%d channels does not match given colorspace %s'
@@ -24020,62 +24088,62 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
   __pyx_t_5 = ((tjPixelSize[__pyx_v_colorspace_]) != __pyx_v_channels);
   if (unlikely(__pyx_t_5)) {
 
-    /* "simplejpeg/_jpeg.pyx":477
+    /* "simplejpeg/_jpeg.pyx":481
  *     cdef int colorspace_ = PIXELFORMATS[colorspace]
  *     if tjPixelSize[colorspace_] != channels:
  *         raise ValueError('%d channels does not match given colorspace %s'             # <<<<<<<<<<<<<<
  *                          % (channels, colorspace))
  *     cdef int colorsubsampling_ = TJSAMP_GRAY
  */
-    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 477, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 481, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = 0;
-    __pyx_t_8 = 127;
+    __pyx_t_7 = 0;
+    __pyx_t_9 = 127;
 
-    /* "simplejpeg/_jpeg.pyx":478
+    /* "simplejpeg/_jpeg.pyx":482
  *     if tjPixelSize[colorspace_] != channels:
  *         raise ValueError('%d channels does not match given colorspace %s'
  *                          % (channels, colorspace))             # <<<<<<<<<<<<<<
  *     cdef int colorsubsampling_ = TJSAMP_GRAY
  *     if colorspace_ != TJPF_GRAY:
  */
-    __pyx_t_9 = __Pyx_PyUnicode_From_int(__pyx_v_channels, 0, ' ', 'd'); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 478, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_6 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_9);
-    __Pyx_GIVEREF(__pyx_t_9);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_9);
-    __pyx_t_9 = 0;
+    __pyx_t_10 = __Pyx_PyUnicode_From_int(__pyx_v_channels, 0, ' ', 'd'); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 482, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_10);
+    __Pyx_GIVEREF(__pyx_t_10);
+    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_10);
+    __pyx_t_10 = 0;
     __Pyx_INCREF(__pyx_kp_u_channels_does_not_match_given_c);
-    __pyx_t_6 += 42;
+    __pyx_t_7 += 42;
     __Pyx_GIVEREF(__pyx_kp_u_channels_does_not_match_given_c);
     PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_kp_u_channels_does_not_match_given_c);
-    __pyx_t_9 = __Pyx_PyUnicode_Unicode(__pyx_v_colorspace); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 478, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) > __pyx_t_8) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_9) : __pyx_t_8;
-    __pyx_t_6 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_9);
-    __Pyx_GIVEREF(__pyx_t_9);
-    PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_9);
-    __pyx_t_9 = 0;
+    __pyx_t_10 = __Pyx_PyUnicode_Unicode(__pyx_v_colorspace); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 482, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __pyx_t_9 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) > __pyx_t_9) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_10) : __pyx_t_9;
+    __pyx_t_7 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_10);
+    __Pyx_GIVEREF(__pyx_t_10);
+    PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_10);
+    __pyx_t_10 = 0;
 
-    /* "simplejpeg/_jpeg.pyx":477
+    /* "simplejpeg/_jpeg.pyx":481
  *     cdef int colorspace_ = PIXELFORMATS[colorspace]
  *     if tjPixelSize[colorspace_] != channels:
  *         raise ValueError('%d channels does not match given colorspace %s'             # <<<<<<<<<<<<<<
  *                          % (channels, colorspace))
  *     cdef int colorsubsampling_ = TJSAMP_GRAY
  */
-    __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_4, 3, __pyx_t_6, __pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 477, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
+    __pyx_t_10 = __Pyx_PyUnicode_Join(__pyx_t_4, 3, __pyx_t_7, __pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 481, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 477, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_10); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 481, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 477, __pyx_L1_error)
+    __PYX_ERR(0, 481, __pyx_L1_error)
 
-    /* "simplejpeg/_jpeg.pyx":476
- *     cdef int channels = image.shape[2]
+    /* "simplejpeg/_jpeg.pyx":480
+ * 
  *     cdef int colorspace_ = PIXELFORMATS[colorspace]
  *     if tjPixelSize[colorspace_] != channels:             # <<<<<<<<<<<<<<
  *         raise ValueError('%d channels does not match given colorspace %s'
@@ -24083,7 +24151,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   }
 
-  /* "simplejpeg/_jpeg.pyx":479
+  /* "simplejpeg/_jpeg.pyx":483
  *         raise ValueError('%d channels does not match given colorspace %s'
  *                          % (channels, colorspace))
  *     cdef int colorsubsampling_ = TJSAMP_GRAY             # <<<<<<<<<<<<<<
@@ -24092,7 +24160,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   __pyx_v_colorsubsampling_ = TJSAMP_GRAY;
 
-  /* "simplejpeg/_jpeg.pyx":480
+  /* "simplejpeg/_jpeg.pyx":484
  *                          % (channels, colorspace))
  *     cdef int colorsubsampling_ = TJSAMP_GRAY
  *     if colorspace_ != TJPF_GRAY:             # <<<<<<<<<<<<<<
@@ -24102,20 +24170,20 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
   __pyx_t_5 = (__pyx_v_colorspace_ != TJPF_GRAY);
   if (__pyx_t_5) {
 
-    /* "simplejpeg/_jpeg.pyx":481
+    /* "simplejpeg/_jpeg.pyx":485
  *     cdef int colorsubsampling_ = TJSAMP_GRAY
  *     if colorspace_ != TJPF_GRAY:
  *         colorsubsampling_ = SUBSAMPLING[colorsubsampling]             # <<<<<<<<<<<<<<
  *     cdef unsigned char * jpegbuf = NULL
  *     cdef unsigned char ** jpegbufbuf = &jpegbuf
  */
-    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING, __pyx_v_colorsubsampling); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 481, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Dict_GetItem(__pyx_v_10simplejpeg_5_jpeg_SUBSAMPLING, __pyx_v_colorsubsampling); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 485, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_11 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_11 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 481, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_PyInt_As_int(__pyx_t_4); if (unlikely((__pyx_t_12 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 485, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_v_colorsubsampling_ = __pyx_t_11;
+    __pyx_v_colorsubsampling_ = __pyx_t_12;
 
-    /* "simplejpeg/_jpeg.pyx":480
+    /* "simplejpeg/_jpeg.pyx":484
  *                          % (channels, colorspace))
  *     cdef int colorsubsampling_ = TJSAMP_GRAY
  *     if colorspace_ != TJPF_GRAY:             # <<<<<<<<<<<<<<
@@ -24124,7 +24192,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   }
 
-  /* "simplejpeg/_jpeg.pyx":482
+  /* "simplejpeg/_jpeg.pyx":486
  *     if colorspace_ != TJPF_GRAY:
  *         colorsubsampling_ = SUBSAMPLING[colorsubsampling]
  *     cdef unsigned char * jpegbuf = NULL             # <<<<<<<<<<<<<<
@@ -24133,7 +24201,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   __pyx_v_jpegbuf = NULL;
 
-  /* "simplejpeg/_jpeg.pyx":483
+  /* "simplejpeg/_jpeg.pyx":487
  *         colorsubsampling_ = SUBSAMPLING[colorsubsampling]
  *     cdef unsigned char * jpegbuf = NULL
  *     cdef unsigned char ** jpegbufbuf = &jpegbuf             # <<<<<<<<<<<<<<
@@ -24142,7 +24210,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   __pyx_v_jpegbufbuf = (&__pyx_v_jpegbuf);
 
-  /* "simplejpeg/_jpeg.pyx":484
+  /* "simplejpeg/_jpeg.pyx":488
  *     cdef unsigned char * jpegbuf = NULL
  *     cdef unsigned char ** jpegbufbuf = &jpegbuf
  *     cdef unsigned long jpegsize = 0             # <<<<<<<<<<<<<<
@@ -24151,7 +24219,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   __pyx_v_jpegsize = 0;
 
-  /* "simplejpeg/_jpeg.pyx":487
+  /* "simplejpeg/_jpeg.pyx":491
  *     cdef int flags
  *     cdef tjhandle encoder
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -24167,7 +24235,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
       #endif
       /*try:*/ {
 
-        /* "simplejpeg/_jpeg.pyx":488
+        /* "simplejpeg/_jpeg.pyx":492
  *     cdef tjhandle encoder
  *     with nogil:
  *         encoder = tjInitCompress()             # <<<<<<<<<<<<<<
@@ -24176,7 +24244,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
         __pyx_v_encoder = tjInitCompress();
 
-        /* "simplejpeg/_jpeg.pyx":489
+        /* "simplejpeg/_jpeg.pyx":493
  *     with nogil:
  *         encoder = tjInitCompress()
  *         if encoder == NULL:             # <<<<<<<<<<<<<<
@@ -24186,7 +24254,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
         __pyx_t_5 = (__pyx_v_encoder == NULL);
         if (unlikely(__pyx_t_5)) {
 
-          /* "simplejpeg/_jpeg.pyx":490
+          /* "simplejpeg/_jpeg.pyx":494
  *         encoder = tjInitCompress()
  *         if encoder == NULL:
  *             raise RuntimeError('could not create JPEG encoder')             # <<<<<<<<<<<<<<
@@ -24198,23 +24266,23 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
               PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
               #endif
               /*try:*/ {
-                __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 490, __pyx_L14_error)
+                __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 494, __pyx_L15_error)
                 __Pyx_GOTREF(__pyx_t_4);
                 __Pyx_Raise(__pyx_t_4, 0, 0, 0);
                 __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-                __PYX_ERR(0, 490, __pyx_L14_error)
+                __PYX_ERR(0, 494, __pyx_L15_error)
               }
               /*finally:*/ {
-                __pyx_L14_error: {
+                __pyx_L15_error: {
                   #ifdef WITH_THREAD
                   __Pyx_PyGILState_Release(__pyx_gilstate_save);
                   #endif
-                  goto __pyx_L10_error;
+                  goto __pyx_L11_error;
                 }
               }
           }
 
-          /* "simplejpeg/_jpeg.pyx":489
+          /* "simplejpeg/_jpeg.pyx":493
  *     with nogil:
  *         encoder = tjInitCompress()
  *         if encoder == NULL:             # <<<<<<<<<<<<<<
@@ -24223,7 +24291,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
         }
 
-        /* "simplejpeg/_jpeg.pyx":491
+        /* "simplejpeg/_jpeg.pyx":495
  *         if encoder == NULL:
  *             raise RuntimeError('could not create JPEG encoder')
  *         flags = 0             # <<<<<<<<<<<<<<
@@ -24232,7 +24300,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
         __pyx_v_flags = 0;
 
-        /* "simplejpeg/_jpeg.pyx":492
+        /* "simplejpeg/_jpeg.pyx":496
  *             raise RuntimeError('could not create JPEG encoder')
  *         flags = 0
  *         if fastdct:             # <<<<<<<<<<<<<<
@@ -24241,7 +24309,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
         if (__pyx_v_fastdct) {
 
-          /* "simplejpeg/_jpeg.pyx":493
+          /* "simplejpeg/_jpeg.pyx":497
  *         flags = 0
  *         if fastdct:
  *             flags |= TJFLAG_FASTDCT             # <<<<<<<<<<<<<<
@@ -24250,7 +24318,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
           __pyx_v_flags = (__pyx_v_flags | TJFLAG_FASTDCT);
 
-          /* "simplejpeg/_jpeg.pyx":492
+          /* "simplejpeg/_jpeg.pyx":496
  *             raise RuntimeError('could not create JPEG encoder')
  *         flags = 0
  *         if fastdct:             # <<<<<<<<<<<<<<
@@ -24259,7 +24327,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
         }
 
-        /* "simplejpeg/_jpeg.pyx":494
+        /* "simplejpeg/_jpeg.pyx":498
  *         if fastdct:
  *             flags |= TJFLAG_FASTDCT
  *         retcode = tjCompress2(             # <<<<<<<<<<<<<<
@@ -24268,7 +24336,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
         __pyx_v_retcode = tjCompress2(__pyx_v_encoder, __pyx_v_image_p, __pyx_v_width, __pyx_v_pitch, __pyx_v_height, __pyx_v_colorspace_, __pyx_v_jpegbufbuf, (&__pyx_v_jpegsize), __pyx_v_colorsubsampling_, __pyx_v_quality, __pyx_v_flags);
 
-        /* "simplejpeg/_jpeg.pyx":507
+        /* "simplejpeg/_jpeg.pyx":511
  *             flags
  *         )
  *         if retcode != 0:             # <<<<<<<<<<<<<<
@@ -24278,7 +24346,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
         __pyx_t_5 = (__pyx_v_retcode != 0);
         if (unlikely(__pyx_t_5)) {
 
-          /* "simplejpeg/_jpeg.pyx":508
+          /* "simplejpeg/_jpeg.pyx":512
  *         )
  *         if retcode != 0:
  *             with gil:             # <<<<<<<<<<<<<<
@@ -24291,19 +24359,19 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
               #endif
               /*try:*/ {
 
-                /* "simplejpeg/_jpeg.pyx":509
+                /* "simplejpeg/_jpeg.pyx":513
  *         if retcode != 0:
  *             with gil:
  *                 msg = __tj_error(encoder)             # <<<<<<<<<<<<<<
  *                 tjDestroy(encoder)
  *                 raise ValueError(msg)
  */
-                __pyx_t_4 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 509, __pyx_L19_error)
+                __pyx_t_4 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 513, __pyx_L20_error)
                 __Pyx_GOTREF(__pyx_t_4);
                 __pyx_v_msg = ((PyObject*)__pyx_t_4);
                 __pyx_t_4 = 0;
 
-                /* "simplejpeg/_jpeg.pyx":510
+                /* "simplejpeg/_jpeg.pyx":514
  *             with gil:
  *                 msg = __tj_error(encoder)
  *                 tjDestroy(encoder)             # <<<<<<<<<<<<<<
@@ -24312,21 +24380,21 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
                 (void)(tjDestroy(__pyx_v_encoder));
 
-                /* "simplejpeg/_jpeg.pyx":511
+                /* "simplejpeg/_jpeg.pyx":515
  *                 msg = __tj_error(encoder)
  *                 tjDestroy(encoder)
  *                 raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
  *     tjFree(jpegbuf)
  */
-                __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_v_msg); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 511, __pyx_L19_error)
+                __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_v_msg); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 515, __pyx_L20_error)
                 __Pyx_GOTREF(__pyx_t_4);
                 __Pyx_Raise(__pyx_t_4, 0, 0, 0);
                 __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-                __PYX_ERR(0, 511, __pyx_L19_error)
+                __PYX_ERR(0, 515, __pyx_L20_error)
               }
 
-              /* "simplejpeg/_jpeg.pyx":508
+              /* "simplejpeg/_jpeg.pyx":512
  *         )
  *         if retcode != 0:
  *             with gil:             # <<<<<<<<<<<<<<
@@ -24334,16 +24402,16 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  *                 tjDestroy(encoder)
  */
               /*finally:*/ {
-                __pyx_L19_error: {
+                __pyx_L20_error: {
                   #ifdef WITH_THREAD
                   __Pyx_PyGILState_Release(__pyx_gilstate_save);
                   #endif
-                  goto __pyx_L10_error;
+                  goto __pyx_L11_error;
                 }
               }
           }
 
-          /* "simplejpeg/_jpeg.pyx":507
+          /* "simplejpeg/_jpeg.pyx":511
  *             flags
  *         )
  *         if retcode != 0:             # <<<<<<<<<<<<<<
@@ -24353,7 +24421,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
         }
       }
 
-      /* "simplejpeg/_jpeg.pyx":487
+      /* "simplejpeg/_jpeg.pyx":491
  *     cdef int flags
  *     cdef tjhandle encoder
  *     with nogil:             # <<<<<<<<<<<<<<
@@ -24366,32 +24434,32 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
           __Pyx_FastGIL_Forget();
           Py_BLOCK_THREADS
           #endif
-          goto __pyx_L11;
+          goto __pyx_L12;
         }
-        __pyx_L10_error: {
+        __pyx_L11_error: {
           #ifdef WITH_THREAD
           __Pyx_FastGIL_Forget();
           Py_BLOCK_THREADS
           #endif
           goto __pyx_L1_error;
         }
-        __pyx_L11:;
+        __pyx_L12:;
       }
   }
 
-  /* "simplejpeg/_jpeg.pyx":512
+  /* "simplejpeg/_jpeg.pyx":516
  *                 tjDestroy(encoder)
  *                 raise ValueError(msg)
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)             # <<<<<<<<<<<<<<
  *     tjFree(jpegbuf)
  *     tjDestroy(encoder)
  */
-  __pyx_t_4 = PyBytes_FromStringAndSize(((char *)__pyx_v_jpegbuf), __pyx_v_jpegsize); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 512, __pyx_L1_error)
+  __pyx_t_4 = PyBytes_FromStringAndSize(((char *)__pyx_v_jpegbuf), __pyx_v_jpegsize); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 516, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_jpeg = ((PyObject*)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "simplejpeg/_jpeg.pyx":513
+  /* "simplejpeg/_jpeg.pyx":517
  *                 raise ValueError(msg)
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
  *     tjFree(jpegbuf)             # <<<<<<<<<<<<<<
@@ -24400,7 +24468,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   tjFree(__pyx_v_jpegbuf);
 
-  /* "simplejpeg/_jpeg.pyx":514
+  /* "simplejpeg/_jpeg.pyx":518
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
  *     tjFree(jpegbuf)
  *     tjDestroy(encoder)             # <<<<<<<<<<<<<<
@@ -24409,7 +24477,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
  */
   (void)(tjDestroy(__pyx_v_encoder));
 
-  /* "simplejpeg/_jpeg.pyx":515
+  /* "simplejpeg/_jpeg.pyx":519
  *     tjFree(jpegbuf)
  *     tjDestroy(encoder)
  *     return jpeg             # <<<<<<<<<<<<<<
@@ -24432,8 +24500,8 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("simplejpeg._jpeg.encode_jpeg", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -24444,7 +24512,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_4encode_jpeg(CYTHON_UNUSED PyObjec
   return __pyx_r;
 }
 
-/* "simplejpeg/_jpeg.pyx":518
+/* "simplejpeg/_jpeg.pyx":522
  * 
  * 
  * def encode_jpeg_yuv_planes(             # <<<<<<<<<<<<<<
@@ -24518,7 +24586,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -24526,9 +24594,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("encode_jpeg_yuv_planes", 0, 3, 5, 1); __PYX_ERR(0, 518, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("encode_jpeg_yuv_planes", 0, 3, 5, 1); __PYX_ERR(0, 522, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -24536,28 +24604,28 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("encode_jpeg_yuv_planes", 0, 3, 5, 2); __PYX_ERR(0, 518, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("encode_jpeg_yuv_planes", 0, 3, 5, 2); __PYX_ERR(0, 522, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_quality);
           if (value) { values[3] = __Pyx_Arg_NewRef_FASTCALL(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_fastdct);
           if (value) { values[4] = __Pyx_Arg_NewRef_FASTCALL(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 518, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "encode_jpeg_yuv_planes") < 0)) __PYX_ERR(0, 518, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "encode_jpeg_yuv_planes") < 0)) __PYX_ERR(0, 522, __pyx_L3_error)
       }
     } else {
       switch (__pyx_nargs) {
@@ -24572,19 +24640,19 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
         default: goto __pyx_L5_argtuple_error;
       }
     }
-    __pyx_v_Y = __Pyx_PyObject_to_MemoryviewSlice_dsds_unsigned_char__const__(values[0], 0); if (unlikely(!__pyx_v_Y.memview)) __PYX_ERR(0, 519, __pyx_L3_error)
-    __pyx_v_U = __Pyx_PyObject_to_MemoryviewSlice_dsds_unsigned_char__const__(values[1], 0); if (unlikely(!__pyx_v_U.memview)) __PYX_ERR(0, 520, __pyx_L3_error)
-    __pyx_v_V = __Pyx_PyObject_to_MemoryviewSlice_dsds_unsigned_char__const__(values[2], 0); if (unlikely(!__pyx_v_V.memview)) __PYX_ERR(0, 521, __pyx_L3_error)
+    __pyx_v_Y = __Pyx_PyObject_to_MemoryviewSlice_dsds_unsigned_char__const__(values[0], 0); if (unlikely(!__pyx_v_Y.memview)) __PYX_ERR(0, 523, __pyx_L3_error)
+    __pyx_v_U = __Pyx_PyObject_to_MemoryviewSlice_dsds_unsigned_char__const__(values[1], 0); if (unlikely(!__pyx_v_U.memview)) __PYX_ERR(0, 524, __pyx_L3_error)
+    __pyx_v_V = __Pyx_PyObject_to_MemoryviewSlice_dsds_unsigned_char__const__(values[2], 0); if (unlikely(!__pyx_v_V.memview)) __PYX_ERR(0, 525, __pyx_L3_error)
     if (values[3]) {
-      __pyx_v_quality = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_quality == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L3_error)
+      __pyx_v_quality = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_quality == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 526, __pyx_L3_error)
     } else {
       __pyx_v_quality = ((int)((int)85));
     }
     if (values[4]) {
-      __pyx_v_fastdct = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_fastdct == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 523, __pyx_L3_error)
+      __pyx_v_fastdct = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_fastdct == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 527, __pyx_L3_error)
     } else {
 
-      /* "simplejpeg/_jpeg.pyx":523
+      /* "simplejpeg/_jpeg.pyx":527
  *         const unsigned char[:, :] V,
  *         int quality=85,
  *         bint fastdct=False,             # <<<<<<<<<<<<<<
@@ -24596,7 +24664,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("encode_jpeg_yuv_planes", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 518, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("encode_jpeg_yuv_planes", 0, 3, 5, __pyx_nargs); __PYX_ERR(0, 522, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -24614,11 +24682,11 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_Y.memview) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "Y"); __PYX_ERR(0, 519, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "Y"); __PYX_ERR(0, 523, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(__pyx_self, __pyx_v_Y, __pyx_v_U, __pyx_v_V, __pyx_v_quality, __pyx_v_fastdct);
 
-  /* "simplejpeg/_jpeg.pyx":518
+  /* "simplejpeg/_jpeg.pyx":522
  * 
  * 
  * def encode_jpeg_yuv_planes(             # <<<<<<<<<<<<<<
@@ -24682,7 +24750,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("encode_jpeg_yuv_planes", 1);
 
-  /* "simplejpeg/_jpeg.pyx":543
+  /* "simplejpeg/_jpeg.pyx":547
  *     """
  *     cdef const unsigned char** planes = [
  *         &Y[0,0],             # <<<<<<<<<<<<<<
@@ -24694,7 +24762,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   if (__pyx_t_1 < 0) __pyx_t_1 += __pyx_v_Y.shape[0];
   if (__pyx_t_2 < 0) __pyx_t_2 += __pyx_v_Y.shape[1];
 
-  /* "simplejpeg/_jpeg.pyx":544
+  /* "simplejpeg/_jpeg.pyx":548
  *     cdef const unsigned char** planes = [
  *         &Y[0,0],
  *         &U[0,0],             # <<<<<<<<<<<<<<
@@ -24706,7 +24774,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   if (__pyx_t_3 < 0) __pyx_t_3 += __pyx_v_U.shape[0];
   if (__pyx_t_4 < 0) __pyx_t_4 += __pyx_v_U.shape[1];
 
-  /* "simplejpeg/_jpeg.pyx":545
+  /* "simplejpeg/_jpeg.pyx":549
  *         &Y[0,0],
  *         &U[0,0],
  *         &V[0,0],             # <<<<<<<<<<<<<<
@@ -24718,7 +24786,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   if (__pyx_t_5 < 0) __pyx_t_5 += __pyx_v_V.shape[0];
   if (__pyx_t_6 < 0) __pyx_t_6 += __pyx_v_V.shape[1];
 
-  /* "simplejpeg/_jpeg.pyx":542
+  /* "simplejpeg/_jpeg.pyx":546
  *         encoded image as JPEG (JFIF) data
  *     """
  *     cdef const unsigned char** planes = [             # <<<<<<<<<<<<<<
@@ -24730,7 +24798,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_t_7[2] = (&(*((unsigned char const  *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_V.data + __pyx_t_5 * __pyx_v_V.strides[0]) ) + __pyx_t_6 * __pyx_v_V.strides[1]) ))));
   __pyx_v_planes = __pyx_t_7;
 
-  /* "simplejpeg/_jpeg.pyx":548
+  /* "simplejpeg/_jpeg.pyx":552
  *     ]
  *     cdef int retcode
  *     cdef int height = Y.shape[0]             # <<<<<<<<<<<<<<
@@ -24739,7 +24807,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   __pyx_v_height = (__pyx_v_Y.shape[0]);
 
-  /* "simplejpeg/_jpeg.pyx":549
+  /* "simplejpeg/_jpeg.pyx":553
  *     cdef int retcode
  *     cdef int height = Y.shape[0]
  *     cdef int width = Y.shape[1]             # <<<<<<<<<<<<<<
@@ -24748,7 +24816,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   __pyx_v_width = (__pyx_v_Y.shape[1]);
 
-  /* "simplejpeg/_jpeg.pyx":551
+  /* "simplejpeg/_jpeg.pyx":555
  *     cdef int width = Y.shape[1]
  *     cdef int strides[3]
  *     cdef int colorsubsampling_ = TJSAMP_UNKNOWN             # <<<<<<<<<<<<<<
@@ -24757,7 +24825,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   __pyx_v_colorsubsampling_ = TJSAMP_UNKNOWN;
 
-  /* "simplejpeg/_jpeg.pyx":552
+  /* "simplejpeg/_jpeg.pyx":556
  *     cdef int strides[3]
  *     cdef int colorsubsampling_ = TJSAMP_UNKNOWN
  *     cdef unsigned char * jpegbuf = NULL             # <<<<<<<<<<<<<<
@@ -24766,7 +24834,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   __pyx_v_jpegbuf = NULL;
 
-  /* "simplejpeg/_jpeg.pyx":553
+  /* "simplejpeg/_jpeg.pyx":557
  *     cdef int colorsubsampling_ = TJSAMP_UNKNOWN
  *     cdef unsigned char * jpegbuf = NULL
  *     cdef unsigned char ** jpegbufbuf = &jpegbuf             # <<<<<<<<<<<<<<
@@ -24775,7 +24843,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   __pyx_v_jpegbufbuf = (&__pyx_v_jpegbuf);
 
-  /* "simplejpeg/_jpeg.pyx":554
+  /* "simplejpeg/_jpeg.pyx":558
  *     cdef unsigned char * jpegbuf = NULL
  *     cdef unsigned char ** jpegbufbuf = &jpegbuf
  *     cdef unsigned long jpegsize = 0             # <<<<<<<<<<<<<<
@@ -24784,7 +24852,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   __pyx_v_jpegsize = 0;
 
-  /* "simplejpeg/_jpeg.pyx":558
+  /* "simplejpeg/_jpeg.pyx":562
  *     cdef tjhandle encoder
  * 
  *     if U is None and V is None:             # <<<<<<<<<<<<<<
@@ -24802,7 +24870,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_8) {
 
-    /* "simplejpeg/_jpeg.pyx":559
+    /* "simplejpeg/_jpeg.pyx":563
  * 
  *     if U is None and V is None:
  *         colorsubsampling_ = TJSAMP_GRAY             # <<<<<<<<<<<<<<
@@ -24811,7 +24879,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
     __pyx_v_colorsubsampling_ = TJSAMP_GRAY;
 
-    /* "simplejpeg/_jpeg.pyx":558
+    /* "simplejpeg/_jpeg.pyx":562
  *     cdef tjhandle encoder
  * 
  *     if U is None and V is None:             # <<<<<<<<<<<<<<
@@ -24821,7 +24889,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     goto __pyx_L3;
   }
 
-  /* "simplejpeg/_jpeg.pyx":560
+  /* "simplejpeg/_jpeg.pyx":564
  *     if U is None and V is None:
  *         colorsubsampling_ = TJSAMP_GRAY
  *     elif U is None or V is None:             # <<<<<<<<<<<<<<
@@ -24839,14 +24907,14 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_L6_bool_binop_done:;
   if (unlikely(__pyx_t_8)) {
 
-    /* "simplejpeg/_jpeg.pyx":562
+    /* "simplejpeg/_jpeg.pyx":566
  *     elif U is None or V is None:
  *         raise ValueError(
  *             f'either both U {"(missing)" if U is None else "(present)"} and V '             # <<<<<<<<<<<<<<
  *             f'{"(missing)" if V is None else "(present)"} planes must be given, or neither'
  *         )
  */
-    __pyx_t_10 = PyTuple_New(5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 562, __pyx_L1_error)
+    __pyx_t_10 = PyTuple_New(5); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 566, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_11 = 0;
     __pyx_t_12 = 127;
@@ -24862,7 +24930,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __Pyx_INCREF(__pyx_kp_u_present);
       __pyx_t_13 = __pyx_kp_u_present;
     }
-    __pyx_t_14 = __Pyx_PyUnicode_Unicode(__pyx_t_13); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 562, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyUnicode_Unicode(__pyx_t_13); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 566, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_12;
@@ -24875,7 +24943,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __Pyx_GIVEREF(__pyx_kp_u_and_V);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_kp_u_and_V);
 
-    /* "simplejpeg/_jpeg.pyx":563
+    /* "simplejpeg/_jpeg.pyx":567
  *         raise ValueError(
  *             f'either both U {"(missing)" if U is None else "(present)"} and V '
  *             f'{"(missing)" if V is None else "(present)"} planes must be given, or neither'             # <<<<<<<<<<<<<<
@@ -24890,7 +24958,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __Pyx_INCREF(__pyx_kp_u_present);
       __pyx_t_14 = __pyx_kp_u_present;
     }
-    __pyx_t_13 = __Pyx_PyUnicode_Unicode(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 563, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyUnicode_Unicode(__pyx_t_14); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 567, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) : __pyx_t_12;
@@ -24903,32 +24971,32 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __Pyx_GIVEREF(__pyx_kp_u_planes_must_be_given_or_neither);
     PyTuple_SET_ITEM(__pyx_t_10, 4, __pyx_kp_u_planes_must_be_given_or_neither);
 
-    /* "simplejpeg/_jpeg.pyx":562
+    /* "simplejpeg/_jpeg.pyx":566
  *     elif U is None or V is None:
  *         raise ValueError(
  *             f'either both U {"(missing)" if U is None else "(present)"} and V '             # <<<<<<<<<<<<<<
  *             f'{"(missing)" if V is None else "(present)"} planes must be given, or neither'
  *         )
  */
-    __pyx_t_13 = __Pyx_PyUnicode_Join(__pyx_t_10, 5, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 562, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyUnicode_Join(__pyx_t_10, 5, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 566, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-    /* "simplejpeg/_jpeg.pyx":561
+    /* "simplejpeg/_jpeg.pyx":565
  *         colorsubsampling_ = TJSAMP_GRAY
  *     elif U is None or V is None:
  *         raise ValueError(             # <<<<<<<<<<<<<<
  *             f'either both U {"(missing)" if U is None else "(present)"} and V '
  *             f'{"(missing)" if V is None else "(present)"} planes must be given, or neither'
  */
-    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_13); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 561, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_13); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 565, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 561, __pyx_L1_error)
+    __PYX_ERR(0, 565, __pyx_L1_error)
 
-    /* "simplejpeg/_jpeg.pyx":560
+    /* "simplejpeg/_jpeg.pyx":564
  *     if U is None and V is None:
  *         colorsubsampling_ = TJSAMP_GRAY
  *     elif U is None or V is None:             # <<<<<<<<<<<<<<
@@ -24937,7 +25005,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   }
 
-  /* "simplejpeg/_jpeg.pyx":565
+  /* "simplejpeg/_jpeg.pyx":569
  *             f'{"(missing)" if V is None else "(present)"} planes must be given, or neither'
  *         )
  *     elif U.shape[0] != V.shape[0] or U.shape[1] != V.shape[1]:             # <<<<<<<<<<<<<<
@@ -24955,14 +25023,14 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_L8_bool_binop_done:;
   if (unlikely(__pyx_t_8)) {
 
-    /* "simplejpeg/_jpeg.pyx":567
+    /* "simplejpeg/_jpeg.pyx":571
  *     elif U.shape[0] != V.shape[0] or U.shape[1] != V.shape[1]:
  *         raise ValueError(
  *             f'U and V planes must have matching shape, got {U.shape} and {V.shape}'             # <<<<<<<<<<<<<<
  *         )
  *     elif U.shape[0] == height:
  */
-    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 567, __pyx_L1_error)
+    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_11 = 0;
     __pyx_t_12 = 127;
@@ -24970,9 +25038,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 45;
     __Pyx_GIVEREF(__pyx_kp_u_U_and_V_planes_must_have_matchin);
     PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_kp_u_U_and_V_planes_must_have_matchin);
-    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 567, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_13, __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 567, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_13, __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_12;
@@ -24984,9 +25052,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 5;
     __Pyx_GIVEREF(__pyx_kp_u_and);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_kp_u_and);
-    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 567, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_14, __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 567, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_14, __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) : __pyx_t_12;
@@ -24994,25 +25062,25 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __Pyx_GIVEREF(__pyx_t_13);
     PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_13);
     __pyx_t_13 = 0;
-    __pyx_t_13 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 567, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 571, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-    /* "simplejpeg/_jpeg.pyx":566
+    /* "simplejpeg/_jpeg.pyx":570
  *         )
  *     elif U.shape[0] != V.shape[0] or U.shape[1] != V.shape[1]:
  *         raise ValueError(             # <<<<<<<<<<<<<<
  *             f'U and V planes must have matching shape, got {U.shape} and {V.shape}'
  *         )
  */
-    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_13); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 566, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_13); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 570, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 566, __pyx_L1_error)
+    __PYX_ERR(0, 570, __pyx_L1_error)
 
-    /* "simplejpeg/_jpeg.pyx":565
+    /* "simplejpeg/_jpeg.pyx":569
  *             f'{"(missing)" if V is None else "(present)"} planes must be given, or neither'
  *         )
  *     elif U.shape[0] != V.shape[0] or U.shape[1] != V.shape[1]:             # <<<<<<<<<<<<<<
@@ -25021,7 +25089,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   }
 
-  /* "simplejpeg/_jpeg.pyx":569
+  /* "simplejpeg/_jpeg.pyx":573
  *             f'U and V planes must have matching shape, got {U.shape} and {V.shape}'
  *         )
  *     elif U.shape[0] == height:             # <<<<<<<<<<<<<<
@@ -25031,7 +25099,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_t_8 = ((__pyx_v_U.shape[0]) == __pyx_v_height);
   if (__pyx_t_8) {
 
-    /* "simplejpeg/_jpeg.pyx":584
+    /* "simplejpeg/_jpeg.pyx":588
  *         # o----
  *         #
  *         if U.shape[1] == width:             # <<<<<<<<<<<<<<
@@ -25041,7 +25109,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_8 = ((__pyx_v_U.shape[1]) == __pyx_v_width);
     if (__pyx_t_8) {
 
-      /* "simplejpeg/_jpeg.pyx":585
+      /* "simplejpeg/_jpeg.pyx":589
  *         #
  *         if U.shape[1] == width:
  *             colorsubsampling_ = TJSAMP_444             # <<<<<<<<<<<<<<
@@ -25050,7 +25118,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
       __pyx_v_colorsubsampling_ = TJSAMP_444;
 
-      /* "simplejpeg/_jpeg.pyx":584
+      /* "simplejpeg/_jpeg.pyx":588
  *         # o----
  *         #
  *         if U.shape[1] == width:             # <<<<<<<<<<<<<<
@@ -25060,7 +25128,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       goto __pyx_L10;
     }
 
-    /* "simplejpeg/_jpeg.pyx":586
+    /* "simplejpeg/_jpeg.pyx":590
  *         if U.shape[1] == width:
  *             colorsubsampling_ = TJSAMP_444
  *         elif U.shape[1] * 2 in (width, width+1):             # <<<<<<<<<<<<<<
@@ -25081,7 +25149,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_9 = __pyx_t_8;
     if (__pyx_t_9) {
 
-      /* "simplejpeg/_jpeg.pyx":587
+      /* "simplejpeg/_jpeg.pyx":591
  *             colorsubsampling_ = TJSAMP_444
  *         elif U.shape[1] * 2 in (width, width+1):
  *             colorsubsampling_ = TJSAMP_422             # <<<<<<<<<<<<<<
@@ -25090,7 +25158,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
       __pyx_v_colorsubsampling_ = TJSAMP_422;
 
-      /* "simplejpeg/_jpeg.pyx":586
+      /* "simplejpeg/_jpeg.pyx":590
  *         if U.shape[1] == width:
  *             colorsubsampling_ = TJSAMP_444
  *         elif U.shape[1] * 2 in (width, width+1):             # <<<<<<<<<<<<<<
@@ -25100,7 +25168,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       goto __pyx_L10;
     }
 
-    /* "simplejpeg/_jpeg.pyx":588
+    /* "simplejpeg/_jpeg.pyx":592
  *         elif U.shape[1] * 2 in (width, width+1):
  *             colorsubsampling_ = TJSAMP_422
  *         elif U.shape[1] * 4 in (width, width+1, width+2, width+3):             # <<<<<<<<<<<<<<
@@ -25135,7 +25203,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_8 = __pyx_t_9;
     if (__pyx_t_8) {
 
-      /* "simplejpeg/_jpeg.pyx":589
+      /* "simplejpeg/_jpeg.pyx":593
  *             colorsubsampling_ = TJSAMP_422
  *         elif U.shape[1] * 4 in (width, width+1, width+2, width+3):
  *             colorsubsampling_ = TJSAMP_411             # <<<<<<<<<<<<<<
@@ -25144,7 +25212,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
       __pyx_v_colorsubsampling_ = TJSAMP_411;
 
-      /* "simplejpeg/_jpeg.pyx":588
+      /* "simplejpeg/_jpeg.pyx":592
  *         elif U.shape[1] * 2 in (width, width+1):
  *             colorsubsampling_ = TJSAMP_422
  *         elif U.shape[1] * 4 in (width, width+1, width+2, width+3):             # <<<<<<<<<<<<<<
@@ -25154,7 +25222,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     }
     __pyx_L10:;
 
-    /* "simplejpeg/_jpeg.pyx":569
+    /* "simplejpeg/_jpeg.pyx":573
  *             f'U and V planes must have matching shape, got {U.shape} and {V.shape}'
  *         )
  *     elif U.shape[0] == height:             # <<<<<<<<<<<<<<
@@ -25164,7 +25232,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     goto __pyx_L3;
   }
 
-  /* "simplejpeg/_jpeg.pyx":590
+  /* "simplejpeg/_jpeg.pyx":594
  *         elif U.shape[1] * 4 in (width, width+1, width+2, width+3):
  *             colorsubsampling_ = TJSAMP_411
  *     elif U.shape[0] * 2 in (height, height+1):             # <<<<<<<<<<<<<<
@@ -25185,7 +25253,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_t_9 = __pyx_t_8;
   if (__pyx_t_9) {
 
-    /* "simplejpeg/_jpeg.pyx":601
+    /* "simplejpeg/_jpeg.pyx":605
  *         # ----
  *         #
  *         if U.shape[1] == width:             # <<<<<<<<<<<<<<
@@ -25195,7 +25263,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_9 = ((__pyx_v_U.shape[1]) == __pyx_v_width);
     if (__pyx_t_9) {
 
-      /* "simplejpeg/_jpeg.pyx":602
+      /* "simplejpeg/_jpeg.pyx":606
  *         #
  *         if U.shape[1] == width:
  *             colorsubsampling_ = TJSAMP_440             # <<<<<<<<<<<<<<
@@ -25204,7 +25272,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
       __pyx_v_colorsubsampling_ = TJSAMP_440;
 
-      /* "simplejpeg/_jpeg.pyx":601
+      /* "simplejpeg/_jpeg.pyx":605
  *         # ----
  *         #
  *         if U.shape[1] == width:             # <<<<<<<<<<<<<<
@@ -25214,7 +25282,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       goto __pyx_L19;
     }
 
-    /* "simplejpeg/_jpeg.pyx":603
+    /* "simplejpeg/_jpeg.pyx":607
  *         if U.shape[1] == width:
  *             colorsubsampling_ = TJSAMP_440
  *         elif U.shape[1] * 2 in (width, width+1):             # <<<<<<<<<<<<<<
@@ -25235,7 +25303,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_8 = __pyx_t_9;
     if (__pyx_t_8) {
 
-      /* "simplejpeg/_jpeg.pyx":604
+      /* "simplejpeg/_jpeg.pyx":608
  *             colorsubsampling_ = TJSAMP_440
  *         elif U.shape[1] * 2 in (width, width+1):
  *             colorsubsampling_ = TJSAMP_420             # <<<<<<<<<<<<<<
@@ -25244,7 +25312,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
       __pyx_v_colorsubsampling_ = TJSAMP_420;
 
-      /* "simplejpeg/_jpeg.pyx":603
+      /* "simplejpeg/_jpeg.pyx":607
  *         if U.shape[1] == width:
  *             colorsubsampling_ = TJSAMP_440
  *         elif U.shape[1] * 2 in (width, width+1):             # <<<<<<<<<<<<<<
@@ -25254,7 +25322,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     }
     __pyx_L19:;
 
-    /* "simplejpeg/_jpeg.pyx":590
+    /* "simplejpeg/_jpeg.pyx":594
  *         elif U.shape[1] * 4 in (width, width+1, width+2, width+3):
  *             colorsubsampling_ = TJSAMP_411
  *     elif U.shape[0] * 2 in (height, height+1):             # <<<<<<<<<<<<<<
@@ -25264,7 +25332,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   }
   __pyx_L3:;
 
-  /* "simplejpeg/_jpeg.pyx":606
+  /* "simplejpeg/_jpeg.pyx":610
  *             colorsubsampling_ = TJSAMP_420
  * 
  *     if colorsubsampling_ == TJSAMP_UNKNOWN:             # <<<<<<<<<<<<<<
@@ -25274,14 +25342,14 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_t_8 = (__pyx_v_colorsubsampling_ == TJSAMP_UNKNOWN);
   if (unlikely(__pyx_t_8)) {
 
-    /* "simplejpeg/_jpeg.pyx":608
+    /* "simplejpeg/_jpeg.pyx":612
  *     if colorsubsampling_ == TJSAMP_UNKNOWN:
  *         raise ValueError(
  *             'cannot determine chroma subsampling for planes of shape '             # <<<<<<<<<<<<<<
  *             f'Y={Y.shape} U={U.shape} V={V.shape}'
  *         )
  */
-    __pyx_t_10 = PyTuple_New(6); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 608, __pyx_L1_error)
+    __pyx_t_10 = PyTuple_New(6); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 612, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_11 = 0;
     __pyx_t_12 = 127;
@@ -25290,16 +25358,16 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __Pyx_GIVEREF(__pyx_kp_u_cannot_determine_chroma_subsampl);
     PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_kp_u_cannot_determine_chroma_subsampl);
 
-    /* "simplejpeg/_jpeg.pyx":609
+    /* "simplejpeg/_jpeg.pyx":613
  *         raise ValueError(
  *             'cannot determine chroma subsampling for planes of shape '
  *             f'Y={Y.shape} U={U.shape} V={V.shape}'             # <<<<<<<<<<<<<<
  *         )
  * 
  */
-    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 609, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 613, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_13, __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 609, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_13, __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 613, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_12;
@@ -25311,9 +25379,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 3;
     __Pyx_GIVEREF(__pyx_kp_u_U_2);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_kp_u_U_2);
-    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 609, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 613, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_14, __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 609, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_14, __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 613, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) : __pyx_t_12;
@@ -25325,9 +25393,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 3;
     __Pyx_GIVEREF(__pyx_kp_u_V_2);
     PyTuple_SET_ITEM(__pyx_t_10, 4, __pyx_kp_u_V_2);
-    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 609, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 613, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_13, __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 609, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_13, __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 613, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_12;
@@ -25336,32 +25404,32 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     PyTuple_SET_ITEM(__pyx_t_10, 5, __pyx_t_14);
     __pyx_t_14 = 0;
 
-    /* "simplejpeg/_jpeg.pyx":608
+    /* "simplejpeg/_jpeg.pyx":612
  *     if colorsubsampling_ == TJSAMP_UNKNOWN:
  *         raise ValueError(
  *             'cannot determine chroma subsampling for planes of shape '             # <<<<<<<<<<<<<<
  *             f'Y={Y.shape} U={U.shape} V={V.shape}'
  *         )
  */
-    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 6, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 608, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 6, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 612, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-    /* "simplejpeg/_jpeg.pyx":607
+    /* "simplejpeg/_jpeg.pyx":611
  * 
  *     if colorsubsampling_ == TJSAMP_UNKNOWN:
  *         raise ValueError(             # <<<<<<<<<<<<<<
  *             'cannot determine chroma subsampling for planes of shape '
  *             f'Y={Y.shape} U={U.shape} V={V.shape}'
  */
-    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 607, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 611, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 607, __pyx_L1_error)
+    __PYX_ERR(0, 611, __pyx_L1_error)
 
-    /* "simplejpeg/_jpeg.pyx":606
+    /* "simplejpeg/_jpeg.pyx":610
  *             colorsubsampling_ = TJSAMP_420
  * 
  *     if colorsubsampling_ == TJSAMP_UNKNOWN:             # <<<<<<<<<<<<<<
@@ -25370,88 +25438,88 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   }
 
-  /* "simplejpeg/_jpeg.pyx":612
+  /* "simplejpeg/_jpeg.pyx":616
  *         )
  * 
  *     if Y.strides is None:             # <<<<<<<<<<<<<<
  *         strides[0] = 0
- *     elif len(Y.strides) >= 2 and Y.strides[1] == 1:
+ *     elif Y.strides[0] == 0:
  */
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 612, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 616, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_8 = (__pyx_t_10 == Py_None);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   if (__pyx_t_8) {
 
-    /* "simplejpeg/_jpeg.pyx":613
+    /* "simplejpeg/_jpeg.pyx":617
  * 
  *     if Y.strides is None:
  *         strides[0] = 0             # <<<<<<<<<<<<<<
- *     elif len(Y.strides) >= 2 and Y.strides[1] == 1:
- *         strides[0] = Y.strides[0]
+ *     elif Y.strides[0] == 0:
+ *         raise ValueError('broadcasting Y plane rows is not supported')
  */
     (__pyx_v_strides[0]) = 0;
 
-    /* "simplejpeg/_jpeg.pyx":612
+    /* "simplejpeg/_jpeg.pyx":616
  *         )
  * 
  *     if Y.strides is None:             # <<<<<<<<<<<<<<
  *         strides[0] = 0
- *     elif len(Y.strides) >= 2 and Y.strides[1] == 1:
+ *     elif Y.strides[0] == 0:
  */
     goto __pyx_L23;
   }
 
-  /* "simplejpeg/_jpeg.pyx":614
+  /* "simplejpeg/_jpeg.pyx":618
  *     if Y.strides is None:
  *         strides[0] = 0
- *     elif len(Y.strides) >= 2 and Y.strides[1] == 1:             # <<<<<<<<<<<<<<
- *         strides[0] = Y.strides[0]
- *     else:
+ *     elif Y.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting Y plane rows is not supported')
+ *     elif Y.strides[1] != 1:
  */
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 614, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = PyObject_Length(__pyx_t_10); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 614, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_9 = (__pyx_t_11 >= 2);
-  if (__pyx_t_9) {
-  } else {
-    __pyx_t_8 = __pyx_t_9;
-    goto __pyx_L24_bool_binop_done;
-  }
-  __pyx_t_9 = ((__pyx_v_Y.strides[1]) == 1);
-  __pyx_t_8 = __pyx_t_9;
-  __pyx_L24_bool_binop_done:;
-  if (likely(__pyx_t_8)) {
+  __pyx_t_8 = ((__pyx_v_Y.strides[0]) == 0);
+  if (unlikely(__pyx_t_8)) {
 
-    /* "simplejpeg/_jpeg.pyx":615
+    /* "simplejpeg/_jpeg.pyx":619
  *         strides[0] = 0
- *     elif len(Y.strides) >= 2 and Y.strides[1] == 1:
- *         strides[0] = Y.strides[0]             # <<<<<<<<<<<<<<
- *     else:
+ *     elif Y.strides[0] == 0:
+ *         raise ValueError('broadcasting Y plane rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif Y.strides[1] != 1:
  *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
  */
-    (__pyx_v_strides[0]) = (__pyx_v_Y.strides[0]);
+    __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 619, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_Raise(__pyx_t_10, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __PYX_ERR(0, 619, __pyx_L1_error)
 
-    /* "simplejpeg/_jpeg.pyx":614
+    /* "simplejpeg/_jpeg.pyx":618
  *     if Y.strides is None:
  *         strides[0] = 0
- *     elif len(Y.strides) >= 2 and Y.strides[1] == 1:             # <<<<<<<<<<<<<<
- *         strides[0] = Y.strides[0]
- *     else:
+ *     elif Y.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting Y plane rows is not supported')
+ *     elif Y.strides[1] != 1:
  */
-    goto __pyx_L23;
   }
 
-  /* "simplejpeg/_jpeg.pyx":617
- *         strides[0] = Y.strides[0]
+  /* "simplejpeg/_jpeg.pyx":620
+ *     elif Y.strides[0] == 0:
+ *         raise ValueError('broadcasting Y plane rows is not supported')
+ *     elif Y.strides[1] != 1:             # <<<<<<<<<<<<<<
+ *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
  *     else:
- *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))             # <<<<<<<<<<<<<<
- * 
- *     if U is None or U.strides is None:
  */
-  /*else*/ {
-    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 617, __pyx_L1_error)
+  __pyx_t_8 = ((__pyx_v_Y.strides[1]) != 1);
+  if (unlikely(__pyx_t_8)) {
+
+    /* "simplejpeg/_jpeg.pyx":621
+ *         raise ValueError('broadcasting Y plane rows is not supported')
+ *     elif Y.strides[1] != 1:
+ *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))             # <<<<<<<<<<<<<<
+ *     else:
+ *         strides[0] = Y.strides[0]
+ */
+    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 621, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_11 = 0;
     __pyx_t_12 = 127;
@@ -25459,9 +25527,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 53;
     __Pyx_GIVEREF(__pyx_kp_u_Y_plane_must_have_C_contiguous_r);
     PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_kp_u_Y_plane_must_have_C_contiguous_r);
-    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 617, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 621, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_13 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_14), __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 617, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_14), __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 621, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) : __pyx_t_12;
@@ -25473,9 +25541,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 11;
     __Pyx_GIVEREF(__pyx_kp_u_for_shape);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_kp_u_for_shape);
-    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 617, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 621, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_13), __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 617, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_13), __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 621, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_12;
@@ -25483,108 +25551,127 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __Pyx_GIVEREF(__pyx_t_14);
     PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_14);
     __pyx_t_14 = 0;
-    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 617, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 621, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 617, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 621, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 617, __pyx_L1_error)
+    __PYX_ERR(0, 621, __pyx_L1_error)
+
+    /* "simplejpeg/_jpeg.pyx":620
+ *     elif Y.strides[0] == 0:
+ *         raise ValueError('broadcasting Y plane rows is not supported')
+ *     elif Y.strides[1] != 1:             # <<<<<<<<<<<<<<
+ *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
+ *     else:
+ */
+  }
+
+  /* "simplejpeg/_jpeg.pyx":623
+ *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
+ *     else:
+ *         strides[0] = Y.strides[0]             # <<<<<<<<<<<<<<
+ * 
+ *     if U is None or U.strides is None:
+ */
+  /*else*/ {
+    (__pyx_v_strides[0]) = (__pyx_v_Y.strides[0]);
   }
   __pyx_L23:;
 
-  /* "simplejpeg/_jpeg.pyx":619
- *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
+  /* "simplejpeg/_jpeg.pyx":625
+ *         strides[0] = Y.strides[0]
  * 
  *     if U is None or U.strides is None:             # <<<<<<<<<<<<<<
  *         strides[1] = 0
- *     elif len(U.strides) >= 2 and U.strides[1] == 1:
+ *     elif U.strides[0] == 0:
  */
   __pyx_t_9 = (((PyObject *) __pyx_v_U.memview) == Py_None);
   if (!__pyx_t_9) {
   } else {
     __pyx_t_8 = __pyx_t_9;
-    goto __pyx_L27_bool_binop_done;
+    goto __pyx_L25_bool_binop_done;
   }
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 619, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 625, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_9 = (__pyx_t_10 == Py_None);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __pyx_t_8 = __pyx_t_9;
-  __pyx_L27_bool_binop_done:;
+  __pyx_L25_bool_binop_done:;
   if (__pyx_t_8) {
 
-    /* "simplejpeg/_jpeg.pyx":620
+    /* "simplejpeg/_jpeg.pyx":626
  * 
  *     if U is None or U.strides is None:
  *         strides[1] = 0             # <<<<<<<<<<<<<<
- *     elif len(U.strides) >= 2 and U.strides[1] == 1:
- *         strides[1] = U.strides[0]
+ *     elif U.strides[0] == 0:
+ *         raise ValueError('broadcasting U plane rows is not supported')
  */
     (__pyx_v_strides[1]) = 0;
 
-    /* "simplejpeg/_jpeg.pyx":619
- *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
+    /* "simplejpeg/_jpeg.pyx":625
+ *         strides[0] = Y.strides[0]
  * 
  *     if U is None or U.strides is None:             # <<<<<<<<<<<<<<
  *         strides[1] = 0
- *     elif len(U.strides) >= 2 and U.strides[1] == 1:
+ *     elif U.strides[0] == 0:
  */
-    goto __pyx_L26;
+    goto __pyx_L24;
   }
 
-  /* "simplejpeg/_jpeg.pyx":621
+  /* "simplejpeg/_jpeg.pyx":627
  *     if U is None or U.strides is None:
  *         strides[1] = 0
- *     elif len(U.strides) >= 2 and U.strides[1] == 1:             # <<<<<<<<<<<<<<
- *         strides[1] = U.strides[0]
- *     else:
+ *     elif U.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting U plane rows is not supported')
+ *     elif U.strides[1] != 1:
  */
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 621, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = PyObject_Length(__pyx_t_10); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 621, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_9 = (__pyx_t_11 >= 2);
-  if (__pyx_t_9) {
-  } else {
-    __pyx_t_8 = __pyx_t_9;
-    goto __pyx_L29_bool_binop_done;
-  }
-  __pyx_t_9 = ((__pyx_v_U.strides[1]) == 1);
-  __pyx_t_8 = __pyx_t_9;
-  __pyx_L29_bool_binop_done:;
-  if (likely(__pyx_t_8)) {
+  __pyx_t_8 = ((__pyx_v_U.strides[0]) == 0);
+  if (unlikely(__pyx_t_8)) {
 
-    /* "simplejpeg/_jpeg.pyx":622
+    /* "simplejpeg/_jpeg.pyx":628
  *         strides[1] = 0
- *     elif len(U.strides) >= 2 and U.strides[1] == 1:
- *         strides[1] = U.strides[0]             # <<<<<<<<<<<<<<
- *     else:
+ *     elif U.strides[0] == 0:
+ *         raise ValueError('broadcasting U plane rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif U.strides[1] != 1:
  *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
  */
-    (__pyx_v_strides[1]) = (__pyx_v_U.strides[0]);
+    __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 628, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_Raise(__pyx_t_10, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __PYX_ERR(0, 628, __pyx_L1_error)
 
-    /* "simplejpeg/_jpeg.pyx":621
+    /* "simplejpeg/_jpeg.pyx":627
  *     if U is None or U.strides is None:
  *         strides[1] = 0
- *     elif len(U.strides) >= 2 and U.strides[1] == 1:             # <<<<<<<<<<<<<<
- *         strides[1] = U.strides[0]
- *     else:
+ *     elif U.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting U plane rows is not supported')
+ *     elif U.strides[1] != 1:
  */
-    goto __pyx_L26;
   }
 
-  /* "simplejpeg/_jpeg.pyx":624
- *         strides[1] = U.strides[0]
+  /* "simplejpeg/_jpeg.pyx":629
+ *     elif U.strides[0] == 0:
+ *         raise ValueError('broadcasting U plane rows is not supported')
+ *     elif U.strides[1] != 1:             # <<<<<<<<<<<<<<
+ *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
  *     else:
- *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))             # <<<<<<<<<<<<<<
- * 
- *     if V is None or V.strides is None:
  */
-  /*else*/ {
-    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 624, __pyx_L1_error)
+  __pyx_t_8 = ((__pyx_v_U.strides[1]) != 1);
+  if (unlikely(__pyx_t_8)) {
+
+    /* "simplejpeg/_jpeg.pyx":630
+ *         raise ValueError('broadcasting U plane rows is not supported')
+ *     elif U.strides[1] != 1:
+ *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))             # <<<<<<<<<<<<<<
+ *     else:
+ *         strides[1] = U.strides[0]
+ */
+    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 630, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_11 = 0;
     __pyx_t_12 = 127;
@@ -25592,9 +25679,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 53;
     __Pyx_GIVEREF(__pyx_kp_u_U_plane_must_have_C_contiguous_r);
     PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_kp_u_U_plane_must_have_C_contiguous_r);
-    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 630, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_13 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_14), __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_14), __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 630, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) : __pyx_t_12;
@@ -25606,9 +25693,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 11;
     __Pyx_GIVEREF(__pyx_kp_u_for_shape);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_kp_u_for_shape);
-    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 630, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_13), __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_13), __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 630, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_12;
@@ -25616,108 +25703,127 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __Pyx_GIVEREF(__pyx_t_14);
     PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_14);
     __pyx_t_14 = 0;
-    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 630, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 630, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 624, __pyx_L1_error)
-  }
-  __pyx_L26:;
+    __PYX_ERR(0, 630, __pyx_L1_error)
 
-  /* "simplejpeg/_jpeg.pyx":626
+    /* "simplejpeg/_jpeg.pyx":629
+ *     elif U.strides[0] == 0:
+ *         raise ValueError('broadcasting U plane rows is not supported')
+ *     elif U.strides[1] != 1:             # <<<<<<<<<<<<<<
  *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
+ *     else:
+ */
+  }
+
+  /* "simplejpeg/_jpeg.pyx":632
+ *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
+ *     else:
+ *         strides[1] = U.strides[0]             # <<<<<<<<<<<<<<
+ * 
+ *     if V is None or V.strides is None:
+ */
+  /*else*/ {
+    (__pyx_v_strides[1]) = (__pyx_v_U.strides[0]);
+  }
+  __pyx_L24:;
+
+  /* "simplejpeg/_jpeg.pyx":634
+ *         strides[1] = U.strides[0]
  * 
  *     if V is None or V.strides is None:             # <<<<<<<<<<<<<<
  *         strides[2] = 0
- *     elif len(V.strides) >= 2 and V.strides[1] == 1:
+ *     elif V.strides[0] == 0:
  */
   __pyx_t_9 = (((PyObject *) __pyx_v_V.memview) == Py_None);
   if (!__pyx_t_9) {
   } else {
     __pyx_t_8 = __pyx_t_9;
-    goto __pyx_L32_bool_binop_done;
+    goto __pyx_L28_bool_binop_done;
   }
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 626, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 634, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_9 = (__pyx_t_10 == Py_None);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __pyx_t_8 = __pyx_t_9;
-  __pyx_L32_bool_binop_done:;
+  __pyx_L28_bool_binop_done:;
   if (__pyx_t_8) {
 
-    /* "simplejpeg/_jpeg.pyx":627
+    /* "simplejpeg/_jpeg.pyx":635
  * 
  *     if V is None or V.strides is None:
  *         strides[2] = 0             # <<<<<<<<<<<<<<
- *     elif len(V.strides) >= 2 and V.strides[1] == 1:
- *         strides[2] = V.strides[0]
+ *     elif V.strides[0] == 0:
+ *         raise ValueError('broadcasting V plane rows is not supported')
  */
     (__pyx_v_strides[2]) = 0;
 
-    /* "simplejpeg/_jpeg.pyx":626
- *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
+    /* "simplejpeg/_jpeg.pyx":634
+ *         strides[1] = U.strides[0]
  * 
  *     if V is None or V.strides is None:             # <<<<<<<<<<<<<<
  *         strides[2] = 0
- *     elif len(V.strides) >= 2 and V.strides[1] == 1:
+ *     elif V.strides[0] == 0:
  */
-    goto __pyx_L31;
+    goto __pyx_L27;
   }
 
-  /* "simplejpeg/_jpeg.pyx":628
+  /* "simplejpeg/_jpeg.pyx":636
  *     if V is None or V.strides is None:
  *         strides[2] = 0
- *     elif len(V.strides) >= 2 and V.strides[1] == 1:             # <<<<<<<<<<<<<<
- *         strides[2] = V.strides[0]
- *     else:
+ *     elif V.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting V plane rows is not supported')
+ *     elif V.strides[1] != 1:
  */
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 628, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = PyObject_Length(__pyx_t_10); if (unlikely(__pyx_t_11 == ((Py_ssize_t)-1))) __PYX_ERR(0, 628, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  __pyx_t_9 = (__pyx_t_11 >= 2);
-  if (__pyx_t_9) {
-  } else {
-    __pyx_t_8 = __pyx_t_9;
-    goto __pyx_L34_bool_binop_done;
-  }
-  __pyx_t_9 = ((__pyx_v_V.strides[1]) == 1);
-  __pyx_t_8 = __pyx_t_9;
-  __pyx_L34_bool_binop_done:;
-  if (likely(__pyx_t_8)) {
+  __pyx_t_8 = ((__pyx_v_V.strides[0]) == 0);
+  if (unlikely(__pyx_t_8)) {
 
-    /* "simplejpeg/_jpeg.pyx":629
+    /* "simplejpeg/_jpeg.pyx":637
  *         strides[2] = 0
- *     elif len(V.strides) >= 2 and V.strides[1] == 1:
- *         strides[2] = V.strides[0]             # <<<<<<<<<<<<<<
- *     else:
+ *     elif V.strides[0] == 0:
+ *         raise ValueError('broadcasting V plane rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif V.strides[1] != 1:
  *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
  */
-    (__pyx_v_strides[2]) = (__pyx_v_V.strides[0]);
+    __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 637, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_Raise(__pyx_t_10, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __PYX_ERR(0, 637, __pyx_L1_error)
 
-    /* "simplejpeg/_jpeg.pyx":628
+    /* "simplejpeg/_jpeg.pyx":636
  *     if V is None or V.strides is None:
  *         strides[2] = 0
- *     elif len(V.strides) >= 2 and V.strides[1] == 1:             # <<<<<<<<<<<<<<
- *         strides[2] = V.strides[0]
- *     else:
+ *     elif V.strides[0] == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError('broadcasting V plane rows is not supported')
+ *     elif V.strides[1] != 1:
  */
-    goto __pyx_L31;
   }
 
-  /* "simplejpeg/_jpeg.pyx":631
- *         strides[2] = V.strides[0]
+  /* "simplejpeg/_jpeg.pyx":638
+ *     elif V.strides[0] == 0:
+ *         raise ValueError('broadcasting V plane rows is not supported')
+ *     elif V.strides[1] != 1:             # <<<<<<<<<<<<<<
+ *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
  *     else:
- *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))             # <<<<<<<<<<<<<<
- * 
- *     with nogil:
  */
-  /*else*/ {
-    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 631, __pyx_L1_error)
+  __pyx_t_8 = ((__pyx_v_V.strides[1]) != 1);
+  if (unlikely(__pyx_t_8)) {
+
+    /* "simplejpeg/_jpeg.pyx":639
+ *         raise ValueError('broadcasting V plane rows is not supported')
+ *     elif V.strides[1] != 1:
+ *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))             # <<<<<<<<<<<<<<
+ *     else:
+ *         strides[2] = V.strides[0]
+ */
+    __pyx_t_10 = PyTuple_New(4); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 639, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_t_11 = 0;
     __pyx_t_12 = 127;
@@ -25725,9 +25831,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 53;
     __Pyx_GIVEREF(__pyx_kp_u_V_plane_must_have_C_contiguous_r);
     PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_kp_u_V_plane_must_have_C_contiguous_r);
-    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 631, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 639, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
-    __pyx_t_13 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_14), __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 631, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_14), __pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 639, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_13) : __pyx_t_12;
@@ -25739,9 +25845,9 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_11 += 11;
     __Pyx_GIVEREF(__pyx_kp_u_for_shape);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_kp_u_for_shape);
-    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 631, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 639, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_13), __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 631, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_13), __pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 639, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __pyx_t_12 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) > __pyx_t_12) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_14) : __pyx_t_12;
@@ -25749,20 +25855,39 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __Pyx_GIVEREF(__pyx_t_14);
     PyTuple_SET_ITEM(__pyx_t_10, 3, __pyx_t_14);
     __pyx_t_14 = 0;
-    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 631, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyUnicode_Join(__pyx_t_10, 4, __pyx_t_11, __pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 639, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 631, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 639, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 631, __pyx_L1_error)
-  }
-  __pyx_L31:;
+    __PYX_ERR(0, 639, __pyx_L1_error)
 
-  /* "simplejpeg/_jpeg.pyx":633
+    /* "simplejpeg/_jpeg.pyx":638
+ *     elif V.strides[0] == 0:
+ *         raise ValueError('broadcasting V plane rows is not supported')
+ *     elif V.strides[1] != 1:             # <<<<<<<<<<<<<<
  *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
+ *     else:
+ */
+  }
+
+  /* "simplejpeg/_jpeg.pyx":641
+ *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
+ *     else:
+ *         strides[2] = V.strides[0]             # <<<<<<<<<<<<<<
+ * 
+ *     with nogil:
+ */
+  /*else*/ {
+    (__pyx_v_strides[2]) = (__pyx_v_V.strides[0]);
+  }
+  __pyx_L27:;
+
+  /* "simplejpeg/_jpeg.pyx":643
+ *         strides[2] = V.strides[0]
  * 
  *     with nogil:             # <<<<<<<<<<<<<<
  *         encoder = tjInitCompress()
@@ -25777,7 +25902,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       #endif
       /*try:*/ {
 
-        /* "simplejpeg/_jpeg.pyx":634
+        /* "simplejpeg/_jpeg.pyx":644
  * 
  *     with nogil:
  *         encoder = tjInitCompress()             # <<<<<<<<<<<<<<
@@ -25786,7 +25911,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
         __pyx_v_encoder = tjInitCompress();
 
-        /* "simplejpeg/_jpeg.pyx":635
+        /* "simplejpeg/_jpeg.pyx":645
  *     with nogil:
  *         encoder = tjInitCompress()
  *         if encoder == NULL:             # <<<<<<<<<<<<<<
@@ -25796,7 +25921,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
         __pyx_t_8 = (__pyx_v_encoder == NULL);
         if (unlikely(__pyx_t_8)) {
 
-          /* "simplejpeg/_jpeg.pyx":636
+          /* "simplejpeg/_jpeg.pyx":646
  *         encoder = tjInitCompress()
  *         if encoder == NULL:
  *             raise RuntimeError('could not create JPEG encoder')             # <<<<<<<<<<<<<<
@@ -25808,23 +25933,23 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
               PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
               #endif
               /*try:*/ {
-                __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 636, __pyx_L41_error)
+                __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 646, __pyx_L35_error)
                 __Pyx_GOTREF(__pyx_t_10);
                 __Pyx_Raise(__pyx_t_10, 0, 0, 0);
                 __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-                __PYX_ERR(0, 636, __pyx_L41_error)
+                __PYX_ERR(0, 646, __pyx_L35_error)
               }
               /*finally:*/ {
-                __pyx_L41_error: {
+                __pyx_L35_error: {
                   #ifdef WITH_THREAD
                   __Pyx_PyGILState_Release(__pyx_gilstate_save);
                   #endif
-                  goto __pyx_L37_error;
+                  goto __pyx_L31_error;
                 }
               }
           }
 
-          /* "simplejpeg/_jpeg.pyx":635
+          /* "simplejpeg/_jpeg.pyx":645
  *     with nogil:
  *         encoder = tjInitCompress()
  *         if encoder == NULL:             # <<<<<<<<<<<<<<
@@ -25833,7 +25958,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
         }
 
-        /* "simplejpeg/_jpeg.pyx":637
+        /* "simplejpeg/_jpeg.pyx":647
  *         if encoder == NULL:
  *             raise RuntimeError('could not create JPEG encoder')
  *         flags = 0             # <<<<<<<<<<<<<<
@@ -25842,7 +25967,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
         __pyx_v_flags = 0;
 
-        /* "simplejpeg/_jpeg.pyx":638
+        /* "simplejpeg/_jpeg.pyx":648
  *             raise RuntimeError('could not create JPEG encoder')
  *         flags = 0
  *         if fastdct:             # <<<<<<<<<<<<<<
@@ -25851,7 +25976,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
         if (__pyx_v_fastdct) {
 
-          /* "simplejpeg/_jpeg.pyx":639
+          /* "simplejpeg/_jpeg.pyx":649
  *         flags = 0
  *         if fastdct:
  *             flags |= TJFLAG_FASTDCT             # <<<<<<<<<<<<<<
@@ -25860,7 +25985,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
           __pyx_v_flags = (__pyx_v_flags | TJFLAG_FASTDCT);
 
-          /* "simplejpeg/_jpeg.pyx":638
+          /* "simplejpeg/_jpeg.pyx":648
  *             raise RuntimeError('could not create JPEG encoder')
  *         flags = 0
  *         if fastdct:             # <<<<<<<<<<<<<<
@@ -25869,7 +25994,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
         }
 
-        /* "simplejpeg/_jpeg.pyx":640
+        /* "simplejpeg/_jpeg.pyx":650
  *         if fastdct:
  *             flags |= TJFLAG_FASTDCT
  *         retcode = tjCompressFromYUVPlanes(             # <<<<<<<<<<<<<<
@@ -25878,7 +26003,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
         __pyx_v_retcode = tjCompressFromYUVPlanes(__pyx_v_encoder, __pyx_v_planes, __pyx_v_width, __pyx_v_strides, __pyx_v_height, __pyx_v_colorsubsampling_, __pyx_v_jpegbufbuf, (&__pyx_v_jpegsize), __pyx_v_quality, __pyx_v_flags);
 
-        /* "simplejpeg/_jpeg.pyx":652
+        /* "simplejpeg/_jpeg.pyx":662
  *             flags
  *         )
  *         if retcode != 0:             # <<<<<<<<<<<<<<
@@ -25888,7 +26013,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
         __pyx_t_8 = (__pyx_v_retcode != 0);
         if (unlikely(__pyx_t_8)) {
 
-          /* "simplejpeg/_jpeg.pyx":653
+          /* "simplejpeg/_jpeg.pyx":663
  *         )
  *         if retcode != 0:
  *             with gil:             # <<<<<<<<<<<<<<
@@ -25901,19 +26026,19 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
               #endif
               /*try:*/ {
 
-                /* "simplejpeg/_jpeg.pyx":654
+                /* "simplejpeg/_jpeg.pyx":664
  *         if retcode != 0:
  *             with gil:
  *                 msg = __tj_error(encoder)             # <<<<<<<<<<<<<<
  *                 tjDestroy(encoder)
  *                 raise ValueError(msg)
  */
-                __pyx_t_10 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 654, __pyx_L46_error)
+                __pyx_t_10 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 664, __pyx_L40_error)
                 __Pyx_GOTREF(__pyx_t_10);
                 __pyx_v_msg = ((PyObject*)__pyx_t_10);
                 __pyx_t_10 = 0;
 
-                /* "simplejpeg/_jpeg.pyx":655
+                /* "simplejpeg/_jpeg.pyx":665
  *             with gil:
  *                 msg = __tj_error(encoder)
  *                 tjDestroy(encoder)             # <<<<<<<<<<<<<<
@@ -25922,21 +26047,21 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
                 (void)(tjDestroy(__pyx_v_encoder));
 
-                /* "simplejpeg/_jpeg.pyx":656
+                /* "simplejpeg/_jpeg.pyx":666
  *                 msg = __tj_error(encoder)
  *                 tjDestroy(encoder)
  *                 raise ValueError(msg)             # <<<<<<<<<<<<<<
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
  *     tjFree(jpegbuf)
  */
-                __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_v_msg); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 656, __pyx_L46_error)
+                __pyx_t_10 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_v_msg); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 666, __pyx_L40_error)
                 __Pyx_GOTREF(__pyx_t_10);
                 __Pyx_Raise(__pyx_t_10, 0, 0, 0);
                 __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-                __PYX_ERR(0, 656, __pyx_L46_error)
+                __PYX_ERR(0, 666, __pyx_L40_error)
               }
 
-              /* "simplejpeg/_jpeg.pyx":653
+              /* "simplejpeg/_jpeg.pyx":663
  *         )
  *         if retcode != 0:
  *             with gil:             # <<<<<<<<<<<<<<
@@ -25944,16 +26069,16 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  *                 tjDestroy(encoder)
  */
               /*finally:*/ {
-                __pyx_L46_error: {
+                __pyx_L40_error: {
                   #ifdef WITH_THREAD
                   __Pyx_PyGILState_Release(__pyx_gilstate_save);
                   #endif
-                  goto __pyx_L37_error;
+                  goto __pyx_L31_error;
                 }
               }
           }
 
-          /* "simplejpeg/_jpeg.pyx":652
+          /* "simplejpeg/_jpeg.pyx":662
  *             flags
  *         )
  *         if retcode != 0:             # <<<<<<<<<<<<<<
@@ -25963,8 +26088,8 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
         }
       }
 
-      /* "simplejpeg/_jpeg.pyx":633
- *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
+      /* "simplejpeg/_jpeg.pyx":643
+ *         strides[2] = V.strides[0]
  * 
  *     with nogil:             # <<<<<<<<<<<<<<
  *         encoder = tjInitCompress()
@@ -25976,32 +26101,32 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
           __Pyx_FastGIL_Forget();
           Py_BLOCK_THREADS
           #endif
-          goto __pyx_L38;
+          goto __pyx_L32;
         }
-        __pyx_L37_error: {
+        __pyx_L31_error: {
           #ifdef WITH_THREAD
           __Pyx_FastGIL_Forget();
           Py_BLOCK_THREADS
           #endif
           goto __pyx_L1_error;
         }
-        __pyx_L38:;
+        __pyx_L32:;
       }
   }
 
-  /* "simplejpeg/_jpeg.pyx":657
+  /* "simplejpeg/_jpeg.pyx":667
  *                 tjDestroy(encoder)
  *                 raise ValueError(msg)
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)             # <<<<<<<<<<<<<<
  *     tjFree(jpegbuf)
  *     tjDestroy(encoder)
  */
-  __pyx_t_10 = PyBytes_FromStringAndSize(((char *)__pyx_v_jpegbuf), __pyx_v_jpegsize); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 657, __pyx_L1_error)
+  __pyx_t_10 = PyBytes_FromStringAndSize(((char *)__pyx_v_jpegbuf), __pyx_v_jpegsize); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 667, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_v_jpeg = ((PyObject*)__pyx_t_10);
   __pyx_t_10 = 0;
 
-  /* "simplejpeg/_jpeg.pyx":658
+  /* "simplejpeg/_jpeg.pyx":668
  *                 raise ValueError(msg)
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
  *     tjFree(jpegbuf)             # <<<<<<<<<<<<<<
@@ -26010,7 +26135,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   tjFree(__pyx_v_jpegbuf);
 
-  /* "simplejpeg/_jpeg.pyx":659
+  /* "simplejpeg/_jpeg.pyx":669
  *     jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
  *     tjFree(jpegbuf)
  *     tjDestroy(encoder)             # <<<<<<<<<<<<<<
@@ -26018,7 +26143,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
  */
   (void)(tjDestroy(__pyx_v_encoder));
 
-  /* "simplejpeg/_jpeg.pyx":660
+  /* "simplejpeg/_jpeg.pyx":670
  *     tjFree(jpegbuf)
  *     tjDestroy(encoder)
  *     return jpeg             # <<<<<<<<<<<<<<
@@ -26028,7 +26153,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
   __pyx_r = __pyx_v_jpeg;
   goto __pyx_L0;
 
-  /* "simplejpeg/_jpeg.pyx":518
+  /* "simplejpeg/_jpeg.pyx":522
  * 
  * 
  * def encode_jpeg_yuv_planes(             # <<<<<<<<<<<<<<
@@ -27090,7 +27215,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_kp_u__13, __pyx_k__13, sizeof(__pyx_k__13), 0, 1, 0, 0},
     {&__pyx_kp_u__2, __pyx_k__2, sizeof(__pyx_k__2), 0, 1, 0, 0},
     {&__pyx_n_s__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 1, 1},
-    {&__pyx_n_s__34, __pyx_k__34, sizeof(__pyx_k__34), 0, 0, 1, 1},
+    {&__pyx_n_s__38, __pyx_k__38, sizeof(__pyx_k__38), 0, 0, 1, 1},
     {&__pyx_kp_u__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 1, 0, 0},
     {&__pyx_kp_u__7, __pyx_k__7, sizeof(__pyx_k__7), 0, 1, 0, 0},
     {&__pyx_n_s_abc, __pyx_k_abc, sizeof(__pyx_k_abc), 0, 0, 1, 1},
@@ -27100,6 +27225,10 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_append, __pyx_k_append, sizeof(__pyx_k_append), 0, 0, 1, 1},
     {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
     {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
+    {&__pyx_kp_u_broadcasting_U_plane_rows_is_not, __pyx_k_broadcasting_U_plane_rows_is_not, sizeof(__pyx_k_broadcasting_U_plane_rows_is_not), 0, 1, 0, 0},
+    {&__pyx_kp_u_broadcasting_V_plane_rows_is_not, __pyx_k_broadcasting_V_plane_rows_is_not, sizeof(__pyx_k_broadcasting_V_plane_rows_is_not), 0, 1, 0, 0},
+    {&__pyx_kp_u_broadcasting_Y_plane_rows_is_not, __pyx_k_broadcasting_Y_plane_rows_is_not, sizeof(__pyx_k_broadcasting_Y_plane_rows_is_not), 0, 1, 0, 0},
+    {&__pyx_kp_u_broadcasting_rows_is_not_support, __pyx_k_broadcasting_rows_is_not_support, sizeof(__pyx_k_broadcasting_rows_is_not_support), 0, 1, 0, 0},
     {&__pyx_n_s_buffer, __pyx_k_buffer, sizeof(__pyx_k_buffer), 0, 0, 1, 1},
     {&__pyx_kp_u_buffer_object_must_support_buffe, __pyx_k_buffer_object_must_support_buffe, sizeof(__pyx_k_buffer_object_must_support_buffe), 0, 1, 0, 0},
     {&__pyx_n_s_bufferlen, __pyx_k_bufferlen, sizeof(__pyx_k_bufferlen), 0, 0, 1, 1},
@@ -27365,16 +27494,60 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
 
-  /* "simplejpeg/_jpeg.pyx":490
+  /* "simplejpeg/_jpeg.pyx":473
+ *         pitch = 0
+ *     elif image.strides[0] == 0:
+ *         raise ValueError('broadcasting rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif image.strides[1] != channels or image.strides[2] not in (0, 1):
+ *         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
+ */
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_u_broadcasting_rows_is_not_support); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
+
+  /* "simplejpeg/_jpeg.pyx":494
  *         encoder = tjInitCompress()
  *         if encoder == NULL:
  *             raise RuntimeError('could not create JPEG encoder')             # <<<<<<<<<<<<<<
  *         flags = 0
  *         if fastdct:
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_u_could_not_create_JPEG_encoder); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 490, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_could_not_create_JPEG_encoder); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 494, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+
+  /* "simplejpeg/_jpeg.pyx":619
+ *         strides[0] = 0
+ *     elif Y.strides[0] == 0:
+ *         raise ValueError('broadcasting Y plane rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif Y.strides[1] != 1:
+ *         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
+ */
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_broadcasting_Y_plane_rows_is_not); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 619, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
+
+  /* "simplejpeg/_jpeg.pyx":628
+ *         strides[1] = 0
+ *     elif U.strides[0] == 0:
+ *         raise ValueError('broadcasting U plane rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif U.strides[1] != 1:
+ *         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
+ */
+  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_u_broadcasting_U_plane_rows_is_not); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 628, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
+
+  /* "simplejpeg/_jpeg.pyx":637
+ *         strides[2] = 0
+ *     elif V.strides[0] == 0:
+ *         raise ValueError('broadcasting V plane rows is not supported')             # <<<<<<<<<<<<<<
+ *     elif V.strides[1] != 1:
+ *         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
+ */
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_u_broadcasting_V_plane_rows_is_not); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 637, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
 
   /* "View.MemoryView":100
  * cdef object __pyx_collections_abc_Sequence "__pyx_collections_abc_Sequence"
@@ -27383,12 +27556,12 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         __pyx_collections_abc_Sequence = __import__("collections.abc").abc.Sequence
  *     else:
  */
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_n_s_sys); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 100, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_tuple__16 = PyTuple_Pack(2, __pyx_int_3, __pyx_int_3); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(1, 100, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__16);
-  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_n_s_sys); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(1, 100, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__19);
+  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_tuple__20 = PyTuple_Pack(2, __pyx_int_3, __pyx_int_3); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(1, 100, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
 
   /* "View.MemoryView":101
  * try:
@@ -27397,9 +27570,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     else:
  *         __pyx_collections_abc_Sequence = __import__("collections").Sequence
  */
-  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_collections_abc); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(1, 101, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__17);
-  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_s_collections_abc); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(1, 101, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
 
   /* "View.MemoryView":103
  *         __pyx_collections_abc_Sequence = __import__("collections.abc").abc.Sequence
@@ -27408,9 +27581,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * except:
  * 
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_n_s_collections); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(1, 103, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_n_s_collections); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(1, 103, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
 
   /* "View.MemoryView":309
  *         return self.name
@@ -27419,9 +27592,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(1, 309, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__19);
-  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(1, 309, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
 
   /* "View.MemoryView":310
  * 
@@ -27430,9 +27603,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(1, 310, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(1, 310, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
 
   /* "View.MemoryView":311
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -27441,9 +27614,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(1, 311, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__21);
-  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(1, 311, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
 
   /* "View.MemoryView":314
  * 
@@ -27452,9 +27625,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(1, 314, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(1, 314, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
 
   /* "View.MemoryView":315
  * 
@@ -27463,19 +27636,19 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(1, 315, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__23);
-  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(1, 315, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__27);
+  __Pyx_GIVEREF(__pyx_tuple__27);
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Enum(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_tuple__24 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(1, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(1, 1, __pyx_L1_error)
 
   /* "simplejpeg/_jpeg.pyx":207
  * 
@@ -27484,10 +27657,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         const unsigned char[:] data not None,
  *         int min_height=0,
  */
-  __pyx_tuple__26 = PyTuple_Pack(14, __pyx_n_s_data, __pyx_n_s_min_height, __pyx_n_s_min_width, __pyx_n_s_min_factor, __pyx_n_s_strict, __pyx_n_s_data_p, __pyx_n_s_data_len, __pyx_n_s_retcode, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_jpegSubsamp, __pyx_n_s_jpegColorspace, __pyx_n_s_decoder, __pyx_n_s_msg); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 207, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_decode_jpeg_header, 207, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(14, __pyx_n_s_data, __pyx_n_s_min_height, __pyx_n_s_min_width, __pyx_n_s_min_factor, __pyx_n_s_strict, __pyx_n_s_data_p, __pyx_n_s_data_len, __pyx_n_s_retcode, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_jpegSubsamp, __pyx_n_s_jpegColorspace, __pyx_n_s_decoder, __pyx_n_s_msg); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_decode_jpeg_header, 207, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 207, __pyx_L1_error)
 
   /* "simplejpeg/_jpeg.pyx":273
  * 
@@ -27496,10 +27669,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         const unsigned char[:] data not None,
  *         str colorspace='rgb',
  */
-  __pyx_tuple__28 = PyTuple_Pack(30, __pyx_n_s_data, __pyx_n_s_colorspace, __pyx_n_s_fastdct, __pyx_n_s_fastupsample, __pyx_n_s_min_height, __pyx_n_s_min_width, __pyx_n_s_min_factor, __pyx_n_s_buffer, __pyx_n_s_strict, __pyx_n_s_data_p, __pyx_n_s_data_len, __pyx_n_s_retcode, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_jpegSubsamp, __pyx_n_s_jpegColorspace, __pyx_n_s_decoder, __pyx_n_s_msg, __pyx_n_s_tmp_colorspace, __pyx_n_s_output_colorspace, __pyx_n_s_is_cmyk, __pyx_n_s_outlen, __pyx_n_s_tmp, __pyx_n_s_out, __pyx_n_s_tmp_p, __pyx_n_s_out_p, __pyx_n_s_view, __pyx_n_s_bufferlen, __pyx_n_s_dims, __pyx_n_s_flags); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 273, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
-  __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(9, 0, 0, 30, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_decode_jpeg, 273, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(30, __pyx_n_s_data, __pyx_n_s_colorspace, __pyx_n_s_fastdct, __pyx_n_s_fastupsample, __pyx_n_s_min_height, __pyx_n_s_min_width, __pyx_n_s_min_factor, __pyx_n_s_buffer, __pyx_n_s_strict, __pyx_n_s_data_p, __pyx_n_s_data_len, __pyx_n_s_retcode, __pyx_n_s_width, __pyx_n_s_height, __pyx_n_s_jpegSubsamp, __pyx_n_s_jpegColorspace, __pyx_n_s_decoder, __pyx_n_s_msg, __pyx_n_s_tmp_colorspace, __pyx_n_s_output_colorspace, __pyx_n_s_is_cmyk, __pyx_n_s_outlen, __pyx_n_s_tmp, __pyx_n_s_out, __pyx_n_s_tmp_p, __pyx_n_s_out_p, __pyx_n_s_view, __pyx_n_s_bufferlen, __pyx_n_s_dims, __pyx_n_s_flags); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(9, 0, 0, 30, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_decode_jpeg, 273, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 273, __pyx_L1_error)
 
   /* "simplejpeg/_jpeg.pyx":438
  * 
@@ -27508,22 +27681,22 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         const unsigned char[:, :, :] image not None,
  *         int quality=85,
  */
-  __pyx_tuple__30 = PyTuple_Pack(20, __pyx_n_s_image_2, __pyx_n_s_quality, __pyx_n_s_colorspace, __pyx_n_s_colorsubsampling, __pyx_n_s_fastdct, __pyx_n_s_image_p, __pyx_n_s_retcode, __pyx_n_s_height, __pyx_n_s_width, __pyx_n_s_pitch, __pyx_n_s_channels, __pyx_n_s_colorspace_2, __pyx_n_s_colorsubsampling_2, __pyx_n_s_jpegbuf, __pyx_n_s_jpegbufbuf, __pyx_n_s_jpegsize, __pyx_n_s_flags, __pyx_n_s_encoder, __pyx_n_s_msg, __pyx_n_s_jpeg); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 438, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_encode_jpeg, 438, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(20, __pyx_n_s_image_2, __pyx_n_s_quality, __pyx_n_s_colorspace, __pyx_n_s_colorsubsampling, __pyx_n_s_fastdct, __pyx_n_s_image_p, __pyx_n_s_retcode, __pyx_n_s_height, __pyx_n_s_width, __pyx_n_s_channels, __pyx_n_s_pitch, __pyx_n_s_colorspace_2, __pyx_n_s_colorsubsampling_2, __pyx_n_s_jpegbuf, __pyx_n_s_jpegbufbuf, __pyx_n_s_jpegsize, __pyx_n_s_flags, __pyx_n_s_encoder, __pyx_n_s_msg, __pyx_n_s_jpeg); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 20, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_encode_jpeg, 438, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 438, __pyx_L1_error)
 
-  /* "simplejpeg/_jpeg.pyx":518
+  /* "simplejpeg/_jpeg.pyx":522
  * 
  * 
  * def encode_jpeg_yuv_planes(             # <<<<<<<<<<<<<<
  *         const unsigned char[:, :] Y not None,
  *         const unsigned char[:, :] U,
  */
-  __pyx_tuple__32 = PyTuple_Pack(18, __pyx_n_s_Y, __pyx_n_s_U, __pyx_n_s_V, __pyx_n_s_quality, __pyx_n_s_fastdct, __pyx_n_s_planes, __pyx_n_s_retcode, __pyx_n_s_height, __pyx_n_s_width, __pyx_n_s_strides, __pyx_n_s_colorsubsampling_2, __pyx_n_s_jpegbuf, __pyx_n_s_jpegbufbuf, __pyx_n_s_jpegsize, __pyx_n_s_flags, __pyx_n_s_encoder, __pyx_n_s_msg, __pyx_n_s_jpeg); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 518, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__32);
-  __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 18, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_encode_jpeg_yuv_planes, 518, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 518, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(18, __pyx_n_s_Y, __pyx_n_s_U, __pyx_n_s_V, __pyx_n_s_quality, __pyx_n_s_fastdct, __pyx_n_s_planes, __pyx_n_s_retcode, __pyx_n_s_height, __pyx_n_s_width, __pyx_n_s_strides, __pyx_n_s_colorsubsampling_2, __pyx_n_s_jpegbuf, __pyx_n_s_jpegbufbuf, __pyx_n_s_jpegsize, __pyx_n_s_flags, __pyx_n_s_encoder, __pyx_n_s_msg, __pyx_n_s_jpeg); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 522, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
+  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 18, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_simplejpeg__jpeg_pyx, __pyx_n_s_encode_jpeg_yuv_planes, 522, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 522, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -28161,12 +28334,12 @@ if (!__Pyx_RefNanny) {
  *         __pyx_collections_abc_Sequence = __import__("collections.abc").abc.Sequence
  *     else:
  */
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin___import__, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 100, __pyx_L2_error)
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin___import__, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 100, __pyx_L2_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_version_info); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 100, __pyx_L2_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_4 = PyObject_RichCompare(__pyx_t_5, __pyx_tuple__16, Py_GE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 100, __pyx_L2_error)
+      __pyx_t_4 = PyObject_RichCompare(__pyx_t_5, __pyx_tuple__20, Py_GE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 100, __pyx_L2_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_6 < 0))) __PYX_ERR(1, 100, __pyx_L2_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -28179,7 +28352,7 @@ if (!__Pyx_RefNanny) {
  *     else:
  *         __pyx_collections_abc_Sequence = __import__("collections").Sequence
  */
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin___import__, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 101, __pyx_L2_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin___import__, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 101, __pyx_L2_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_abc); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 101, __pyx_L2_error)
         __Pyx_GOTREF(__pyx_t_5);
@@ -28210,7 +28383,7 @@ if (!__Pyx_RefNanny) {
  * 
  */
       /*else*/ {
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin___import__, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 103, __pyx_L2_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin___import__, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 103, __pyx_L2_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_Sequence); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 103, __pyx_L2_error)
         __Pyx_GOTREF(__pyx_t_5);
@@ -28375,7 +28548,7 @@ if (!__Pyx_RefNanny) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 309, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_XGOTREF(generic);
   __Pyx_DECREF_SET(generic, __pyx_t_7);
@@ -28389,7 +28562,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 310, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 310, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_XGOTREF(strided);
   __Pyx_DECREF_SET(strided, __pyx_t_7);
@@ -28403,7 +28576,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 311, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 311, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_XGOTREF(indirect);
   __Pyx_DECREF_SET(indirect, __pyx_t_7);
@@ -28417,7 +28590,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 314, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 314, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_XGOTREF(contiguous);
   __Pyx_DECREF_SET(contiguous, __pyx_t_7);
@@ -28431,7 +28604,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 315, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_XGOTREF(indirect_contiguous);
   __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_7);
@@ -30083,7 +30256,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_23 = 0;
   __pyx_t_21 = 0;
   __pyx_t_22 = 0;
-  __pyx_t_22 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_1decode_jpeg_header, 0, __pyx_n_s_decode_jpeg_header, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__27)); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_22 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_1decode_jpeg_header, 0, __pyx_n_s_decode_jpeg_header, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_22)) __PYX_ERR(0, 207, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_22);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_22, __pyx_t_20);
   __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
@@ -30192,7 +30365,7 @@ if (!__Pyx_RefNanny) {
   __pyx_t_23 = 0;
   __pyx_t_24 = 0;
   __pyx_t_19 = 0;
-  __pyx_t_19 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_3decode_jpeg, 0, __pyx_n_s_decode_jpeg, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_19 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_3decode_jpeg, 0, __pyx_n_s_decode_jpeg, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_19);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_19, __pyx_t_12);
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
@@ -30240,53 +30413,53 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_PyTuple_SET_ITEM(__pyx_t_24, 3, __pyx_t_12)) __PYX_ERR(0, 438, __pyx_L1_error);
   __pyx_t_19 = 0;
   __pyx_t_12 = 0;
-  __pyx_t_12 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_5encode_jpeg, 0, __pyx_n_s_encode_jpeg, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_5encode_jpeg, 0, __pyx_n_s_encode_jpeg, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 438, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_12, __pyx_t_24);
   __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_encode_jpeg, __pyx_t_12) < 0) __PYX_ERR(0, 438, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-  /* "simplejpeg/_jpeg.pyx":522
+  /* "simplejpeg/_jpeg.pyx":526
  *         const unsigned char[:, :] U,
  *         const unsigned char[:, :] V,
  *         int quality=85,             # <<<<<<<<<<<<<<
  *         bint fastdct=False,
  * ):
  */
-  __pyx_t_12 = __Pyx_PyInt_From_int(((int)85)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 522, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int(((int)85)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 526, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_12);
 
-  /* "simplejpeg/_jpeg.pyx":523
+  /* "simplejpeg/_jpeg.pyx":527
  *         const unsigned char[:, :] V,
  *         int quality=85,
  *         bint fastdct=False,             # <<<<<<<<<<<<<<
  * ):
  *     """
  */
-  __pyx_t_24 = __Pyx_PyBool_FromLong(((int)0)); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 523, __pyx_L1_error)
+  __pyx_t_24 = __Pyx_PyBool_FromLong(((int)0)); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 527, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_24);
 
-  /* "simplejpeg/_jpeg.pyx":518
+  /* "simplejpeg/_jpeg.pyx":522
  * 
  * 
  * def encode_jpeg_yuv_planes(             # <<<<<<<<<<<<<<
  *         const unsigned char[:, :] Y not None,
  *         const unsigned char[:, :] U,
  */
-  __pyx_t_19 = PyTuple_New(2); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 518, __pyx_L1_error)
+  __pyx_t_19 = PyTuple_New(2); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 522, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_19);
   __Pyx_GIVEREF(__pyx_t_12);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_19, 0, __pyx_t_12)) __PYX_ERR(0, 518, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_19, 0, __pyx_t_12)) __PYX_ERR(0, 522, __pyx_L1_error);
   __Pyx_GIVEREF(__pyx_t_24);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_19, 1, __pyx_t_24)) __PYX_ERR(0, 518, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_19, 1, __pyx_t_24)) __PYX_ERR(0, 522, __pyx_L1_error);
   __pyx_t_12 = 0;
   __pyx_t_24 = 0;
-  __pyx_t_24 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_7encode_jpeg_yuv_planes, 0, __pyx_n_s_encode_jpeg_yuv_planes, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 518, __pyx_L1_error)
+  __pyx_t_24 = __Pyx_CyFunction_New(&__pyx_mdef_10simplejpeg_5_jpeg_7encode_jpeg_yuv_planes, 0, __pyx_n_s_encode_jpeg_yuv_planes, NULL, __pyx_n_s_simplejpeg__jpeg, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_24)) __PYX_ERR(0, 522, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_24);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_24, __pyx_t_19);
   __Pyx_DECREF(__pyx_t_19); __pyx_t_19 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_encode_jpeg_yuv_planes, __pyx_t_24) < 0) __PYX_ERR(0, 518, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_encode_jpeg_yuv_planes, __pyx_t_24) < 0) __PYX_ERR(0, 522, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_24); __pyx_t_24 = 0;
 
   /* "simplejpeg/_jpeg.pyx":1
@@ -38148,7 +38321,7 @@ __Pyx_PyType_GetName(PyTypeObject* tp)
     if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
         PyErr_Clear();
         Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__34);
+        name = __Pyx_NewRef(__pyx_n_s__38);
     }
     return name;
 }

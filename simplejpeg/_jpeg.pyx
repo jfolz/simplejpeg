@@ -464,14 +464,18 @@ def encode_jpeg(
     cdef int retcode
     cdef int height = image.shape[0]
     cdef int width = image.shape[1]
+    cdef int channels = image.shape[2]
+
     cdef int pitch
     if image.strides is None:
         pitch = 0
-    elif len(image.strides) >= 3 and image.strides[1] == image.shape[2] and image.strides[2] == 1:
-        pitch = image.strides[0]
-    else:
+    elif image.strides[0] == 0:
+        raise ValueError('broadcasting rows is not supported')
+    elif image.strides[1] != channels or image.strides[2] not in (0, 1):
         raise ValueError('image must have C contiguous rows, but strides are %r for shape %r' % (image.strides, image.shape))
-    cdef int channels = image.shape[2]
+    else:
+        pitch = image.strides[0]
+
     cdef int colorspace_ = PIXELFORMATS[colorspace]
     if tjPixelSize[colorspace_] != channels:
         raise ValueError('%d channels does not match given colorspace %s'
@@ -611,24 +615,30 @@ def encode_jpeg_yuv_planes(
 
     if Y.strides is None:
         strides[0] = 0
-    elif len(Y.strides) >= 2 and Y.strides[1] == 1:
-        strides[0] = Y.strides[0]
-    else:
+    elif Y.strides[0] == 0:
+        raise ValueError('broadcasting Y plane rows is not supported')
+    elif Y.strides[1] != 1:
         raise ValueError('Y plane must have C contiguous rows, but strides are %r for shape %r' % (Y.strides, Y.shape))
+    else:
+        strides[0] = Y.strides[0]
 
     if U is None or U.strides is None:
         strides[1] = 0
-    elif len(U.strides) >= 2 and U.strides[1] == 1:
-        strides[1] = U.strides[0]
-    else:
+    elif U.strides[0] == 0:
+        raise ValueError('broadcasting U plane rows is not supported')
+    elif U.strides[1] != 1:
         raise ValueError('U plane must have C contiguous rows, but strides are %r for shape %r' % (U.strides, U.shape))
+    else:
+        strides[1] = U.strides[0]
 
     if V is None or V.strides is None:
         strides[2] = 0
-    elif len(V.strides) >= 2 and V.strides[1] == 1:
-        strides[2] = V.strides[0]
-    else:
+    elif V.strides[0] == 0:
+        raise ValueError('broadcasting V plane rows is not supported')
+    elif V.strides[1] != 1:
         raise ValueError('V plane must have C contiguous rows, but strides are %r for shape %r' % (V.strides, V.shape))
+    else:
+        strides[2] = V.strides[0]
 
     with nogil:
         encoder = tjInitCompress()

@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+
+
+## [1.8.2] - 2025-02-25
+### Fixed
+- Regression in encode_jpeg where some valid grayscale images were no longer accepted (#20)
+- Potential illegal memory access in encode_jpeg with broadcast rows
+- Potential illegal memory access in encode_jpeg_yuv_planes with broadcast rows
 ### Changed
 - Use system cmake if available (#19, thanks @mgorny)
 
@@ -208,7 +215,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Initial public release.
 
 
-[Unreleased]: https://github.com/jfolz/simplejpeg/compare/1.8.1...master
+[Unreleased]: https://github.com/jfolz/simplejpeg/compare/1.8.2...master
+[1.8.2]: https://github.com/jfolz/simplejpeg/compare/1.8.1...1.8.2
 [1.8.1]: https://github.com/jfolz/simplejpeg/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/jfolz/simplejpeg/compare/1.7.6...1.8.0
 [1.7.6]: https://github.com/jfolz/simplejpeg/compare/1.7.5...1.7.6
