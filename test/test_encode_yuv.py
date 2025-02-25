@@ -244,3 +244,46 @@ def test_encode_yuv_missing_V():
     Y, U, _ = np.zeros((3, height, width), dtype=np.uint8)
     with pytest.raises(ValueError, match=r'U \(present\) and V \(missing\)'):
         simplejpeg.encode_jpeg_yuv_planes(Y, U, None)
+
+
+def test_encode_yuv_1d_Y():
+    Y, U, V = np.zeros((3, 400, 300), dtype=np.uint8)
+    with pytest.raises(ValueError, match='wrong number of dimensions'):
+        simplejpeg.encode_jpeg_yuv_planes(Y[:,0], U, V, 98)
+
+
+def test_encode_yuv_1d_U():
+    Y, U, V = np.zeros((3, 400, 300), dtype=np.uint8)
+    with pytest.raises(ValueError, match='wrong number of dimensions'):
+        simplejpeg.encode_jpeg_yuv_planes(Y, U[:,0], V, 98)
+
+
+def test_encode_yuv_1d_V():
+    Y, U, V = np.zeros((3, 400, 300), dtype=np.uint8)
+    with pytest.raises(ValueError, match='wrong number of dimensions'):
+        simplejpeg.encode_jpeg_yuv_planes(Y, U, V[:,0], 98)
+
+
+def _broadcast_rows(arr):
+    return np.broadcast_to(arr[0, ...], arr.shape)
+
+
+def test_encode_yuv_broadcast_row_Y():
+    Y, U, V = np.zeros((3, 593, 132), dtype=np.uint8)
+    Y = _broadcast_rows(Y)
+    with pytest.raises(ValueError, match='broadcasting Y plane rows is not supported'):
+        simplejpeg.encode_jpeg_yuv_planes(Y, U, V, 98)
+
+
+def test_encode_yuv_broadcast_row_U():
+    Y, U, V = np.zeros((3, 593, 132), dtype=np.uint8)
+    U = _broadcast_rows(U)
+    with pytest.raises(ValueError, match='broadcasting U plane rows is not supported'):
+        simplejpeg.encode_jpeg_yuv_planes(Y, U, V, 98)
+
+
+def test_encode_yuv_broadcast_row_V():
+    Y, U, V = np.zeros((3, 593, 132), dtype=np.uint8)
+    V = _broadcast_rows(V)
+    with pytest.raises(ValueError, match='broadcasting V plane rows is not supported'):
+        simplejpeg.encode_jpeg_yuv_planes(Y, U, V, 98)

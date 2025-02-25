@@ -27,45 +27,56 @@ def yield_reference_images():
             yield pt.basename(image_path), fp.read(), Image.open(image_path)
 
 
+def generate_image(height=800, width=600, channels=3):
+    rng = np.random.default_rng(9)
+    # reduce frequency of noise to make it easier to encode with chroma subsampling
+    arr = rng.integers(0, 255, (height // 8, width // 8, channels), dtype=np.uint8)
+    modes = {1: 'L', 3: 'RGB', 4: 'RGBA'}
+    if channels == 1:
+        arr = arr[:, :, 0]
+    im = Image.fromarray(arr, modes[channels])
+    arr = np.array(im.resize((width, height), resample=Image.Resampling.BICUBIC))
+    if arr.ndim < 3:
+        arr = np.expand_dims(arr, 2)
+    return arr
+
+
 def test_encode_decode():
-    np.random.seed(9)
-    im = np.random.randint(0, 255, (1689, 1000, 3), dtype=np.uint8)
+    im = generate_image(1689, 1000)
     # encode with simplejpeg, decode with Pillow
-    encoded = simplejpeg.encode_jpeg(im, 85)
+    encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = decode_pil(encoded)
-    assert 0 < mean_absolute_difference(im, decoded) < 10
+    assert 0 < mean_absolute_difference(im, decoded) < 2
     # encode with Pillow, decode with simplejpeg
     bio = io.BytesIO()
     pil_im = Image.fromarray(im, 'RGB')
-    pil_im.save(bio, format='JPEG', quality=85, subsampling=0)
+    pil_im.save(bio, format='JPEG', quality=98, subsampling=0)
     decoded = simplejpeg.decode_jpeg(bio.getbuffer())
-    assert 0 < mean_absolute_difference(im, decoded) < 10
+    assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_subsampling():
-    np.random.seed(9)
-    im = np.random.randint(0, 255, (679, 657, 3), dtype=np.uint8)
-    for subsampling, code in (('422', 1), ('420', 2), ('440', 1), ('411', 2)):
+    im = generate_image(679, 657)
+    for subsampling, code, delta in (('422', 1, 2), ('420', 2, 3), ('440', 1, 3), ('411', 2, 9)):
         # encode with simplejpeg, decode with Pillow
-        encoded = simplejpeg.encode_jpeg(im, 85, colorsubsampling=subsampling)
+        encoded = simplejpeg.encode_jpeg(im, 98, colorsubsampling=subsampling)
         bio = io.BytesIO(encoded)
         decoded = np.array(Image.open(bio))
-        assert 0 < mean_absolute_difference(im, decoded) < 50, subsampling
+        assert 0 < mean_absolute_difference(im, decoded) < delta, subsampling
         # encode with Pillow, decode with simplejpeg
         bio = io.BytesIO()
         pil_im = Image.fromarray(im, 'RGB')
-        pil_im.save(bio, format='JPEG', quality=85, subsampling=code)
+        pil_im.save(bio, format='JPEG', quality=98, subsampling=code)
         decoded = simplejpeg.decode_jpeg(bio.getbuffer())
-        assert 0 < mean_absolute_difference(im, decoded) < 50, subsampling
+        assert 0 < mean_absolute_difference(im, decoded) < delta, subsampling
 
 
 def test_encode_fastdct():
-    np.random.seed(9)
-    im = np.random.randint(0, 255, (345, 5448, 3), dtype=np.uint8)
+    im = generate_image(345, 5448)
     # encode with simplejpeg, decode with Pillow
-    encoded_fast = simplejpeg.encode_jpeg(im, 85, fastdct=True)
+    encoded_fast = simplejpeg.encode_jpeg(im, 98, fastdct=True)
     decoded_fast = np.array(Image.open(io.BytesIO(encoded_fast)))
-    assert 0 < mean_absolute_difference(im, decoded_fast) < 10
+    assert 0 < mean_absolute_difference(im, decoded_fast) < 2
 
 
 def _colorspace_to_rgb(im, colorspace):
@@ -76,25 +87,35 @@ def _colorspace_to_rgb(im, colorspace):
 
 
 def test_encode_grayscale():
-    np.random.seed(486943)
-    im = np.random.randint(0, 255, (589, 486, 1), dtype=np.uint8)
+    im = generate_image(589, 486, 1)
     # encode with simplejpeg, decode with Pillow
-    encoded = simplejpeg.encode_jpeg(im, 85, colorspace='gray')
+    encoded = simplejpeg.encode_jpeg(im, 98, colorspace='gray')
     decoded = decode_pil(encoded)[:, :, np.newaxis]
-    assert 0 < mean_absolute_difference(im, decoded) < 10
+    assert 0 < mean_absolute_difference(im, decoded) < 2
+
+
+def test_encode_grayscale_newaxis():
+    im = generate_image(589, 486, 1)
+    # make array 2D
+    im = im[:, :, 0]
+    # add back channel axis with newaxis
+    im = im[:, :, np.newaxis]
+    # encode with simplejpeg, decode with Pillow
+    encoded = simplejpeg.encode_jpeg(im, 98, colorspace='gray')
+    decoded = decode_pil(encoded)[:, :, np.newaxis]
+    assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_colorspace():
-    np.random.seed(9)
-    im = np.random.randint(0, 255, (589, 486, 4), dtype=np.uint8)
+    im = generate_image(589, 486, 4)
     for colorspace in ('RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR',
                        'XRGB', 'RGBA', 'BGRA', 'ABGR', 'ARGB'):
         np_im = np.ascontiguousarray(im[:, :, :len(colorspace)])
         # encode with simplejpeg, decode with Pillow
-        encoded = simplejpeg.encode_jpeg(np_im, 85, colorspace=colorspace)
+        encoded = simplejpeg.encode_jpeg(np_im, 98, colorspace=colorspace)
         decoded = decode_pil(encoded)
         np_im = _colorspace_to_rgb(np_im, colorspace)
-        assert 0 < mean_absolute_difference(np_im, decoded) < 10
+        assert 0 < mean_absolute_difference(np_im, decoded) < 2
 
 
 def test_encode_noncontiguous():
@@ -104,36 +125,48 @@ def test_encode_noncontiguous():
 
 
 def test_encode_decode_padding_start():
-    np.random.seed(9)
-    im = np.random.randint(0, 255, (600, 1000, 3), dtype=np.uint8)
+    im = generate_image(600, 1000)
     # Make an image that has padding bytes at the start of each row
     im = im[:, 200:, :]
     # encode with simplejpeg, decode with Pillow
-    encoded = simplejpeg.encode_jpeg(im, 85)
+    encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = decode_pil(encoded)
     assert decoded.shape == (600, 800, 3)
-    assert 0 < mean_absolute_difference(im, decoded) < 10
+    assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_padding_end():
-    np.random.seed(9)
-    im = np.random.randint(0, 255, (600, 1000, 3), dtype=np.uint8)
+    im = generate_image(600, 1000)
     # Make an image that has padding bytes at the end of each row
     im = im[:, :800, :]
     # encode with simplejpeg, decode with Pillow
-    encoded = simplejpeg.encode_jpeg(im, 85)
+    encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = decode_pil(encoded)
     assert decoded.shape == (600, 800, 3)
-    assert 0 < mean_absolute_difference(im, decoded) < 10
+    assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_padding_both():
-    np.random.seed(9)
-    im = np.random.randint(0, 255, (600, 1000, 3), dtype=np.uint8)
+    im = generate_image(600, 1000)
     # Make an image that has padding bytes at the start and end of each row
     im = im[:, 100:900, :]
     # encode with simplejpeg, decode with Pillow
-    encoded = simplejpeg.encode_jpeg(im, 85)
+    encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = decode_pil(encoded)
     assert decoded.shape == (600, 800, 3)
-    assert 0 < mean_absolute_difference(im, decoded) < 10
+    assert 0 < mean_absolute_difference(im, decoded) < 2
+
+
+def test_encode_2d():
+    im = np.zeros((589, 486), dtype=np.uint8)
+    with pytest.raises(ValueError, match='wrong number of dimensions'):
+        simplejpeg.encode_jpeg(im, 98, colorspace='gray')
+
+
+def test_encode_broadcast_row():
+    width, height, channels = 593, 132, 3
+    im = np.zeros((width, channels), dtype=np.uint8)
+    im = im[np.newaxis, :, :]
+    im = np.broadcast_to(im, (height, width, channels))
+    with pytest.raises(ValueError, match='broadcasting rows is not supported'):
+        simplejpeg.encode_jpeg(im, 98, colorspace='rgb')
