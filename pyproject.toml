@@ -5,10 +5,9 @@ readme = "README.rst"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
 ]
 requires-python = ">=3.9"
-license = { file = "LICENSE" }
+license = "MIT"
 authors = [{ name = "Joachim Folz", email = "joachim.folz@dfki.de" }]
 keywords = [
     "the",
