@@ -6,7 +6,11 @@ from setuptools.build_meta import *
 
 def _get_cmake_dep():
     if shutil.which('cmake') is None:
-        return ['cmake>=3.6.3']
+        if shutil.which('nasm') is None and shutil.which('yasm') is None:
+            # Need to build Yasm, which requires cmake < 4.0.0
+            return ['cmake>=3.6.3,<4.0.0']
+        else:
+            return ['cmake>=3.6.3']
     return []
 
 
