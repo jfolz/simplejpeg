@@ -27,6 +27,9 @@ jobs:
       - name: Wait for docker to wake up on ARM
         if: runner.os == 'Linux' && matrix.arch == 'aarch64'
         run: while ! docker version; do sleep 1; done
+      - name: Install a cmake version that can still compile Yasm
+        if: runner.os == 'Windows'
+        run: pip install cmake==3.31.6
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.0
         env:
