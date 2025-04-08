@@ -28,7 +28,7 @@ Tracker = "https://github.com/jfolz/simplejpeg/issues"
 
 [build-system]
 requires = [
-    "setuptools>=74.1.1",
+    "setuptools>=77.0.0",
     "wheel",
     "cython~=3.0.0",
     "numpy>=2.0.0",
