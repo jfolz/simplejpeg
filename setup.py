@@ -5,6 +5,7 @@ import platform
 import sys
 import urllib.request
 import tarfile
+import shutil
 import sysconfig
 import subprocess
 import hashlib
@@ -66,7 +67,8 @@ JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
 JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
 
 SKIP_BUILD_NAME = 'skip_build'
-SKIP_YASM_BUILD = 'SKIP_YASM_BUILD' in os.environ
+# skip Yasm build if nasm or yasm is available
+SKIP_YASM_BUILD = shutil.which('nasm') is not None or shutil.which('yasm') is not None
 
 
 def verify_file(path, reference_digest, read_size=128*1024):
@@ -103,7 +105,9 @@ def untar_url(url, filename, reference_digest):
 
 
 # download sources
-if not SKIP_YASM_BUILD:
+if SKIP_YASM_BUILD:
+    YASM_DIR = None
+else:
     YASM_DIR = untar_url(
         YASM_URL,
         pt.join(PACKAGE_DIR, 'lib', YASM_SOURCE),
@@ -130,7 +134,7 @@ def make_type():
 
 
 def touch(path):
-    with open(path, 'w') as f:
+    with open(path, 'w'):
         pass
 
 
@@ -169,13 +173,14 @@ class cmake_build_ext(build_ext):
                 '--gc-sections '  # Remove unused sections'
             ) + ldflags
         env = {
-            # add YASM to the path
-            'PATH': pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', ''),
             # custom CFLAGS - depends on platform
             'CFLAGS': cflags,
             # custom LDFLAGS - depends on platform
             'LDFLAGS': ldflags,
         }
+        if YASM_DIR:
+            # add YASM to the path
+            env['PATH'] = pt.join(YASM_DIR, BUILD_DIR) + os.pathsep + os.getenv('PATH', '')
         self.build_cmake_dependency(JPEG_DIR, [
             *flags,
             '-DWITH_CRT_DLL=1',  # fixes https://bugs.python.org/issue24872
@@ -299,8 +304,8 @@ include_package_data = find_package_data(packages, ('*.pyi',))
 exclude_package_data = find_package_data(packages, ('*.h', '*.c', '*.pyx'))
 
 
-with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as f:
-    dependencies = [l.strip(' \n') for l in f]
+with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as fp:
+    dependencies = [line.strip(' \n') for line in fp]
 
 
 class ConcatFiles:
