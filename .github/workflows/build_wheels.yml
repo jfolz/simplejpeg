@@ -31,7 +31,7 @@ jobs:
         if: runner.os == 'Windows'
         run: pip install cmake==3.31.6
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.2
+        uses: pypa/cibuildwheel@v3.1.2
         env:
           CIBW_ARCHS_LINUX: ${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
