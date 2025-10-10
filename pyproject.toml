@@ -38,7 +38,7 @@ build-backend = "custom_build_meta"
 
 [tool.cibuildwheel]
 environment = "PIP_ONLY_BINARY=:all:"
-skip = "cp3[1-9][0-9]t-* *_i686 *musllinux* *-win32 cp3[9-10]-win_arm64"
+skip = "cp3[1-9][0-9]t-* *_i686 *musllinux* *-win32 cp39-win_arm64 cp310-win_arm64"
 build-verbosity = 1
 test-requires = "pytest>=5.3.2 numpy Pillow>=7.0.0"
 test-command = "pytest {project}/test -vv"
