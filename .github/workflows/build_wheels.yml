@@ -19,8 +19,10 @@ jobs:
             arch: aarch64
           - os: windows-latest
             arch: x86_64
+          - os: windows-11-arm
+            arch: aarch64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up MSVC
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1
@@ -31,7 +33,7 @@ jobs:
         if: runner.os == 'Windows'
         run: pip install cmake==3.31.6
       - name: Build wheels
-        uses: pypa/cibuildwheel@v2.23.2
+        uses: pypa/cibuildwheel@v3.2.0
         env:
           CIBW_ARCHS_LINUX: ${{ matrix.arch }}
       - uses: actions/upload-artifact@v4
@@ -43,7 +45,7 @@ jobs:
     name: Make SDist
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build SDist
         run: pipx run build --sdist
       - uses: actions/upload-artifact@v4
@@ -62,14 +64,14 @@ jobs:
       id-token: write
     if: github.ref_type == 'tag'
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           path: dist
           merge-multiple: true
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@v1.12.4
+        uses: pypa/gh-action-pypi-publish@v1.13.0
       - name: Create Github release
-        uses: ncipollo/release-action@v1.16.0
+        uses: ncipollo/release-action@v1.20.0
         with:
           artifacts: dist/*
           draft: false
