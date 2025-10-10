@@ -42,3 +42,12 @@ skip = "*_i686 *musllinux* *-win32"
 build-verbosity = 1
 test-requires = "pytest>=5.3.2 numpy Pillow>=7.0.0"
 test-command = "pytest {project}/test -vv"
+
+[tool.cibuildwheel.linux]
+before-all = "dnf install -y nasm"
+
+[tool.cibuildwheel.macos]
+before-all = "brew install nasm"
+
+[tool.cibuildwheel.windows]
+before-all = "choco install nasm -y --no-progress"
