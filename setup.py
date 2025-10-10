@@ -103,7 +103,7 @@ def untar_url(url, filename, reference_digest):
 JPEG_DIR = untar_url(
     JPEG_URL,
     pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE),
-    '104ff4419619633dd3fb60746d871440d560be0c24780eeca444b6f0a7cf9178',
+    '02bc433d5c80ba13541b527d2860f354111cb749dbfd24efca3bf082f2c73e19',
 )
 
 
