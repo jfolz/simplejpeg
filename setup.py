@@ -59,7 +59,7 @@ if OS == 'darwin':
     if ARCHFLAGS:
         BUILD_DIR = 'build_' + '_'.join(ARCHFLAGS)
 
-JPEG_VERSION = '3.1.0'
+JPEG_VERSION = '3.1.2'
 JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
 JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
 
