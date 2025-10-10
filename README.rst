@@ -51,21 +51,15 @@ This library is especially for you if you need:
 Installation
 ------------
 
-- On Linux (x86/x64), Windows (x86/x64), or MacOS (10.9+, x64)
+- On Linux (x64, arm64), Windows (x64, arm64), or MacOS (10.9+, x64, arm64)
   you can simply ``pip install simplejpeg``.
   Update ``pip`` if it wants to build from source anyway.
 - On other platforms you can try to install from source.
   Make sure your system is setup to build CPython extensions
-  and install ``cmake >= 2.8.12``.
+  and install ``cmake`` as well as either ``nasm`` or ``yasm``.
   Then run ``pip install simplejpeg`` to install from source.
-- You can also run ``python setup.py bdist_wheel`` etc. as usual.
-
-Either Nasm or Yasm assembler is required to build libjpeg-turbo.
-If neither is found, Yasm is built from source.
-You can bring your own Yasm or Nasm, just make sure
-it's on the PATH so cmake can find it.
-This can speed up compilation and help with cross-compiling,
-since the assembler will run on the host machine.
+- You can also checkout the repository and run ``python -m build .``,
+  ``python setup.py bdist_wheel`` etc. as usual.
 
 
 
