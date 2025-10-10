@@ -24,8 +24,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Set up MSVC
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && matrix.arch != 'aarch64'
         uses: ilammy/msvc-dev-cmd@v1
+      - name: Set up MSVC
+        if: runner.os == 'Windows' && matrix.arch == 'aarch64'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: arm64
       - name: Wait for docker to wake up on ARM
         if: runner.os == 'Linux' && matrix.arch == 'aarch64'
         run: while ! docker version; do sleep 1; done
