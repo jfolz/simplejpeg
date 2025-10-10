@@ -16,14 +16,14 @@ def mean_absolute_difference(a, b):
 
 
 def rgb_to_yuv_planes(rgb, horizontal, vertical):
-    yuv = np.array(Image.fromarray(rgb, 'RGB').convert('YCbCr'))
+    yuv = np.array(Image.fromarray(rgb).convert('YCbCr'))
     c = np.ascontiguousarray
     Y = c(yuv[:,:,0])
     height, width, _ = rgb.shape
     padded_rgb = np.pad(rgb, [(0, height % vertical), (0, width % horizontal), (0, 0)], mode='edge')
     height, width, _ = padded_rgb.shape
     yuv = np.array(
-        Image.fromarray(padded_rgb, 'RGB').resize(
+        Image.fromarray(padded_rgb).resize(
             (width // horizontal, height // vertical),
             resample=Image.Resampling.BOX,
         ).convert('YCbCr')
@@ -36,7 +36,7 @@ def generate_image(width=800, height=600):
     rng = np.random.default_rng(9)
     # reduce frequency of noise to make it easier to encode with chroma subsampling
     rgb = rng.integers(0, 255, (height // 8, width // 8, 3), dtype=np.uint8)
-    rgb = np.array(Image.fromarray(rgb, 'RGB').resize((width, height), resample=Image.Resampling.BICUBIC))
+    rgb = np.array(Image.fromarray(rgb).resize((width, height), resample=Image.Resampling.BICUBIC))
     return rgb, width, height
 
 

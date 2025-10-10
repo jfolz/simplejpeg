@@ -31,10 +31,9 @@ def generate_image(height=800, width=600, channels=3):
     rng = np.random.default_rng(9)
     # reduce frequency of noise to make it easier to encode with chroma subsampling
     arr = rng.integers(0, 255, (height // 8, width // 8, channels), dtype=np.uint8)
-    modes = {1: 'L', 3: 'RGB', 4: 'RGBA'}
     if channels == 1:
         arr = arr[:, :, 0]
-    im = Image.fromarray(arr, modes[channels])
+    im = Image.fromarray(arr)
     arr = np.array(im.resize((width, height), resample=Image.Resampling.BICUBIC))
     if arr.ndim < 3:
         arr = np.expand_dims(arr, 2)
@@ -49,7 +48,7 @@ def test_encode_decode():
     assert 0 < mean_absolute_difference(im, decoded) < 2
     # encode with Pillow, decode with simplejpeg
     bio = io.BytesIO()
-    pil_im = Image.fromarray(im, 'RGB')
+    pil_im = Image.fromarray(im)
     pil_im.save(bio, format='JPEG', quality=98, subsampling=0)
     decoded = simplejpeg.decode_jpeg(bio.getbuffer())
     assert 0 < mean_absolute_difference(im, decoded) < 2
@@ -65,7 +64,7 @@ def test_encode_decode_subsampling():
         assert 0 < mean_absolute_difference(im, decoded) < delta, subsampling
         # encode with Pillow, decode with simplejpeg
         bio = io.BytesIO()
-        pil_im = Image.fromarray(im, 'RGB')
+        pil_im = Image.fromarray(im)
         pil_im.save(bio, format='JPEG', quality=98, subsampling=code)
         decoded = simplejpeg.decode_jpeg(bio.getbuffer())
         assert 0 < mean_absolute_difference(im, decoded) < delta, subsampling
