@@ -20,13 +20,6 @@ def mean_absolute_difference(a, b):
     return np.abs(a.astype(np.float32) - b.astype(np.float32)).mean()
 
 
-def yield_reference_images():
-    image_dir = pt.join(ROOT, 'images', '*.jpg')
-    for image_path in glob.iglob(image_dir):
-        with open(image_path, 'rb') as fp:
-            yield pt.basename(image_path), fp.read(), Image.open(image_path)
-
-
 def generate_image(height=800, width=600, channels=3):
     rng = np.random.default_rng(9)
     # reduce frequency of noise to make it easier to encode with chroma subsampling
