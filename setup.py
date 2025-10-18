@@ -128,7 +128,7 @@ class cmake_build_ext(build_ext):
             print('Dynamic linking, skip building libjpeg-turbo')
         elif not pt.exists(skip_path) or os.getenv('FORCE_BUILD'):
             if shutil.which('nasm') is None and shutil.which('yasm') is None:
-                raise RuntimeError('either nasm or yasm assembler is required to build libjpeg-turbo')
+                warnings.warn('neither nasm or yasm assembler found, libjpeg-turbo build may fail')
             self.build_cmake_dependencies()
             touch(skip_path)
         else:
