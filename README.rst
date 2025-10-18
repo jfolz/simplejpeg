@@ -60,6 +60,13 @@ Installation
   Then run ``pip install simplejpeg`` to install from source.
 - You can also checkout the repository and run ``python -m build .``,
   ``python setup.py bdist_wheel`` etc. as usual.
+- Instead of building and statically linking, you can install
+  ``libturbojpeg-dev`` (or similar) and set ``SIMPLEJPEG_DYNAMIC_LINKING=1``
+  in your environment to dynamically link it.
+  Version 3.x strongly recommended, but 2.0.90+ should work.
+  1.x definitely doesn't.
+  Importantly, note that
+  `libjpeg-turbo != libturbojpeg <https://libjpeg-turbo.org/About/TurboJPEG>`_.
 
 
 

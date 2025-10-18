@@ -1,6 +1,7 @@
 # cython: language_level=3
 # cython: embedsignature=False
 # cython: boundscheck=False
+# cython: emit_code_comments=False
 from __future__ import print_function, division, unicode_literals
 
 import cython
@@ -116,6 +117,15 @@ cdef extern from "_color.h" nogil:
     cdef void cmyk2gray(unsigned char* cmyk, unsigned char* out, int npixels)
     cdef void cmyk2color(unsigned char* cmyk, unsigned char* out,
                          int npixels, int pixelformat)
+
+
+# Allow building against turbojpeg 2.x
+cdef extern from *:
+    """
+    #ifndef TJSAMP_UNKNOWN
+    #define TJSAMP_UNKNOWN -1
+    #endif
+    """
 
 
 # Create a dict that maps colorspace names to TJ constants.

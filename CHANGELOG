@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 ## [Unreleased]
+### Fixed
+- Fix building against libjpeg-turbo 2.x
+### Added
+- Add SIMPLEJPEG_DYNAMIC_LINKING environment variable to allow dynamic linking
+- Allow overriding libjpeg-turbo version with SIMPLEJPEG_JPEG_VERSION and SIMPLEJPEG_JPEG_HASH environment variables
+### Changed
+- Relax Cython build requirement to cython~=3.0
+- Force cythonization when Cython is installed
+- Output warnings instead of errors if platform is unsupported
 
 
 ## [1.9.0] - 2025-10-10

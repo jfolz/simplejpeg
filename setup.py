@@ -6,9 +6,9 @@ import sys
 import urllib.request
 import tarfile
 import shutil
-import sysconfig
 import subprocess
 import hashlib
+import warnings
 
 from setuptools import setup
 from setuptools import find_packages
@@ -37,18 +37,17 @@ except ImportError:
 class NumpyImport:
     def __repr__(self):
         import numpy as np
-
         return np.get_include()
 
     __fspath__ = __repr__
 
 
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
+LIBS_DIR = pt.join(PACKAGE_DIR, 'lib')
 OS = platform.system().lower()
 NPY_API_VERSION = 'NPY_1_19_API_VERSION'
 # build output dir is machine-specific
 BUILD_DIR = 'build_' + '_'.join(platform.architecture())
-IS64BIT = sys.maxsize > 2**32
 ARCH = platform.machine()
 if OS == 'darwin':
     # From pybind cmake example:
@@ -58,16 +57,16 @@ if OS == 'darwin':
     # if archflags is given we build in specific subdir
     if ARCHFLAGS:
         BUILD_DIR = 'build_' + '_'.join(ARCHFLAGS)
-
-JPEG_VERSION = '3.1.2'
-JPEG_SOURCE = 'libjpeg-turbo-%s.tar.gz' % JPEG_VERSION
-JPEG_URL = 'https://github.com/libjpeg-turbo/libjpeg-turbo/archive/%s.tar.gz' % JPEG_VERSION
-
+JPEG_VERSION = os.environ.get('SIMPLEJPEG_JPEG_VERSION', '3.1.2')
+JPEG_ARCHIVE = f'libjpeg-turbo-{JPEG_VERSION}.tar.gz'
+JPEG_URL = f'https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/{JPEG_VERSION}/libjpeg-turbo-{JPEG_VERSION}.tar.gz'
+JPEG_HASH = os.environ.get('SIMPLEJPEG_JPEG_HASH', '8f0012234b464ce50890c490f18194f913a7b1f4e6a03d6644179fa0f867d0cf')
 SKIP_BUILD_NAME = 'skip_build'
+DYNAMIC_LINKING = bool(os.environ.get("SIMPLEJPEG_DYNAMIC_LINKING", ""))
 
 
 def verify_file(path, reference_digest, read_size=128*1024):
-    h = hashlib.sha3_256()
+    h = hashlib.sha256()
     with open(path, 'rb') as fp:
         while True:
             data = fp.read(read_size)
@@ -78,7 +77,7 @@ def verify_file(path, reference_digest, read_size=128*1024):
     if reference_digest != digest:
         raise RuntimeError(
             f'Verification of {path} failed, '
-            f'expected sha3_256 hash {reference_digest}, '
+            f'expected sha256 hash {reference_digest}, '
             f'got {digest}'
         )
 
@@ -100,15 +99,11 @@ def untar_url(url, filename, reference_digest):
 
 
 # download sources
-JPEG_DIR = untar_url(
+JPEG_DIR = PACKAGE_DIR if DYNAMIC_LINKING else untar_url(
     JPEG_URL,
-    pt.join(PACKAGE_DIR, 'lib', JPEG_SOURCE),
-    '02bc433d5c80ba13541b527d2860f354111cb749dbfd24efca3bf082f2c73e19',
+    pt.join(LIBS_DIR, JPEG_ARCHIVE),
+    JPEG_HASH,
 )
-
-
-def cvar(name):
-    return sysconfig.get_config_var(name)
 
 
 def make_type():
@@ -117,7 +112,8 @@ def make_type():
     elif OS == 'windows':
         return 'NMake Makefiles'
     else:
-        raise RuntimeError('Platform not supported: %s, %s' % (OS, ARCH))
+        warnings.warn(f'Platform ({OS}, {ARCH}) not supported, using default cmake generator')
+        return ''
 
 
 def touch(path):
@@ -128,7 +124,11 @@ def touch(path):
 class cmake_build_ext(build_ext):
     def run(self):
         skip_path = pt.join(_libdir(), SKIP_BUILD_NAME)
-        if not pt.exists(skip_path) or os.getenv('FORCE_BUILD'):
+        if DYNAMIC_LINKING:
+            print('Dynamic linking, skip building libjpeg-turbo')
+        elif not pt.exists(skip_path) or os.getenv('FORCE_BUILD'):
+            if shutil.which('nasm') is None and shutil.which('yasm') is None:
+                raise RuntimeError('either nasm or yasm assembler is required to build libjpeg-turbo')
             self.build_cmake_dependencies()
             touch(skip_path)
         else:
@@ -179,7 +179,8 @@ class cmake_build_ext(build_ext):
         env = dict(os.environ, **(env or {}))
         subprocess.check_call([
             CMAKE_PATH,
-            '-G' + make_type(), '-Wno-dev',
+            *(['-G' + make_type()] if make_type() else []),
+            '-Wno-dev',
             '-DCMAKE_BUILD_TYPE=' + config,
             *options,
             pt.join(path)
@@ -201,20 +202,30 @@ def _staticlib():
     elif OS == 'windows':
         return 'turbojpeg-static.lib'
     else:
-        raise RuntimeError('Platform not supported: %s, %s' % (OS, ARCH))
+        warnings.warn(f'Platform ({OS}, {ARCH}) not supported, defaulting to link libturbojpeg.a')
+        return 'libturbojpeg.a'
 
 
 def make_jpeg_module():
     include_dirs = [
         NumpyImport(),
-        pt.join(JPEG_DIR, 'src'),
         pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
-    static_libs = [pt.join(_libdir(), _staticlib())]
+    dynamic_libs = []
+    static_libs = []
+    if DYNAMIC_LINKING:
+        dynamic_libs.append('turbojpeg')
+    else:
+        static_libs.append(pt.join(_libdir(), _staticlib()))
+        include_dirs.extend([
+            pt.join(JPEG_DIR, 'src'),
+            # libjpeg-turbo code used to reside at the toplevel of the tree
+            pt.join(JPEG_DIR),
+        ])
     cython_files = [pt.join('simplejpeg', '_jpeg.pyx')]
     for cython_file in cython_files:
         if pt.exists(cython_file):
-            cythonize(cython_file)
+            cythonize(cython_file, force=True)
     sources = [
         pt.join('simplejpeg', '_jpeg.c'),
         pt.join('simplejpeg', '_color.c')
@@ -240,6 +251,7 @@ def make_jpeg_module():
         sources,
         language='C',
         include_dirs=include_dirs,
+        libraries=dynamic_libs,
         extra_objects=static_libs,
         extra_link_args=extra_link_args,
         extra_compile_args=extra_compile_args,
@@ -323,11 +335,14 @@ class ConcatFiles:
         self.original_output = None
 
 
-LICENSE_FILES = [
-    'LICENSE',
-    pt.join(JPEG_DIR, 'LICENSE.md'),
-    pt.join(JPEG_DIR, 'README.ijg')
-]
+LICENSE_FILES = ['LICENSE']
+if not DYNAMIC_LINKING:
+        LICENSE_FILES.extend([
+        pt.join(JPEG_DIR, 'LICENSE.md'),
+        pt.join(JPEG_DIR, 'README.ijg')
+    ])
+
+
 with ConcatFiles(*LICENSE_FILES):
     setup(
         name='simplejpeg',
