@@ -22,7 +22,7 @@ jobs:
           - os: windows-11-arm
             arch: aarch64
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up MSVC
         if: runner.os == 'Windows' && matrix.arch != 'aarch64'
         uses: ilammy/msvc-dev-cmd@v1
@@ -47,7 +47,7 @@ jobs:
     name: Make SDist
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Build SDist
         run: pipx run build --sdist
       - uses: actions/upload-artifact@v4
