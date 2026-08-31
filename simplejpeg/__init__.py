@@ -19,9 +19,9 @@ def is_jpeg(data):
 
 
 __all__ = [
-    decode_jpeg,
-    decode_jpeg_header,
-    encode_jpeg,
-    encode_jpeg_yuv_planes,
-    is_jpeg,
+    'decode_jpeg',
+    'decode_jpeg_header',
+    'encode_jpeg',
+    'encode_jpeg_yuv_planes',
+    'is_jpeg',
 ]

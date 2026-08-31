@@ -292,7 +292,7 @@ packages = find_packages(
 )
 
 
-include_package_data = find_package_data(packages, ('*.pyi',))
+include_package_data = find_package_data(packages, ('*.pyi', '*.typed'))
 exclude_package_data = find_package_data(packages, ('*.h', '*.c', '*.pyx'))
 
 
