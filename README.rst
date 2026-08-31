@@ -45,6 +45,7 @@ This library is especially for you if you need:
 #. Speed.
 #. Read and write directly from/to memory.
 #. Advanced features of the underlying library.
+#. A lightweight footprint.
 
 
 
@@ -77,10 +78,10 @@ This library provides four functions:
 
 ``decode_jpeg_header``, ``decode_jpeg``, ``encode_jpeg``, ``is_jpeg``.
 
-Uncompressed image data is stored as numpy arrays.
-Decoding functions can accept any Python object that supports the
-`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_,
-like ``array``, ``bytes``, ``bytearray``, ``memoryview``, etc.
+NumPy is completely optional. By default, decoding returns NumPy arrays if installed,
+but functions natively accept and return standard Python objects that support the
+`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_, like ``bytes``,
+``bytearray``, and ``memoryview``.
 
 
 
@@ -139,16 +140,17 @@ decode_jpeg
         min_factor: SupportsFloat=1,
         buffer: SupportsBuffer=None,
         strict: bool=True,
-    ) -> np.ndarray
+        output: Text='numpy',
+    ) -> Any
 
 Decode a JPEG image given as JPEG (JFIF) data from memory.
 Accepts any input that supports the
 `buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_.
-Returns the image as numpy array in the requested colorspace.
+Returns the image data in the format requested by ``output``.
 
 - data:
   JPEG data in memory; must support buffer interface
-  (e.g., ``bytes``, ``memoryview``);
+  (e.g., ``bytes``, ``bytearray``, ``memoryview``);
   row must be C-contiguous
 - colorspace:
   target colorspace, any of the following:
@@ -164,10 +166,10 @@ Returns the image as numpy array in the requested colorspace.
 - min_height:
   minimum height in pixels of the decoded image;
   values <= 0 are ignored
-- param min_width:
+- min_width:
   minimum width in pixels of the decoded image;
   values <= 0 are ignored
-- param min_factor:
+- min_factor:
   minimum downsampling factor when decoding to smaller size;
   factors smaller than 2 may take longer to decode
 - buffer:
@@ -178,7 +180,14 @@ Returns the image as numpy array in the requested colorspace.
 - strict:
   if True, raise ValueError for recoverable errors;
   default True
-- returns: image as ``numpy.ndarray``
+- output:
+  either ``'numpy'`` (default) or ``'bytes'``.
+  ``'numpy'`` returns a numpy ndarray of shape (height, width, channels);
+  numpy is imported lazily and must be installed.
+  ``'bytes'`` returns a plain bytearray plus its dimensions.
+- returns:
+  image as ``numpy.ndarray`` (if ``output='numpy'``) OR
+  ``(pixels: bytearray, height: int, width: int, channels: int)`` (if ``output='bytes'``)
 
 
 
@@ -188,18 +197,19 @@ encode_jpeg
 ::
 
     def encode_jpeg(
-            image: numpy.ndarray,
+            image: Any,
             quality: SupportsInt=85,
             colorspace: Text='RGB',
             colorsubsampling: Text='444',
             fastdct: Any=True,
     ) -> bytes
 
-Encode an image given as numpy array to JPEG (JFIF) string.
+Encode an image given as a multi-dimensional array or memoryview to JPEG (JFIF) string.
 Returns JPEG (JFIF) data.
 
 - image:
-  uncompressed image as uint8 array
+  uncompressed image as uint8 array; any object supporting the buffer protocol mapped to
+  a 3D shape (e.g., a NumPy ndarray, or a flat buffer cast to a 3D memoryview).
 - quality:
   JPEG quantization factor;
   0\-100, higher equals better quality
@@ -223,23 +233,23 @@ encode_jpeg_yuv_planes
 ::
 
     def encode_jpeg_yuv_planes(
-            Y: np.ndarray,
-            U: np.ndarray,
-            V: np.ndarray,
+            Y: Any,
+            U: Any,
+            V: Any,
             quality: SupportsInt=85,
             fastdct: Any=False,
     ) -> bytes
 
-Encode an image given as three numpy arrays to JPEG (JFIF) bytes.
+Encode an image given as three 2D arrays or memoryviews to JPEG (JFIF) bytes.
 The color subsampling is deduced from the size of the three arrays.
 Returns JPEG (JFIF) data.
 
 - Y:
-  uncompressed Y plane as uint8 array
+  uncompressed Y plane as uint8 array; must be a 2D shape (e.g., 2D memoryview or NumPy ndarray).
 - U:
-  uncompressed U plane as uint8 array
+  uncompressed U plane as uint8 array; must be a 2D shape (e.g., 2D memoryview or NumPy ndarray).
 - V:
-  uncompressed V plane as uint8 array
+  uncompressed V plane as uint8 array; must be a 2D shape (e.g., 2D memoryview or NumPy ndarray).
 - quality:
   JPEG quantization factor;
   0\-100, higher equals better quality

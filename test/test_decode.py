@@ -140,3 +140,14 @@ def test_decode_noncontiguous():
     for f, data, im in yield_reference_images():
         with pytest.raises(ValueError, match='contiguous'):
             simplejpeg.decode_jpeg(data, buffer=b.transpose((1, 2, 0)))
+
+
+def test_decode_bytes():
+    for f, data, im in yield_reference_images():
+        im_np = np.array(im.convert('RGB'))
+        pixels, height, width, channels = simplejpeg.decode_jpeg(data, output='bytes')
+        assert height == im_np.shape[0], f
+        assert width == im_np.shape[1], f
+        assert channels == 3, f
+        sim = np.frombuffer(pixels, dtype=np.uint8).reshape((height, width, channels))
+        assert mean_absolute_difference(im_np, sim) < 1, f

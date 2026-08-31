@@ -3,11 +3,11 @@ from typing import Text
 from typing import Tuple
 from typing import SupportsInt
 from typing import SupportsFloat
-import numpy as np
+from typing import Union
 
 
 def decode_jpeg_header(
-        data: Any,
+        data: Union[bytes, bytearray, memoryview, Any],
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
@@ -25,7 +25,7 @@ def decode_jpeg_header(
         min_width: width should be >= this minimum
                    width in pixels; values <= 0 are ignored
         min_factor: minimum scaling factor when decoding to smaller
-                    ize; factors smaller than 2 may take longer to
+                    size; factors smaller than 2 may take longer to
                     decode; default 1
         strict: if True, raise ValueError for recoverable errors;
                 default True
@@ -37,19 +37,20 @@ def decode_jpeg_header(
 
 
 def decode_jpeg(
-        data: Any,
+        data: Union[bytes, bytearray, memoryview, Any],
         colorspace: Text='rgb',
         fastdct: Any=False,
         fastupsample: Any=False,
         min_height: SupportsInt=0,
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
-        buffer: Any=None,
+        buffer: Union[bytearray, memoryview, Any]=None,
         strict: bool=True,
-) -> np.ndarray:
+        output: Text='numpy',
+) -> Any:
     """
     Decode a JPEG (JFIF) string.
-    Returns a numpy array.
+    Returns image data in the format requested by output.
 
     Parameters:
         data: JPEG data
@@ -76,15 +77,24 @@ def decode_jpeg(
                 if image dimensions are unknown
         strict: if True, raise ValueError for recoverable errors;
                 default True
+        output: either 'numpy' (default) or 'bytes'.
+                'numpy' returns a numpy ndarray of shape
+                (height, width, channels); numpy is imported lazily
+                and only needs to be installed if this is used.
+                'bytes' returns a plain bytearray plus its
+                dimensions, without ever importing numpy.
 
     Returns:
-        image as numpy array
+        image = decode_jpeg(data)
+            -> numpy ndarray (output='numpy', default)
+        pixels, height, width, channels = decode_jpeg(data, output='bytes')
+            -> raw byte buffer plus dimensions (output='bytes')
     """
-    return np.empty((1, 1, 1))
+    ...
 
 
 def encode_jpeg(
-        image: np.ndarray,
+        image: Union[memoryview, Any],
         quality: SupportsInt=85,
         colorspace: Text='rgb',
         colorsubsampling: Text='444',
@@ -95,7 +105,10 @@ def encode_jpeg(
     Returns JPEG (JFIF) data.
 
     Parameters:
-        image: uncompressed image as uint8 array
+        image: uncompressed image as uint8 array; any object
+               supporting the buffer protocol mapped to a 3D shape 
+               (e.g., a NumPy ndarray, or a flat buffer cast to a 
+               3D memoryview).
         quality: JPEG quantization factor
         colorspace: source colorspace; one of
                    'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
@@ -112,9 +125,9 @@ def encode_jpeg(
 
 
 def encode_jpeg_yuv_planes(
-        Y: np.ndarray,
-        U: np.ndarray | None,
-        V: np.ndarray | None,
+        Y: Union[memoryview, Any],
+        U: Union[memoryview, Any],
+        V: Union[memoryview, Any],
         quality: SupportsInt=85,
         fastdct: Any=False,
 ) -> bytes:
@@ -125,9 +138,12 @@ def encode_jpeg_yuv_planes(
     Returns JPEG (JFIF) data.
 
     Parameters:
-        Y: uncompressed Y plane of the YUV image as uint8 array
-        U: uncompressed U plane of the YUV image as uint8 array
-        V: uncompressed V plane of the YUV image as uint8 array
+        Y: uncompressed Y plane of the YUV image as uint8 array;
+           must be a 2D shape (e.g., 2D memoryview or NumPy ndarray).
+        U: uncompressed U plane of the YUV image as uint8 array;
+           must be a 2D shape (e.g., 2D memoryview or NumPy ndarray).
+        V: uncompressed V plane of the YUV image as uint8 array;
+           must be a 2D shape (e.g., 2D memoryview or NumPy ndarray).
         quality: JPEG quantization factor
         fastdct: If True, use fastest DCT method;
                  speeds up encoding by 4-5% for a minor loss in quality
@@ -135,3 +151,4 @@ def encode_jpeg_yuv_planes(
     Returns:
         encoded image as JPEG (JFIF) data
     """
+    return b''

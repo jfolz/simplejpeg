@@ -5,17 +5,12 @@
 from __future__ import print_function, division, unicode_literals
 
 import cython
-import numpy as np
-cimport numpy as np
 from cpython.bytes cimport PyBytes_FromStringAndSize
 from cpython cimport PyObject_GetBuffer
 from cpython cimport PyBUF_SIMPLE
 from cpython cimport PyBUF_WRITABLE
 from cpython cimport PyBUF_ANY_CONTIGUOUS
 from cpython cimport PyBuffer_Release
-
-
-np.import_array()
 
 
 cdef extern from "turbojpeg.h" nogil:
@@ -290,10 +285,11 @@ def decode_jpeg(
         float min_factor=1,
         buffer=None,
         bint strict=True,
+        str output='numpy',
 ):
     """
     Decode a JPEG (JFIF) string.
-    Returns a numpy array.
+    Returns image data in the format requested by output.
 
     Parameters:
         data: JPEG data
@@ -320,10 +316,21 @@ def decode_jpeg(
                 if image dimensions are unknown
         strict: if True, raise ValueError for recoverable errors;
                 default True
+        output: either 'numpy' (default) or 'bytes'.
+                'numpy' returns a numpy ndarray of shape
+                (height, width, channels); numpy is imported lazily
+                and only needs to be installed if this is used.
+                'bytes' returns a plain bytearray plus its
+                dimensions, without ever importing numpy.
 
     Returns:
-        image as numpy array
+        image = decode_jpeg(data)
+            -> numpy ndarray (output='numpy', default)
+        pixels, height, width, channels = decode_jpeg(data, output='bytes')
+            -> raw byte buffer plus dimensions (output='bytes')
     """
+    if output != 'numpy' and output != 'bytes':
+        raise ValueError("output must be 'numpy' or 'bytes', got %r" % (output,))
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
     cdef int retcode
@@ -362,19 +369,22 @@ def decode_jpeg(
         is_cmyk = 1
 
     # some variables that may be needed
-    cdef np.npy_intp outlen = height * width * tjPixelSize[output_colorspace]
-    cdef np.ndarray[np.uint8_t, ndim = 3] tmp
-    cdef np.ndarray[np.uint8_t, ndim = 3] out
+    cdef Py_ssize_t outlen = height * width * tjPixelSize[output_colorspace]
+    cdef object tmp
+    cdef object out
     cdef unsigned char* tmp_p
     cdef unsigned char* out_p
     cdef Py_buffer view
-    cdef np.npy_intp bufferlen = 0
+    cdef Py_ssize_t bufferlen = 0
+    cdef Py_ssize_t i
 
-    # no buffer is given, make new output array
-    cdef np.npy_intp * dims = [height, width, tjPixelSize[output_colorspace]]
+    # no buffer is given, make new output bytearray
     if buffer is None:
-        out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
-        out_p = &out[0, 0, 0]
+        out = bytearray(outlen)
+        if PyObject_GetBuffer(out, &view, DECODE_BUFFER_FLAGS) != 0:
+            raise ValueError('failed to get buffer for internal bytearray')
+        out_p = <unsigned char*> view.buf
+        PyBuffer_Release(&view)
     # attempt to create output array from given buffer
     else:
         if PyObject_GetBuffer(buffer, &view, DECODE_BUFFER_FLAGS) != 0:
@@ -386,17 +396,17 @@ def decode_jpeg(
             PyBuffer_Release(&view)
             raise ValueError('%d byte buffer is too small to decode (%d, %d, %d) image'
                              % (bufferlen, height, width, tjPixelSize[output_colorspace]))
-        out = np.frombuffer(
-            buffer, np.uint8, outlen
-        ).reshape((height, width, tjPixelSize[output_colorspace]))
+        out = buffer
         out_p = <unsigned char*> view.buf
         PyBuffer_Release(&view)
 
     # if temp is not output colorspace temporary array must be created
     if tmp_colorspace != output_colorspace:
-        dims[:] = [height, width, tjPixelSize[tmp_colorspace]]
-        tmp = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
-        tmp_p = &tmp[0, 0, 0]
+        tmp = bytearray(height * width * tjPixelSize[tmp_colorspace])
+        if PyObject_GetBuffer(tmp, &view, DECODE_BUFFER_FLAGS) != 0:
+            raise ValueError('failed to get buffer for CMYK scratch space')
+        tmp_p = <unsigned char*> view.buf
+        PyBuffer_Release(&view)
     # otherwise use output array as temp array
     else:
         tmp_p = out_p
@@ -435,14 +445,21 @@ def decode_jpeg(
           or output_colorspace == TJPF_BGRA \
           or output_colorspace == TJPF_ABGR \
           or output_colorspace == TJPF_ARGB:
-            np.PyArray_FILLWBYTE(out, 255)
+            with nogil:
+                for i in range(outlen):
+                    out_p[i] = 255
         if output_colorspace == TJPF_GRAY:
             cmyk2gray(tmp_p, out_p, height*width)
         else:
             cmyk2color(tmp_p, out_p, height*width, output_colorspace)
 
     # done
-    return out
+    if output == 'numpy':
+        import numpy as np
+        return np.frombuffer(out, dtype=np.uint8, count=outlen).reshape(
+            (height, width, tjPixelSize[output_colorspace])
+        )
+    return out, height, width, tjPixelSize[output_colorspace]
 
 
 def encode_jpeg(

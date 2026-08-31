@@ -34,18 +34,9 @@ except ImportError:
     HAVE_CYTHON = False
 
 
-class NumpyImport:
-    def __repr__(self):
-        import numpy as np
-        return np.get_include()
-
-    __fspath__ = __repr__
-
-
 PACKAGE_DIR = pt.abspath(pt.dirname(__file__))
 LIBS_DIR = pt.join(PACKAGE_DIR, 'lib')
 OS = platform.system().lower()
-NPY_API_VERSION = 'NPY_1_19_API_VERSION'
 # build output dir is machine-specific
 BUILD_DIR = 'build_' + '_'.join(platform.architecture())
 ARCH = platform.machine()
@@ -208,7 +199,6 @@ def _staticlib():
 
 def make_jpeg_module():
     include_dirs = [
-        NumpyImport(),
         pt.join(PACKAGE_DIR, 'simplejpeg'),
     ]
     dynamic_libs = []
@@ -232,10 +222,6 @@ def make_jpeg_module():
     ]
     extra_link_args = []
     extra_compile_args = []
-    macros = [
-        ('NPY_NO_DEPRECATED_API', NPY_API_VERSION),
-        ('NPY_TARGET_VERSION', NPY_API_VERSION),
-    ]
     if OS == 'linux':
         extra_link_args.extend([
             '-Wl,'  # following are linker options
@@ -255,7 +241,6 @@ def make_jpeg_module():
         extra_objects=static_libs,
         extra_link_args=extra_link_args,
         extra_compile_args=extra_compile_args,
-        define_macros=macros,
     )
 
 
@@ -294,10 +279,6 @@ packages = find_packages(
 
 include_package_data = find_package_data(packages, ('*.pyi',))
 exclude_package_data = find_package_data(packages, ('*.h', '*.c', '*.pyx'))
-
-
-with open(pt.join(PACKAGE_DIR, 'requirements.txt')) as fp:
-    dependencies = [line.strip(' \n') for line in fp]
 
 
 class ConcatFiles:
@@ -350,7 +331,6 @@ with ConcatFiles(*LICENSE_FILES):
         packages=packages,
         package_data=include_package_data,
         exclude_package_data=exclude_package_data,
-        install_requires=dependencies,
         ext_modules=ext_modules,
         cmdclass={'build_ext': cmake_build_ext},
         zip_safe=False,

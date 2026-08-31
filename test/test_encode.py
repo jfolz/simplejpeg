@@ -162,3 +162,13 @@ def test_encode_broadcast_row():
     im = np.broadcast_to(im, (height, width, channels))
     with pytest.raises(ValueError, match='broadcasting rows is not supported'):
         simplejpeg.encode_jpeg(im, 98, colorspace='rgb')
+
+def test_encode_memoryview():
+    im_np = generate_image(400, 300, 3)
+    # Simulate a user providing a flat bytearray and casting it to a 3D memoryview
+    flat_bytes = bytearray(im_np.tobytes())
+    view_3d = memoryview(flat_bytes).cast('B', shape=(im_np.shape[0], im_np.shape[1], im_np.shape[2]))
+    # Encode using the memoryview instead of the NumPy array
+    encoded = simplejpeg.encode_jpeg(view_3d, 98)
+    decoded = decode_pil(encoded)
+    assert 0 < mean_absolute_difference(im_np, decoded) < 2
