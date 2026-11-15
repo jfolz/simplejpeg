@@ -57,10 +57,10 @@ if OS == 'darwin':
     # if archflags is given we build in specific subdir
     if ARCHFLAGS:
         BUILD_DIR = 'build_' + '_'.join(ARCHFLAGS)
-JPEG_VERSION = os.environ.get('SIMPLEJPEG_JPEG_VERSION', '3.1.2')
+JPEG_VERSION = os.environ.get('SIMPLEJPEG_JPEG_VERSION', '3.2.1')
 JPEG_ARCHIVE = f'libjpeg-turbo-{JPEG_VERSION}.tar.gz'
 JPEG_URL = f'https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/{JPEG_VERSION}/libjpeg-turbo-{JPEG_VERSION}.tar.gz'
-JPEG_HASH = os.environ.get('SIMPLEJPEG_JPEG_HASH', '8f0012234b464ce50890c490f18194f913a7b1f4e6a03d6644179fa0f867d0cf')
+JPEG_HASH = os.environ.get('SIMPLEJPEG_JPEG_HASH', 'c27ad72a68da151177929aa969ae773a2da5ac2af9ce946079314fdac8cece7f')
 SKIP_BUILD_NAME = 'skip_build'
 DYNAMIC_LINKING = bool(os.environ.get("SIMPLEJPEG_DYNAMIC_LINKING", ""))
 
