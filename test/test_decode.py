@@ -52,7 +52,7 @@ def test_decode_buffer():
 
 def test_decode_buffer_insufficient():
     for f, data, im in yield_reference_images():
-        b = bytearray(len(im.getdata()) - 1)
+        b = bytearray(len(im.get_flattened_data()) - 1)
         with pytest.raises(ValueError, match='too small') as excinfo:
             simplejpeg.decode_jpeg(data, buffer=b)
 
