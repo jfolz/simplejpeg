@@ -12,8 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Add SIMPLEJPEG_DYNAMIC_LINKING environment variable to allow dynamic linking
 - Allow overriding libjpeg-turbo version with SIMPLEJPEG_JPEG_VERSION and SIMPLEJPEG_JPEG_HASH environment variables
+- (tests only) Test that resizing a buffer while it is being decoded into raises BufferError
 ### Changed
 - Drop Python 3.9 support
+- Declare free-threaded Python build compatibility
 - Update to libjpeg-turbo 3.2.1
 - Relax Cython build requirement to cython~=3.0
 - Force cythonization when Cython is installed
