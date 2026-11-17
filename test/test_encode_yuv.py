@@ -1,21 +1,11 @@
 import numpy as np
 import pytest
-from numpy.lib.stride_tricks import sliding_window_view
+from harness import generate_image as generate_rgb_image
+from harness import mean_absolute_difference
 
 import simplejpeg
 
-
-def mean_absolute_difference(a, b):
-    return np.abs(a.astype(np.float32) - b.astype(np.float32)).mean()
-
-
-def _box_blur(image, radius):
-    # soften the block edges of the synthetic image so that chroma
-    # subsampling behaves like on natural images
-    padded = np.pad(image, [(radius, radius), (radius, radius), (0, 0)],
-                    mode='edge').astype(np.float32)
-    return sliding_window_view(padded, (2*radius + 1, 2*radius + 1),
-                               axis=(0, 1)).mean(axis=(-1, -2))
+RGB = generate_rgb_image()
 
 
 def _downsample(channel, horizontal, vertical):
@@ -48,23 +38,10 @@ def rgb_to_yuv_planes(rgb, horizontal, vertical):
     return Y, U, V
 
 
-def generate_image(width=800, height=600):
-    rng = np.random.default_rng(9)
-    # blocks of constant color reduce the amount of high frequency noise,
-    # which makes encoding with chroma subsampling less lossy
-    rgb = rng.integers(
-        0, 255, (-(-height // 8), -(-width // 8), 3), dtype=np.uint8,
-    )
-    rgb = rgb.repeat(8, axis=0)[:height].repeat(8, axis=1)[:width]
-    rgb = _box_blur(rgb, 6)
-    return np.ascontiguousarray(np.rint(rgb).astype(np.uint8)), width, height
-
-
-def encode_decode_gray(padding_start, padding_end, delta, width=800):
-    gray, width, _ = generate_image()
-    gray = gray.mean(axis=2, dtype=np.uint8)
+def encode_decode_gray(padding_start, padding_end, delta):
+    gray = RGB.mean(axis=2, dtype=np.uint8)
     left = padding_start
-    right = width-padding_end
+    right = RGB.shape[1] - padding_end
     gray = gray[:, left:right]
     encoded = simplejpeg.encode_jpeg_yuv_planes(gray, None, None, 98)
     decoded = simplejpeg.decode_jpeg(encoded, 'gray')
@@ -98,12 +75,11 @@ def encode_decode_yuv(
     luma_padding_horizontal=0,
     luma_padding_vertical=0,
 ):
-    rgb, width, height = generate_image()
     left = padding_start*horizontal
-    right = width-padding_end*horizontal-luma_padding_horizontal
-    bottom = height-luma_padding_vertical
-    cropped_rgb = rgb[:bottom, left:right, :]
-    Y, U, V = rgb_to_yuv_planes(rgb, horizontal, vertical)
+    right = RGB.shape[1]-padding_end*horizontal-luma_padding_horizontal
+    bottom = RGB.shape[0]-luma_padding_vertical
+    cropped_rgb = RGB[:bottom, left:right, :]
+    Y, U, V = rgb_to_yuv_planes(RGB, horizontal, vertical)
     chroma_width = U.shape[1]
     Y = Y[:bottom, left:right]
     U = U[:, padding_start:chroma_width-padding_end]

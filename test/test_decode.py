@@ -4,14 +4,11 @@ import time
 
 import numpy as np
 import pytest
+from harness import mean_absolute_difference
 
 import simplejpeg
 
 ROOT = pt.abspath(pt.dirname(__file__))
-
-
-def mean_absolute_difference(a, b):
-    return np.abs(a.astype(np.float32) - b.astype(np.float32)).mean()
 
 
 def delta_decode(array):
