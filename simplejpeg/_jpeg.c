@@ -4345,7 +4345,7 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_kp_b_iso88591_H_q_AQ_Qa_l_1_Qa_A_A_a_xs_l_1_x __pyx_string_tab[209]
 #define __pyx_kp_b_iso88591_as_Q_e6_e6_Y_ddeef_aq_A_uIS_has __pyx_string_tab[210]
 #define __pyx_kp_b_iso88591_q_AQ_Qa_SST_A_a_xs_l_1_xs_E_3a __pyx_string_tab[211]
-#define __pyx_kp_b_iso88591_1Bd_1ARt1AQb_q_a_1F_1_aq_A_r_E __pyx_string_tab[212]
+#define __pyx_kp_b_iso88591_D_1Bd_1ARt1AQb_q_a_1F_1_aq_A_r __pyx_string_tab[212]
 #define __pyx_int_0 __pyx_number_tab[0]
 #define __pyx_int_neg_1 __pyx_number_tab[1]
 #define __pyx_int_136983863 __pyx_number_tab[2]
@@ -16080,7 +16080,7 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-PyDoc_STRVAR(__pyx_doc_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes, "\n    Encode an image in a YUV planar format to JPEG (JFIF) string.\n    U and V planes may be None to encode grayscale, but if one is given,\n    the other must be as well.\n    Returns JPEG (JFIF) data.\n\n    Parameters:\n        Y: uncompressed Y plane of the YUV image as uint8 array\n        U: uncompressed U plane of the YUV image as uint8 array\n        V: uncompressed V plane of the YUV image as uint8 array\n        quality: JPEG quantization factor\n        fastdct: If True, use fastest DCT method;\n                 speeds up encoding by 4-5% for a minor loss in quality\n\n    Returns:\n        encoded image as JPEG (JFIF) data\n    ");
+PyDoc_STRVAR(__pyx_doc_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes, "\n    Encode an image in a YUV planar format to JPEG (JFIF) string.\n    U and V planes may be None to encode grayscale, but if one is given,\n    the other must be as well.\n\n    Important:\n    Color subsampling is defined by the size of the planes.\n    Given a Y plane of size W and H, the table below lists the required\n    size of U and V:\n\n        subsampling     U, V\n        \047444\047           H      x W\n        \047422\047           H      x W // 2\n        \047420\047           H // 2 x W // 2\n        \047440\047           H // 2 x W\n        \047411\047           H      x W // 4\n        \047gray\047          None\n\n    Returns JPEG (JFIF) data.\n\n    Parameters:\n        Y: uncompressed Y plane of the YUV image as uint8 array\n        U: uncompressed U plane of the YUV image as uint8 array\n        V: uncompressed V plane of the YUV image as uint8 array\n        quality: JPEG quantization factor\n        fastdct: If True, use fastest DCT method;\n                 speeds up encoding by 4-5% for a minor loss in quality\n\n    Returns:\n        encoded image as JPEG (JFIF) data\n    ");
 static PyMethodDef __pyx_mdef_10simplejpeg_5_jpeg_7encode_jpeg_yuv_planes = {"encode_jpeg_yuv_planes", (PyCFunction)(void(*)(void))(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_10simplejpeg_5_jpeg_7encode_jpeg_yuv_planes, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes};
 static PyObject *__pyx_pw_10simplejpeg_5_jpeg_7encode_jpeg_yuv_planes(PyObject *__pyx_self, 
 #if CYTHON_VECTORCALL
@@ -16364,7 +16364,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_12 = __pyx_mstate_global->__pyx_kp_u_present;
     }
 
-    __pyx_t_13 = __Pyx_PyUnicode_Unicode(__pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 583, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyUnicode_Unicode(__pyx_t_12); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 597, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
@@ -16378,7 +16378,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_12 = __pyx_mstate_global->__pyx_kp_u_present;
     }
 
-    __pyx_t_14 = __Pyx_PyUnicode_Unicode(__pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyUnicode_Unicode(__pyx_t_12); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 598, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __pyx_t_15[0] = __pyx_mstate_global->__pyx_kp_u_either_both_U;
@@ -16396,7 +16396,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_17 |= __Pyx_PyUnicode_KIND_04(__pyx_t_15[1]) | __Pyx_PyUnicode_KIND_04(__pyx_t_15[3]);
     #endif
     __pyx_t_12 = __Pyx_PyUnicode_Join(__pyx_t_15, 5, __pyx_t_16, __pyx_t_17);
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 583, __pyx_L1_error)
+    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 597, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
@@ -16406,12 +16406,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 582, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 596, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 582, __pyx_L1_error)
+    __PYX_ERR(0, 596, __pyx_L1_error)
 
   }
 
@@ -16436,14 +16436,14 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
     __pyx_t_12 = NULL;
 
-    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 588, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 602, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_11, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 588, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_11, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 602, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 588, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 602, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_11, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 588, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_11, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 602, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __pyx_t_19[0] = __pyx_mstate_global->__pyx_kp_u_U_and_V_planes_must_have_matchin;
@@ -16459,7 +16459,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_17 |= __Pyx_PyUnicode_KIND_04(__pyx_t_19[1]) | __Pyx_PyUnicode_KIND_04(__pyx_t_19[3]);
     #endif
     __pyx_t_11 = __Pyx_PyUnicode_Join(__pyx_t_19, 4, __pyx_t_16, __pyx_t_17);
-    if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 588, __pyx_L1_error)
+    if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 602, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
@@ -16469,12 +16469,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 587, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 601, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 587, __pyx_L1_error)
+    __PYX_ERR(0, 601, __pyx_L1_error)
 
   }
 
@@ -16659,19 +16659,19 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
     __pyx_t_11 = NULL;
 
-    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 630, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 644, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_12, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 630, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_FormatSimple(__pyx_t_12, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 644, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_13);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 630, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 644, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_12, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 630, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimple(__pyx_t_12, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 644, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 630, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 644, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_23 = __Pyx_PyObject_FormatSimple(__pyx_t_12, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 630, __pyx_L1_error)
+    __pyx_t_23 = __Pyx_PyObject_FormatSimple(__pyx_t_12, __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 644, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_23);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __pyx_t_24[0] = __pyx_mstate_global->__pyx_kp_u_cannot_determine_chroma_subsampl;
@@ -16690,7 +16690,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_17 |= __Pyx_PyUnicode_KIND_04(__pyx_t_24[1]) | __Pyx_PyUnicode_KIND_04(__pyx_t_24[3]) | __Pyx_PyUnicode_KIND_04(__pyx_t_24[5]);
     #endif
     __pyx_t_12 = __Pyx_PyUnicode_Join(__pyx_t_24, 6, __pyx_t_16, __pyx_t_17);
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 629, __pyx_L1_error)
+    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 643, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
@@ -16701,16 +16701,16 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 628, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 642, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 628, __pyx_L1_error)
+    __PYX_ERR(0, 642, __pyx_L1_error)
 
   }
 
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 634, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 648, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_8 = (__pyx_t_10 == Py_None);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -16733,12 +16733,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       PyObject *__pyx_callargs[2] = {__pyx_t_12, __pyx_mstate_global->__pyx_kp_u_broadcasting_Y_plane_rows_is_not};
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 637, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 651, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 637, __pyx_L1_error)
+    __PYX_ERR(0, 651, __pyx_L1_error)
 
   }
 
@@ -16748,14 +16748,14 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
 
     __pyx_t_12 = NULL;
-    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 639, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.strides, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 653, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_23 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 639, __pyx_L1_error)
+    __pyx_t_23 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 653, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_23);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 639, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_Y.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 653, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 639, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 653, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __pyx_t_19[0] = __pyx_mstate_global->__pyx_kp_u_Y_plane_must_have_C_contiguous_r;
@@ -16771,7 +16771,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_17 |= __Pyx_PyUnicode_KIND_04(__pyx_t_19[1]) | __Pyx_PyUnicode_KIND_04(__pyx_t_19[3]);
     #endif
     __pyx_t_11 = __Pyx_PyUnicode_Join(__pyx_t_19, 4, __pyx_t_16, __pyx_t_17);
-    if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 639, __pyx_L1_error)
+    if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 653, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
@@ -16781,12 +16781,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 639, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 653, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 639, __pyx_L1_error)
+    __PYX_ERR(0, 653, __pyx_L1_error)
 
   }
 
@@ -16805,7 +16805,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
     goto __pyx_L25_bool_binop_done;
   }
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 643, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 657, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_9 = (__pyx_t_10 == Py_None);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -16832,12 +16832,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_mstate_global->__pyx_kp_u_broadcasting_U_plane_rows_is_not};
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 646, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 660, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 646, __pyx_L1_error)
+    __PYX_ERR(0, 660, __pyx_L1_error)
 
   }
 
@@ -16847,14 +16847,14 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
 
     __pyx_t_11 = NULL;
-    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 648, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.strides, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 662, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_12), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 648, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_12), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 662, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 648, __pyx_L1_error)
+    __pyx_t_12 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_U.shape, 8); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 662, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
-    __pyx_t_23 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_12), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 648, __pyx_L1_error)
+    __pyx_t_23 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_12), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 662, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_23);
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
     __pyx_t_19[0] = __pyx_mstate_global->__pyx_kp_u_U_plane_must_have_C_contiguous_r;
@@ -16870,7 +16870,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_17 |= __Pyx_PyUnicode_KIND_04(__pyx_t_19[1]) | __Pyx_PyUnicode_KIND_04(__pyx_t_19[3]);
     #endif
     __pyx_t_12 = __Pyx_PyUnicode_Join(__pyx_t_19, 4, __pyx_t_16, __pyx_t_17);
-    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 648, __pyx_L1_error)
+    if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 662, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_12);
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
@@ -16880,12 +16880,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 648, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 662, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 648, __pyx_L1_error)
+    __PYX_ERR(0, 662, __pyx_L1_error)
 
   }
 
@@ -16904,7 +16904,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
     goto __pyx_L28_bool_binop_done;
   }
-  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 652, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 666, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
   __pyx_t_9 = (__pyx_t_10 == Py_None);
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -16931,12 +16931,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       PyObject *__pyx_callargs[2] = {__pyx_t_12, __pyx_mstate_global->__pyx_kp_u_broadcasting_V_plane_rows_is_not};
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 655, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 669, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 655, __pyx_L1_error)
+    __PYX_ERR(0, 669, __pyx_L1_error)
 
   }
 
@@ -16946,14 +16946,14 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
 
     __pyx_t_12 = NULL;
-    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 657, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.strides, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 671, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_23 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 657, __pyx_L1_error)
+    __pyx_t_23 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_23)) __PYX_ERR(0, 671, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_23);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 657, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_carray_to_py_Py_ssize_t(__pyx_v_V.shape, 8); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 671, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 657, __pyx_L1_error)
+    __pyx_t_14 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Repr(__pyx_t_11), __pyx_mstate_global->__pyx_empty_unicode); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 671, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_14);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __pyx_t_19[0] = __pyx_mstate_global->__pyx_kp_u_V_plane_must_have_C_contiguous_r;
@@ -16969,7 +16969,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
     __pyx_t_17 |= __Pyx_PyUnicode_KIND_04(__pyx_t_19[1]) | __Pyx_PyUnicode_KIND_04(__pyx_t_19[3]);
     #endif
     __pyx_t_11 = __Pyx_PyUnicode_Join(__pyx_t_19, 4, __pyx_t_16, __pyx_t_17);
-    if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 657, __pyx_L1_error)
+    if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 671, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_DECREF(__pyx_t_23); __pyx_t_23 = 0;
     __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
@@ -16979,12 +16979,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
       __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 657, __pyx_L1_error)
+      if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 671, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
     }
     __Pyx_Raise(__pyx_t_10, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __PYX_ERR(0, 657, __pyx_L1_error)
+    __PYX_ERR(0, 671, __pyx_L1_error)
 
   }
 
@@ -17017,12 +17017,12 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
                     PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_mstate_global->__pyx_kp_u_could_not_create_JPEG_encoder};
                     __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_RuntimeError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
                     __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
-                    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 666, __pyx_L38_error)
+                    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 680, __pyx_L38_error)
                     __Pyx_GOTREF(__pyx_t_10);
                   }
                   __Pyx_Raise(__pyx_t_10, 0, 0, 0);
                   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-                  __PYX_ERR(0, 666, __pyx_L38_error)
+                  __PYX_ERR(0, 680, __pyx_L38_error)
                 }
                 /*finally:*/ {
                   __pyx_L38_error: {
@@ -17066,7 +17066,7 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
 
 
       __pyx_t_11 = NULL;
-      __pyx_t_12 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 686, __pyx_L31_error)
+      __pyx_t_12 = __pyx_f_10simplejpeg_5_jpeg___tj_error(__pyx_v_encoder); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 700, __pyx_L31_error)
       __Pyx_GOTREF(__pyx_t_12);
       __pyx_t_18 = 1;
       {
@@ -17074,16 +17074,16 @@ static PyObject *__pyx_pf_10simplejpeg_5_jpeg_6encode_jpeg_yuv_planes(CYTHON_UNU
         __pyx_t_10 = __Pyx_PyObject_FastCall((PyObject*)(((PyTypeObject*)PyExc_ValueError)), __pyx_callargs+__pyx_t_18, (2-__pyx_t_18) | (__pyx_t_18*__Pyx_PY_VECTORCALL_ARGUMENTS_OFFSET));
         __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-        if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 686, __pyx_L31_error)
+        if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 700, __pyx_L31_error)
         __Pyx_GOTREF(__pyx_t_10);
       }
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __PYX_ERR(0, 686, __pyx_L31_error)
+      __PYX_ERR(0, 700, __pyx_L31_error)
 
     }
 
-    __pyx_t_10 = PyBytes_FromStringAndSize(((char *)__pyx_v_jpegbuf), __pyx_v_jpegsize); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 687, __pyx_L31_error)
+    __pyx_t_10 = PyBytes_FromStringAndSize(((char *)__pyx_v_jpegbuf), __pyx_v_jpegsize); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 701, __pyx_L31_error)
     __Pyx_GOTREF(__pyx_t_10);
     __pyx_v_jpeg = ((PyObject*)__pyx_t_10);
     __pyx_t_10 = 0;
@@ -20628,30 +20628,30 @@ static int __Pyx_InitConstants(__pyx_mstatetype *__pyx_mstate) {
   CYTHON_UNUSED_VAR(__pyx_mstate);
   {
     const struct { const unsigned int length: 8; } str_length_index[] = {{3},{3},{5},{7},{6},{37},{42},{11},{8},{33},{9},{9},{7},{2},{1},{3},{3},{3},{3},{3},{2},{15},{23},{25},{32},{20},{22},{1},{1},{37},{45},{22},{4},{179},{45},{53},{53},{53},{8},{42},{42},{42},{34},{58},{15},{29},{29},{7},{14},{6},{2},{51},{9},{50},{39},{34},{20},{30},{37},{18},{4},{4},{5},{3},{4},{4},{4},{8},{4},{3},{4},{4},{8},{1},{1},{15},{4},{4},{1},{4},{5},{20},{12},{9},{17},{8},{8},{12},{10},{8},{10},{8},{7},{14},{11},{10},{19},{14},{12},{10},{17},{13},{12},{12},{19},{8},{13},{3},{15},{6},{18},{4},{6},{1},{8},{18},{10},{11},{16},{17},{5},{1},{4},{8},{6},{11},{18},{7},{4},{15},{6},{11},{22},{7},{9},{5},{7},{12},{5},{6},{7},{10},{6},{1},{2},{5},{7},{5},{7},{5},{8},{4},{14},{11},{7},{10},{8},{5},{7},{10},{10},{9},{4},{3},{19},{4},{4},{2},{5},{3},{3},{5},{6},{17},{4},{2},{5},{6},{3},{7},{8},{7},{7},{3},{10},{5},{16},{4},{5},{4},{4},{6},{7},{6},{3},{3},{14},{5},{5},{7},{6},{6},{5},{6},{4},{5},{1},{3}};
-    const struct { const unsigned int length: 10; } bytes_length_index[] = {{1},{732},{396},{219},{888}};
+    const struct { const unsigned int length: 10; } bytes_length_index[] = {{1},{732},{396},{219},{889}};
     #ifndef CYTHON_COMPRESS_STRINGS
       #define CYTHON_COMPRESS_STRINGS 90
     #endif
-    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (2289 bytes) */
-static const char cstring[] = "x\332\325V\317w\323V\026\306\340@\322\006\210\311\217B\313\320g\030HBC \220i9-\320c\334@\031N\031BJ\206t\346T\347Yz\266E\364+zR\022w\2303,\275\324RK-\265\364\322\313,Yz\351\245\377\204\374\t\363]\311\277\200\320\002g6\223cIOz\367\336w\337\367}\367\276\260\247\267\331\372m\306-\215%\267u<<vm\227\225j\236`%\277\\\026.\323%\363l\233I\223\033\006FL\023\252\255\t6\307\324*\267,aH\246\331B2\313\366\230\311=\265\312*\372\266\260\230j\033\266+\035\256\n\306\312\266\313d\225;\030\332\245\347B\365\3560\307\340\026\274L_z\254$R\237\005\006;K\350^U\270s\246.\245nU\346\347\034WHay\363\363L7yE,\260\305\345\245\245\345\353\327\226\257__^\276\266\274\274\374-\273\365\2230m\267\266\256\213\035f\227\331-\325\266<\275\342\333\276L\266\245\351.\255\371\346g\335\352MH\317\3255\241\r\031S&\2777\377\372\267\276\345\235\357\213\300\004Hp$_\261\010.Wp\355\212m\0315f&In#\311\007\32667t\215\231\000r\201\211]\007\276\0105\253\316\322\272\263\200\313s\2715\273\300*\010\3253N\001\324-\306wA\311#\333\022\217l\260\344UAY\261\346Um\213\250\322\204\241\227\204\313=\201\025)GDv\311\310b\217W\036_Y\276\271\234d\354\n\242A2\351\227T\003\311\202\n\000W\362u\303\303\n^\315\021r\221=(\263\232\355\203\021\344\206\2358\260\033v\000M\026\223\302\243\001\233M\366\315=\335\266\024\270\203\271\331.T`\226\274\357qC\212\305\247]\235\r\323_\345\260H\244\003\257t\233\351\316\237\246fCVE6\304\241k\357\310\005\344\354\261\224\013\260\352\212^\354\017s\332\370\030\047\256i\n\366,J\256\3155\225K\217\322\357\345L.\304\007\211A\372\216\003J\205\366\232\345\372{[n\274\267\345\201\026j*IM@\t\246\2168j\325\265MNTJn:\0069R\205v9\201\016R\251m\334F\r\033\304\240m\311E^RU\3337\264$\266\nUC{\177}\274r\277\333\017\334\203\047\205\225Lj\272\344%C\244\245\315J\266W\005P\302\242o\0255)\353\017\203^\227\251\263fQ?*s\337\360\230\242\270B\363U\241(L\363\023\311Y\266u\005N\333:70\253\352\226\356)\212\345\233NmQQmW,\232\360\323\271\353\362\032+s\335He\256\233\004\333\260\231\017qV\337\262\220x\030\342\271#*W\025\272/:\265]?\311\212l""\320,m\225`H\303k\334\343\213\007\314\246HSMt\267\007\243M\313\336\261\272\360\271\256\355\026\356\336\177Rxr\377na\255\370\340\001\306\364\212\353Y\361\247\215\207+\206\241;R\227\367\261\010L\310\n\327\2635\261\345\003z\361t\235z\342\342\240=>#GXll\024\213\0177\212\245\242\253(\217k\273\270~@\247P\036\211]\357\211(+J\267\232\001&\200\243z\037\014*\302\323=a\322\007\215|\360W\366-\225\236\230\222=\257\024$\032\231\\\267\222\247\255\371F2gq3}\212\035z\0008E\255\nuS\372f\372\326\215BC\352E\351\310\267\034]\335D\204\025\253g\267\355\021\242\024c\313\347F/lO\007\375\221\232\264\307\241\017b\227^\320\273\372\251\310\241\324\373\343\201\237\047$\355E\227\244\010\333G\261\t\024D\217F%=*\271\343\010K\343\262f\251\272\275\3307\224%.Ej\241\366\316L\025U\047\024\340\202F\257\212\022W7\007\347\345`\244\244\303A\235\276\371\016\003\337\3624R\027]\212A\353\343\351\244E\231\350rh\250Tq\030\241\032E\267(M\251%\360b[\351\271\234\226kzO<\206\206J\315\337V\322\036\321\255j\001\036\222\243&\221i\031=HS=z\370N\222\240(\033\274\"\321ZP?\3353\255\214\316\223BQ\025z\245\352\351\272\226\224\177rSplhb\227@6k\233$2\231\336~K\312\214\256b\037\033z[K\221\240!\202v\037\335\021y\031\366\016Z\2360\351\314E\347S\312\\\365l\352\201J\272:\215vt\315\253\322Al\312\n\365 H\304\020 \254\313)\351\003\247\273i9IG\000L \025?\305\301\rp\343\356\340m\300\031\256M\247\354\3508\316R\260\034\333!q\352^\315\025\025]\242\t\343\037\032*{Wx\t\214\225\022\004\327\355b\311\304\240\263,*\275\255@\220h9\236p\244g;\351\271\336\355\030x\370x\361K\236\351\3407\224\n\2759\276ny7\273M\005\025\204\354|\007\032\0218\035\204\213\377,|!\t\236\004\206\335\337t\347o/3\235\321\261\366A\277\375\0373\207F\346\242\2558\033\027\342\325v\366|t!Z\215x\047{:\314\264\263\347B#\316\307K\355l>:\033\257\306|\377\324\241\221\213Q\241\223=\033\026\366\217\036\0329\3329~\242=>\323\232\271\024\361\366\370\311\372n \303|{b&0\242|\264\224\314\314\307\271\366\304\340\027\274y\353\364\335\246g\332S\237\207\227\243B\264:\030\214\377)\\\ry\270\213\014""\217\305/\232\337\355q\254;6^\377>\274\020\376\022\311\370js\262YH\254\260Z\220L\236\n>\013\017\207\227\242\303\321W\224s{t\274^\250?\r\362o\r\276\242\320i\270o\202\013\001\"L\005\217\220\370\215\250\032\033\315<\275\026\202\2650\023N\206\305p\013\206\307\277\354\246r\024a\307\317GyJ\336\013\376\202\345\222]?\2172Q\256\375\3479\314W\033\225\346?^e^\345\332\343\247\202\363\301\303p\253=q\032vsQ\276}|:x\022\354\206;\321f#\327\240eZS\027\243\237\343\334`gHe\"\310\004\323\301f\224\213\362\177\234\327t@t\2348\231L\021\021X\355L\230\033\214:\000\307\004#\023\271w\375z<\234\017W\242\317\342#\361\235f\2569\277wc\217\037\310\013-:\001{\257\365\305\225x\255\221\351LL\266&/Fkq\246}\372\213\356\267\003G\010\220\017\277\211.F\310\253\3572E$W\242\277\307\367\032\371\306Rg\352\034`\336\211*\361zc\251q\277\271\264?J\270@NP\035Q\326\036\205n\202<\t\020\237_\327\366\376\345C#\363q&\236\216y,\033\027\032\220\364\245H\304_\003\351\205\246\330\373\372U\356\325\325\326\306\257\255_\265\226&Z\242LA.\000bXq\344\224%R{\352\036}\351\327\037\020\320\355Q\260\321\036;Q\257\006\034\020\021?\243\047\352\317\301@n\370\353F\244b\335j\2037dsn\357\302^\317\252u\206\267x\271UvZ\216\337\362\267;\2106\022<\353\212o\344lx\013\212B\261\035{\371\257 \037\334\216\216\200\247~\370\263TY(\277\034\315\277\010n\004\330\375\331\360!y$\005\330N\n0\260\242\302A\365\367\206\032fHO\357\022@0\030\356\177B\200\337LV\203|/\003\366_\222\034GO\266N\316\001\3353\215\371\346R\007Ir\304N\331hg?}\213\213\205\203ZK;\373e\370\357\326\302\235\326\235\265\326\332\317m\002\2733\366\ty\374o\032\311\373\t\370\200\306\322\031\237\016V\261\343\354Ho\007\247\023\nF\201]\230\177\231!\031R\236\373s\251\304r\324\032\343\273\261F\242m\024\032O\032^s\251Yh\2566K{\031\332\345Vt\024\242z\201\311{\315<\360\"\032\177_on}\262\276\022L\241=\320\366At\241=\366i\375F]\200\212Rx$\354\t#-\005\005\213\253\215\317\233\300\207\230\370OX\202v\276\215W\001g\375\022\332\307dP\014\266\302\243\330\245L\240/\203\207\265\306\221^>\375X\337%i\377\023\245\221""\177\265\364\232\363\376\271\244\362\352\367 \314\033\201J\032bQ\006\232\253\227\223\026t\030h\377\020\035\213\374\204\341w\317\2555F\032\253\r\2659\335\344\315\255\324\256\277\314]\354,\033\376\030\335#8\367g>t\301N\366X\353\330\031\264\302B\177?\307\323\356\231K\204\273\032>O\271\002}@x\253>\2065a\213\252@\025\256R\036s\375\305\006U\375\366\327\326\031\265\245\242kX-\313n\331N\247\027!\250\002\340-\244\321e\017\321\203\215PE\241\375?\256\361\021M\2455s\005\\\374AW\371\350\226\362_{\320,\010";
-    PyObject *data = __Pyx_DecompressString(cstring, 2289, 1);
+    #if (CYTHON_COMPRESS_STRINGS) == 1 /* compression: zlib (2290 bytes) */
+static const char cstring[] = "x\332\325V\317w\323V\026\306\340@\322\006\210\311\217B\313\264\3170\220\204\206@ \323rZ\240\307\230@\031N\031BJ\206t\346T\347Yz\266E\364+zR\022w\2303,\275\324RK-\265\364\322\313,Yz\351\245\377\204\374\t\363]\311\277\200\320\002g6\223cIOz\367\336w\337\367}\367\276\260\247\267\330\372-\306-\215%\267u<<vu\227\225j\236`%\277\\\026.\323%\363l\233I\223\033\006FL\023\252\255\t6\307\324*\267,aH\246\331B2\313\366\230\311=\265\312*\372\266\260\230j\033\266+\035\256\n\306\312\266\313d\225;\030\332\245\347B\365n3\307\340\026\274L_z\254$R\237\005\006;K\350^U\270s\246.\245nU\346\347\034WHay\363\363L7yE,\260\305\345\245\245\345kW\227\257][^\276\272\274\274\374\035\273\371\2230m\267\266\256\213\035f\227\331M\325\266<\275\342\333\276L\266\245\351.\255\371\346g\335\352MH\317\3255\241\r\031S&\2777\377\372\267\276\345\355\037\212\300\004Hp$_\261\010.Wp\355\262m\0315f&In#\311\007\32667t\215\231\000r\201\211]\007\276\0105\253\316\322\272\263\200\313s\2715\273\300*\010\3253N\001\324-\306wA\311#\333\022\217l\260\344UAY\261\346Um\213\250\322\204\241\227\204\313=\201\025)GDv\311\310b\217W\036_^\276\261\234d\354\n\242A2\351\227T\003\311\202\n\000W\362u\303\303\n^\315\021r\221=(\263\232\355\203\021\344\206\2358\260\033v\000M\026\223\302\243\001\233M\366\315=\335\266\024\270\203\271\331.T`\226\274\357qC\212\305\247]\235\r\323_\345\260H\244\003\257t\233\351\316\237\246fCVE6\304\241k\357\310\005\344\354\261\224\013\260\352\212^\354\017s\332\370\030\047\256i\n\366,J\256\3155\225K\217\322\357\345L.\304\007\211A\372\216\003J\205\366\232\345\372{[n\274\267\345\201\026j*IM@\t\246\2168j\325\265MNTJn:\0069R\205v9\201\016R\251m\334B\r\033\304\240m\311E^RU\3337\264$\266\nUC{\177}\274r\277\333\017\334\203\047\205\225Lj\272\344%C\244\245\315J\266W\005P\302\242o\0255)\353\017\203^\227\251\263fQ?*s\337\360\230\242\270B\363U\241(L\363\023\311Y\266u\031N\333:70\253\352\226\356)\212\345\233NmQQmW,\232\360\323\271\353\362\032+s\335He\256\233\004\333\260\231\017qV\337\262\220x\030\342\271#*W\024\272/:\265]?\311""\212l\320,m\225`H\303k\334\343\213\007\314\246HSMt\267\007\243M\313\336\261\272\360\271\256\355\026\356\334\177Rxr\377Na\255\370\340\001\306\364\212\353Y\361\247\215\207+\206\241;R\227\367\261\010L\310\n\327\2635\261\345\003z\361t\235z\342\342\240=>#GXll\024\213\0177\212\245\242\253(\217k\273\270\356\242S(\217\304\256\367D\224\025\245[\315\000\023\300Q\275\017\006\025\341\351\2360\351\203F>\370+\373\226JOL\311\236W\n\022\215L\256[\311\323\326|#\231\263\270\231>\305\016=\000\234\242V\205\272)}3}\353F\241!\365\242t\344[\216\256n\"\302\212\325\263\333\366\010Q\212\261\345s\243\027\266\247\203\376HM\332\343\320\007\261K/\350]\375T\344P\352\375\361\300\317\023\222\366\242KR\204\355\243\330\004\n\242G\243\222\036\225\334q\204\245qY\263T\335^\354\033\312\022\227\"\265P{g\246\212\252\023\npA\243WE\211\253\233\203\363r0R\322\341\240N\337|\207\201oy\032\251\213.\305\240\365\361t\322\242Lt94T\2528\214P\215\242[\224\246\324\022x\261\255\364\\N\3135\275\047\036CC\245\346o+i\217\350V\265\000\017\311Q\223\310\264\214\036\244\251\036=|\047IP\224\r^\221h-\250\237\356\231VF\347I\241\250\n\275R\365t]K\312?\271)864\261K \233\265M\022\231Lo\277%eFW\261\217\r\275\255\245H\320\020A\273\217\356\210\274\014{\007-O\230t\346\242\363)e\256z6\365@%]\235F;\272\346U\351 6e\205z\020$b\010\020\326\345\224\364\201\323\335\264\234\244#\000&\220\212\237\342\340\006\270qw\3606\340\014\327\246Svt\034g)X\216\355\2208u\257\346\212\212.\321\204\361\017\r\225\275+\274\004\306J\t\202\353v\261db\320Y\026\225\336V H\264\034O8\322\263\235\364\\\357v\014<|\274\370%\317t\360\033J\205\336\034_\267\274\033\335\246\202\nBv\276\003\215\010\234\016\302\305\177\026\276\220\004O\002\303\356o\272\363\267\227\231\316\350X\373\240\337\376\217\231C#s\321V\234\215\013\361j;{.:\037\255F\274\223=\035f\332\331/C#\316\307K\355l>:\033\257\306|\377\324\241\221\013Q\241\223=\033\026\366\217\036\0329\3329~\242=>\323\232\271\030\361\366\370\311\372n \303|{b&0\242|\264\224\314\314\307\271\366\304\340\027\274y\353\364\335\246g\332S""\237\207\227\242B\264:\030\214\377)\\\ry\270\213\014\217\305/\232\337\357q\254;6^\377!<\037\376\022\311\370Js\262YH\254\260Z\220L\236\n>\013\017\207\027\243\303\321\327\224s{t\274^\250?\r\362o\r\276\246\320i\270o\203\363\001\"L\005\217\220\370\365\250\032\033\315<\275\026\202\2650\023N\206\305p\013\206\307\277\352\246r\024a\307\317EyJ\336\013\376\202\345\222]?\2172Q\256\375\3479\314W\033\225\346?^e^\345\332\343\247\202s\301\303p\253=q\032vsQ\276}|:x\022\354\206;\321f#\327\240eZS\027\242\237\343\334`gHe\"\310\004\323\301f\224\213\362\177\234\327t@t\2348\231L\021\021X\355L\230\033\214:\000\307\004#\023\271w\375z<\234\013W\242\317\342#\361\355f\2569\277w}\217\037\310\013-:\001{\257\365\305\345x\255\221\351LL\266&/Dkq\246}\372\213\356\267\003G\010\220\017\277\215.D\310\253\3572E$W\242\277\307\367\032\371\306Rg\352K\300\274\023U\342\365\306R\343~si\177\224p\201\234\240:\242\254=\n\335\004y\022 >\277\256\355\375K\207F\346\343L<\035\363X6\3167 \351\213\221\210\277\001\322\013M\261\367\315\253\334\253+\255\215_[\277j-M\264D\231\202\234\007\304\260\342\310)K\244\366\324=\372\322\257? \240\333\243`\243=v\242^\r8 \"~FO\324\237\203\201\334\360\327\215H\305\272\325\006o\310\346\334\336\371\275\236U\353\014o\361r\253\354\264\034\277\345ow\020m$x\326\025\337\310\331\360&\024\205b;\366\362_A>\270\025\035\001O\375\360g\251\262P~9\232\177\021\\\017\260\373\263\341C\362H\n\260\235\024``E\205\203\352\357\r5\314\220\236\336%\200`0\334\377\204\000\277\221\254\006\371^\002\354\277$9\216\236l\235\234\003\272g\032\363\315\245\016\222\344\210\235\262\321\316~\372\026\027\013\007\265\226v\366\253\360\337\255\205\333\255\333k\255\265\237\333\004vg\354\023\362\370\3374\222\367\023\360\001\215\2453>\035\254b\307\331\221\336\016N\047\024\214\002\2730\3772C2\244<\367\357fR\215\345\2507\306wb\215T\333(4\2364\274\346R\263\320\\m\226\3662\264\315\255\350(T\365\002\223\367\232y\000F<\376\276\340\334\372d}%\230B\177\240\375\203\351B{\354\323\372\365\272\000\027\245\360H\330SFZ\013\n\026W\033\2377\001""\020Q\361\237\260\004\361|\027\257\002\317\372E\364\217\311\240\030l\205G\261M\231`_\006\021k\215#\275|\372\261\276O\322\376\047j#\377j\3515\347\375/\223\322\253\337\2032\257\007*\211\210E\031\210\256^Nz\320a\300}7:\026\371\t\305\357\236[k\2144V\033js\272\311\233[\251]\177\231;\330Y6\3741\272Gp\356\317|\350\202\235\354\261\326\2613\350\205\205\376~\216\247\3553\227(w5|\236r\005\376\200\360V}\014k\302\026e\2012\\\245<\346\372\213\r\312\372\355\257\2553jKE\333\260Z\226\335\262\235N/BP\005\300[H\243\313\036\242\007\033\241\212J\373\177\\\343#\272Jk\3462\270\370\203\266\362\321=\345\277\271\342,%";
+    PyObject *data = __Pyx_DecompressString(cstring, 2290, 1);
     #define __Pyx_DecompressString_LZSS_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (3011 bytes) */
-static const char cstring[] = "\377 U= V= a\327nd \000\002V\004\000t \3770x byte \377buffer i\377s too sm\367all\007\000 dec\377ode ( ch\377annels d\377oes not \377match gi\377ven colo\377rspace  \377for shap\376\010\000object>\337 plan3\000mu\337st be.\003, \376%\000neither\377(missing\377)(presen\377t)) imag\377e, .4114\37720422440\377444: <Me\377moryView\377 of <con\177tiguous\327\002gdirp\001\007\rin\021\005\177strided\"\010\314\206\001\004\031><(\tA\006>?iC\221 \207 a\272\000gn\253!\377read-onl\327y m\240\002v\242\000In\177valid m\306 \237, exp\220 |\000\047\353c\047\376\001\047\254 tra\037n\047, g\322 %\005\273#\337in ax\220@No\357neNo\243@tha\377t Cython\376\247Adelibergateo\000\324\001ct\301@\376\"\000n PEP-4\33384\352Bre\203As \037subcl\252\000\276@\266 \337built_\000ty\377pes. If \277you ne\230 t\307o p\322\000%\t\244@n oset \255@ \047\363\002?ation_<\000\267@\343\047 \362#\213`\263aFal\317se.U\341d\363IhaCve\265c\355@\242c\364\003U\240c\331 \240b!\002C \320Hro\377ws, but \274\272C\352@re V\0011Y\27661add_n\200@b\177roadcas\267 \303g \254\005\231\001\267\205\001\223\205\001su\177pported\035\n\240\241\005\010\037\226\0052\037a\022c\215\204\003d\375e\207`mine c\337hroma\370Asa\307mpl\362!\236\206\001\214\206\004of\376\245\206\004Y=colle\375c\320As.abcc\357ould\344\206\002cre\276\337` JPEG\211\207\004r\366\007\023en\251\207\001rdis\357able\325\206\003 bo\333th\246 en\020\001gc\354\322\206\002\267\202+is7\003dno\377 default\377 __reduc\177e__ due\246\210\001\377non-triv\367ial\033\000cini\377t__numpy\377._core.m\3765\000iarray ofail\341\204\003im\251AN\033\tuma\256\000\022\rs&\000\377lejpeg/_>\002\001.pyxu\316\002\242\211\001\237alloc\240!Y\003d\017ata.\013\020\220\211\003\375\211\001\275\204\004\276\"\000known\326#e\377rrorABGR\377ARGBASCI\361I\t\000\013\001\020\000XCMY\377KEllipsi\303sG\301\000 \000\"\001\047\000XSwequ\370 eUV\220\211\001\345.\225\211\007X5\001I\000YYC\377CKYCbCr_\357_Pyx\001\000Dic\377t_NextRegf__\307\206\004\312 __\234\207\002\373__\001\005getit\313em\r\001d0\001\027""\000fu\363nc\035\001\030\000statx1\002\301#3\001main\003\002\357odulM\002nam\346\002\003ewT\001\266 _ch\037ecksuT\000\n\001?\004\354\025\001\210\210\001__\037\001unp\267ick?\000En \005vyt\323a\230\001qualO\005\304\200e\211fc\232\211\002\277\001\234dex\336\314\001set_\203\005seqt\262\006\003\006.\007tes\271`\367_is\265aouti_neabc\335E_\245\215\003\377appendas?yncio.\337`#\003_sbase\307\215\003c\254\215\005\277cline_\225 t\377raceback4\246\215\007\260\215\007_\277\215\003ub\240\206\005\000\r\177_countd\332a\366\336a_l|\001ta_p\370\237\216\003\223\204\002\000\010_head\373er\274\216\003rdims\001d\332\"\324\000\222\216\003\251\206\003\257\206\003\320\204\002\000\010\237_yuv_\261\216\003\317\206\004e\347num\346\213\002\242\204\002fasotdct\003\001up\324\207\002\377eflagsfo\357rmat\315\214\004fro\375m\322\217\003height\347iid\321\216\002\326\216\002_pi\357ndex\341!myk\232\341as\000\002iz\342\205\002\347\205\001C\344\315\217\006\365\205\001S\224#\200\206\001buf\364\000\004\003\004s3\000lowe\357rmem\360\215\001min\337_fact\213\000in\371_x\003\020\001width\356\205\216\001msg\212\220\001_re\243le\256@\315D\247\204\001n\247 n\235p\264\207\002obj\373@\376@_\361p\203`\354 \211`put_\372\344\220\007p\311@pfpit\273ch\336\220\003pop\231\204\001i\377tyregist\357erre\210\221\002ret>\230\211\002gbset\277\210\004\241\221\002\362\320\207\007.\325\207\002\307\001star}t:\000pstop\322\216\003\376\357\214\004structs\037ubtmp\000\000\200\010\n\001\377puint8un\366\320\207\002un\232\001upda\377teupperv\237alues\217\220\001\202\"x\377zipO\200\001\340\010\343\t\330\000\000\000\003\001\010\360H\001\377\000\005(\240q\250\004\250\377A\250Q\330\004\"\240#\377\240Q\240a\340\004\030\230\377\001\330\004\036\230l\250!\377\2501\330\004!\240\034\250\377Q\250a\360\022\000\005%\377\240A\340\004\034\230A\360\377\006\000\005\006\340\r\016\330\377\014\026\320\026&\240a\330\377\014\017\210x\220s\230!\377\330\020\026\220l\240!\240}1\025\002)\250\021\330\020\000\000F\000\003\021\220\n\001\000\002\003\004\340.\006""\377\025\026\330\024\032\230*\240\367A\240Q\000\006\330\014\035\230\337Q\230a\230x\237\000\007\250\337|\270;\300au\000\t\014\377\210?\230#\230Z\240s?\250/\270\023\270A!\002\205\000\375\220\030\002\022\220\027\230\002\230\337&\240\002\240+\260\001\330\010\177\014\210A\210U\220!\000\006\362\n\005+W\001I\0037\220#\220\277Q\330\014\024\220N\266\0003\277\240h\250l\270!\013\001A\377\220S\230\001\230\023\230C\333\230q\355\000\r\037\204\004\006\250\356\354\000\"\240!\271\001t\2205\374l\000\361\002j\240\001\240\021\330\377$(\250\006\250h\260g\377\270[\310\001\310\021\330\014\377\022\220\"\220K\230q\330\373\020\030\224\000(\240!\330\r\377\025\220R\220x\230w\240\357k\260\021\260c\001\320\024%\317\240T\250\021\320\007\210\000\020\220\377\001\220\025\220k\240\021\240m!v\037\025\220\213A\016\017\256\002\334\205Ak\000\031\230\021\000\007\340\014\027\026\220m\217@\020\200J\215I\200E\377\"\230E\240\027\250\003\250\377>\270\021\270)\3003\300\323a\330\204Q\211!\020\354@t\320\377\033-\250S\260\001\340\020\377\023\320\023%\240S\250\001\207\330\030\033\r\004\000\007\t\010\337@!\237\2307\240%\240\215 *\006\024\376\341Ag\240W\250F\260!\337\2601\340\024\036\357@w\240\377g\250V\2601\260G\270\0171\360\010\000\357@\314`\363`\212a\333\330\010\304`\220!\375a\014\210\3751\316\204\013\360*\000\005)\250\377\001\250\025\250a\250s\260\377#\260Q\330\004&\240e\373\2506\347 ,\270e\3006\377\310\021\310/\320Y^\320\377^d\320de\320efR\302\204\001#\221@#\000a\221\000\004\321A\276\326\204\005\010\200u\210I\375A\330\375\010\213@\330\t\016\210h\220\367a\220s\367`Q\330\010\016\353\210j\227`\021\n\tY\240c\376u\000h\260a\260s\270(\367\300#\300\036\005\320\031a\320\377af\320fp\320pu\357\320uv\340K\000\005\220X~\366d\005\034\230<\240q\265 \377\004\007\200{\220!\220=\257\240\003\2401U\007\034\326\205\001\004\371!\324`\035\000|\2203\220a\237\330\010\034\230K.\001\374\205\002\330\336\374\205\002\220n\240A\354\205\021\024\220UA\202i\026\314a\330\355T\220\236\206\007\353\360\n\355!8i\002\014\022\220\337*\230A\230Z\237""\002\010\017\367\320\017(\333 \031\260)\270\2731\340\201 a\210q\207D\330\353\004\013\373.,\307\207\021\330\004\037\377\230}\320,>\320>S\357\320ST\330\307\207\001\340\t\n\360\231\210\001\203\207C\233\204#\306\207\020\340\014\025\220\255Q\335 \004\005\242\211\005\030\335B\010\177\031\230\021\230!\200\001\203\204\001\326\244\001\360(\335c\021\227\211\001\250B\373\250d\261\204\001\260A\260R\260\377t\2701\270A\270Q\270\367b\300\001\342\001q\240\006\240\377a\240|\2601\260F\270\361!\255 \303A\322{r\210\023\210\237E\220\024\220R\303\211\002\346@A\177\330\t\013\2103\210e\366@ob\230\003\230\221e\330\014\207\205\001\375_z\000c\260\032\2701\330\377\014\016\210a\210\177\230b\356\271`:\250Q\314 \210&\220\377\001\220\023\220C\220q\230\337\006\230a\230s\321\212\002f\250\237A\250S\260\003\210\005\275\204\004\330\373\014;\262\002\\\310\021\310!\333\31010\n\360\036\365\205\002\210F\353\220!\370`c\316\207\001 \240\001\356\361`\210f\220\227\211\001\002\230\"\277\230D\240\007\240u\270\213\002\014\376\003\026S\260\005\260Q\260c\177\270\025\270a\270q\330#\002\373\t\n\235\004B\220b\230\004o\230H\240F\346\213\001\360\026A-\377\340\004\007\320\007\031\230\023\273\230A\307\006\r\330\014\272\211\001\021~\264\204\002Q\230j\250\001\250\251@\377\360\010\000\005\010\200q\210\371\t\225 )\000\017\210q\220\005\227\220Q\330\205\000(\325\006\314\206\007\n\375\210\006\r\320\031c\320cd\377\320dn\320no\320o\367p\340\010;\004\220h\230a\253\230q\204\000\200\270C\023\227 Y?\230c\240\021\330\010\000ayL>\242\2070\320\026-\250Q\266\207\035\232\2076";
-    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 3011, 4816);
+    #elif (CYTHON_COMPRESS_STRINGS) > 0 && (CYTHON_COMPRESS_STRINGS) <= 90 /* compression: lzss (3013 bytes) */
+static const char cstring[] = "\377 U= V= a\327nd \000\002V\004\000t \3770x byte \377buffer i\377s too sm\367all\007\000 dec\377ode ( ch\377annels d\377oes not \377match gi\377ven colo\377rspace  \377for shap\376\010\000object>\337 plan3\000mu\337st be.\003, \376%\000neither\377(missing\377)(presen\377t)) imag\377e, .4114\37720422440\377444: <Me\377moryView\377 of <con\177tiguous\327\002gdirp\001\007\rin\021\005\177strided\"\010\314\206\001\004\031><(\tA\006>?iC\221 \207 a\272\000gn\253!\377read-onl\327y m\240\002v\242\000In\177valid m\306 \237, exp\220 |\000\047\353c\047\376\001\047\254 tra\037n\047, g\322 %\005\273#\337in ax\220@No\357neNo\243@tha\377t Cython\376\247Adelibergateo\000\324\001ct\301@\376\"\000n PEP-4\33384\352Bre\203As \037subcl\252\000\276@\266 \337built_\000ty\377pes. If \277you ne\230 t\307o p\322\000%\t\244@n oset \255@ \047\363\002?ation_<\000\267@\343\047 \362#\213`\263aFal\317se.U\341d\363IhaCve\265c\355@\242c\364\003U\240c\331 \240b!\002C \320Hro\377ws, but \274\272C\352@re V\0011Y\27661add_n\200@b\177roadcas\267 \303g \254\005\231\001\267\205\001\223\205\001su\177pported\035\n\240\241\005\010\037\226\0052\037a\022c\215\204\003d\375e\207`mine c\337hroma\370Asa\307mpl\362!\236\206\001\214\206\004of\376\245\206\004Y=colle\375c\320As.abcc\357ould\344\206\002cre\276\337` JPEG\211\207\004r\366\007\023en\251\207\001rdis\357able\325\206\003 bo\333th\246 en\020\001gc\354\322\206\002\267\202+is7\003dno\377 default\377 __reduc\177e__ due\246\210\001\377non-triv\367ial\033\000cini\377t__numpy\377._core.m\3765\000iarray ofail\341\204\003im\251AN\033\tuma\256\000\022\rs&\000\377lejpeg/_>\002\001.pyxu\316\002\242\211\001\237alloc\240!Y\003d\017ata.\013\020\220\211\003\375\211\001\275\204\004\276\"\000known\326#e\377rrorABGR\377ARGBASCI\361I\t\000\013\001\020\000XCMY\377KEllipsi\303sG\301\000 \000\"\001\047\000XSwequ\370 eUV\220\211\001\345.\225\211\007X5\001I\000YYC\377CKYCbCr_\357_Pyx\001\000Dic\377t_NextRegf__\307\206\004\312 __\234\207\002\373__\001\005getit\313em\r\001d0\001\027""\000fu\363nc\035\001\030\000statx1\002\301#3\001main\003\002\357odulM\002nam\346\002\003ewT\001\266 _ch\037ecksuT\000\n\001?\004\354\025\001\210\210\001__\037\001unp\267ick?\000En \005vyt\323a\230\001qualO\005\304\200e\211fc\232\211\002\277\001\234dex\336\314\001set_\203\005seqt\262\006\003\006.\007tes\271`\367_is\265aouti_neabc\335E_\245\215\003\377appendas?yncio.\337`#\003_sbase\307\215\003c\254\215\005\277cline_\225 t\377raceback4\246\215\007\260\215\007_\277\215\003ub\240\206\005\000\r\177_countd\332a\366\336a_l|\001ta_p\370\237\216\003\223\204\002\000\010_head\373er\274\216\003rdims\001d\332\"\324\000\222\216\003\251\206\003\257\206\003\320\204\002\000\010\237_yuv_\261\216\003\317\206\004e\347num\346\213\002\242\204\002fasotdct\003\001up\324\207\002\377eflagsfo\357rmat\315\214\004fro\375m\322\217\003height\347iid\321\216\002\326\216\002_pi\357ndex\341!myk\232\341as\000\002iz\342\205\002\347\205\001C\344\315\217\006\365\205\001S\224#\200\206\001buf\364\000\004\003\004s3\000lowe\357rmem\360\215\001min\337_fact\213\000in\371_x\003\020\001width\356\205\216\001msg\212\220\001_re\243le\256@\315D\247\204\001n\247 n\235p\264\207\002obj\373@\376@_\361p\203`\354 \211`put_\372\344\220\007p\311@pfpit\273ch\336\220\003pop\231\204\001i\377tyregist\357erre\210\221\002ret>\230\211\002gbset\277\210\004\241\221\002\362\320\207\007.\325\207\002\307\001star}t:\000pstop\322\216\003\376\357\214\004structs\037ubtmp\000\000\200\010\n\001\377puint8un\366\320\207\002un\232\001upda\377teupperv\237alues\217\220\001\202\"x\377zipO\200\001\340\010\343\t\330\000\000\000\003\001\010\360H\001\377\000\005(\240q\250\004\250\377A\250Q\330\004\"\240#\377\240Q\240a\340\004\030\230\377\001\330\004\036\230l\250!\377\2501\330\004!\240\034\250\377Q\250a\360\022\000\005%\377\240A\340\004\034\230A\360\377\006\000\005\006\340\r\016\330\377\014\026\320\026&\240a\330\377\014\017\210x\220s\230!\377\330\020\026\220l\240!\240}1\025\002)\250\021\330\020\000\000F\000\003\021\220\n\001\000\002\003\004\340.\006""\377\025\026\330\024\032\230*\240\367A\240Q\000\006\330\014\035\230\337Q\230a\230x\237\000\007\250\337|\270;\300au\000\t\014\377\210?\230#\230Z\240s?\250/\270\023\270A!\002\205\000\375\220\030\002\022\220\027\230\002\230\337&\240\002\240+\260\001\330\010\177\014\210A\210U\220!\000\006\362\n\005+W\001I\0037\220#\220\277Q\330\014\024\220N\266\0003\277\240h\250l\270!\013\001A\377\220S\230\001\230\023\230C\333\230q\355\000\r\037\204\004\006\250\356\354\000\"\240!\271\001t\2205\374l\000\361\002j\240\001\240\021\330\377$(\250\006\250h\260g\377\270[\310\001\310\021\330\014\377\022\220\"\220K\230q\330\373\020\030\224\000(\240!\330\r\377\025\220R\220x\230w\240\357k\260\021\260c\001\320\024%\317\240T\250\021\320\007\210\000\020\220\377\001\220\025\220k\240\021\240m!v\037\025\220\213A\016\017\256\002\334\205Ak\000\031\230\021\000\007\340\014\027\026\220m\217@\020\200J\215I\200E\377\"\230E\240\027\250\003\250\377>\270\021\270)\3003\300\323a\330\204Q\211!\020\354@t\320\377\033-\250S\260\001\340\020\377\023\320\023%\240S\250\001\207\330\030\033\r\004\000\007\t\010\337@!\237\2307\240%\240\215 *\006\024\376\341Ag\240W\250F\260!\337\2601\340\024\036\357@w\240\377g\250V\2601\260G\270\0171\360\010\000\357@\314`\363`\212a\333\330\010\304`\220!\375a\014\210\3751\316\204\013\360*\000\005)\250\377\001\250\025\250a\250s\260\377#\260Q\330\004&\240e\373\2506\347 ,\270e\3006\377\310\021\310/\320Y^\320\377^d\320de\320efR\302\204\001#\221@#\000a\221\000\004\321A\276\326\204\005\010\200u\210I\375A\330\375\010\213@\330\t\016\210h\220\367a\220s\367`Q\330\010\016\353\210j\227`\021\n\tY\240c\376u\000h\260a\260s\270(\367\300#\300\036\005\320\031a\320\377af\320fp\320pu\357\320uv\340K\000\005\220X~\366d\005\034\230<\240q\265 \377\004\007\200{\220!\220=\257\240\003\2401U\007\034\326\205\001\004\371!\324`\035\000|\2203\220a\237\330\010\034\230K.\001\374\205\002\330\336\374\205\002\220n\240A\354\205\021\024\220UA\202i\026\314a\330\355T\220\236\206\007\353\360\n\355!8i\002\014\022\220\337*\230A\230Z\237""\002\010\017\367\320\017(\333 \031\260)\270\2731\340\201 a\210q\207D\330\353\004\013\373.,\307\207\021\330\004\037\377\230}\320,>\320>S\357\320ST\330\307\207\001\340\t\n\360\231\210\001\203\207C\233\204#\306\207\020\340\014\025\220\255Q\335 \004\005\242\211\005\030\335B\010\177\031\230\021\230!\200\001\203\204\001\256\244\001\360D\001\336c\021\230\211\001\250\367B\250d\262\204\001\260A\260R\377\260t\2701\270A\270Q\357\270b\300\001\343\001q\240\006\377\240a\240|\2601\260F\343\270!\256 \304A\323{r\210\023?\210E\220\024\220R\304\211\002\347@\377A\330\t\013\2103\210e\336\367@b\230\003\230\222e\330\014\372\210\205\001_z\000c\260\032\2701\377\330\014\016\210a\210\177\230\335b\272`:\250Q\315 \210&\377\220\001\220\023\220C\220q\277\230\006\230a\230s\322\212\002f?\250A\250S\260\003\210\005\276\204\004\367\330\014;\262\002\\\310\021\310\267!\31010\n\360\036\366\205\002\210\327F\220!\371`c\317\207\001 \240\335\001\362`\210f\220\230\211\001\002\230\177\"\230D\240\007\240u\271\213\002\375\014\003\026S\260\005\260Q\260\377c\270\025\270a\270q\330\366#\002\t\n\235\004B\220b\230\337\004\230H\240F\347\213\001\360\026\376A-\340\004\007\320\007\031\230w\023\230A\307\006\r\330\014\273\211\001\375\021\265\204\002Q\230j\250\001\250\376\251@\360\010\000\005\010\200q\363\210\t\225 )\000\017\210q\220/\005\220Q\330\205\000(\325\006\315\206\007\373\n\210\006\r\320\031c\320c\377d\320dn\320no\320\357op\340\010;\004\220h\230Wa\230q\204\000\200\270C\023\227 \177Y\230c\240\021\330\010\000a|yL\243\2070\320\026-\250Q\267\207\035\000\233\2076";
+    PyObject *data = __Pyx_DecompressString_LZSS(cstring, 3013, 4817);
     #define __Pyx_DecompressString_UNUSED
     if (unlikely(!data)) __PYX_ERR(0, 1, __pyx_L1_error)
     const char* const bytes = __Pyx_PyBytes_AsString(data);
     #if !CYTHON_ASSUME_SAFE_MACROS
     if (likely(bytes)); else { Py_DECREF(data); __PYX_ERR(0, 1, __pyx_L1_error) }
     #endif
-    #else /* compression: none (4816 bytes) */
-static const char bytes[] = " U= V= and  and V  at 0x byte buffer is too small to decode ( channels does not match given colorspace  for shape  object> planes must be given, or neither(missing)(present)) image, .411420422440444: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Cannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis NoneNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.U and V planes must have matching shape, got U plane must have C contiguous rows, but strides are V plane must have C contiguous rows, but strides are Y plane must have C contiguous rows, but strides are add_notebroadcasting U plane rows is not supportedbroadcasting V plane rows is not supportedbroadcasting Y plane rows is not supportedbroadcasting rows is not supportedcannot determine chroma subsampling for planes of shape Y=collections.abccould not create JPEG decodercould not create JPEG encoderdisableeither both U enablegcimage must have C contiguous rows, but strides are isenabledno default __reduce__ due to non-trivial __cinit__numpy._core.multiarray failed to importnumpy._core.umath failed to importsimplejpeg/_jpeg.pyxunable to allocate array data.unable to allocate shape and strides.unknown JPEG errorABGRARGBASCIIBGRBGRABGRXCMYKEllipsisGrayRGBRGBARGBXSequenceUVView.MemoryViewXBGRXRGBYYCCKYCbCr__Pyx_PyDict_NextRef__annotate____class____class_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___is_coroutineabcallocate_bufferappendasyncio.coroutinesbasebuffercchannelscline_in_tracebackcolorspacecolorspace_colorsubsamplingcolorsubsampl""ing_countddatadata_lendata_pdecode_jpegdecode_jpeg_headerdecoderdimsdtype_is_objectencodeencode_jpegencode_jpeg_yuv_planesencoderenumerateerrorfastdctfastupsampleflagsformatfortranfrombufferheightiidimageimage_pindexis_cmykitemsitemsizejpegjpegColorspacejpegSubsampjpegbufjpegbufbufjpegsizelowermemviewmin_factormin_heightmin_widthmodemsgmust_release_buffernamendimnpnumpyobjoutout_poutlenoutput_colorspacepackpfpitchplanespopqualityregisterreshaperetcodergbsetdefaultshapesimplejpeg._jpegsizestartstepstopstrictstridesstructsubtmptmp_colorspacetmp_puint8unknownunpackupdateuppervaluesviewwidthxzipO\200\001\340\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\360H\001\000\005(\240q\250\004\250A\250Q\330\004\"\240#\240Q\240a\340\004\030\230\001\330\004\036\230l\250!\2501\330\004!\240\034\250Q\250a\360\022\000\005%\240A\340\004\034\230A\360\006\000\005\006\340\r\016\330\014\026\320\026&\240a\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\026\320\026)\250\021\330\020\021\330\020\021\330\020\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\340\014\017\210x\220s\230!\330\025\026\330\024\032\230*\240A\240Q\330\024\032\230*\240A\240Q\330\014\035\230Q\230a\230x\240q\250\007\250|\270;\300a\360\006\000\t\014\210?\230#\230Z\240s\250/\270\023\270A\330\014\035\230Q\330\014\026\220a\360\006\000\t\022\220\027\230\002\230&\240\002\240+\250Q\250a\330\010\014\210A\210U\220!\330\010\014\210A\210U\220!\330\010\014\210A\210U\220+\230Q\230a\360\006\000\t\014\2107\220#\220Q\330\014\024\220N\240!\2403\240h\250l\270!\330\014\024\220A\220S\230\001\230\023\230C\230q\360\006\000\r\037\230a\230x\240q\250\006\250a\330\014\"\240!\340\014\017\210t\2205\230\002\230!\330\020\026\220j\240\001\240\021\330$(\250\006\250h\260g\270[\310\001\310\021\330\014\022\220\"\220K\230q\330\020\030\230\002\230(\240!\330\r\025\220R\220x\230w\240k\260\021\260!\330\014\024\320\024%\240T\250\021\360\006\000\t\014\210?\230#\230Q\330\014\020\220\001""\220\025\220k\240\021\240!\330\014\024\220N\240!\2403\240h\250l\270!\330\014\024\220A\220S\230\001\230\023\230C\230q\360\006\000\r\025\220A\360\006\000\016\017\330\014\024\220A\330\014\017\210q\330\020\031\230\021\330\014\017\210q\330\020\031\230\021\340\014\026\220m\2401\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\340\014\017\210x\220s\230\"\230E\240\027\250\003\250>\270\021\270)\3003\300a\330\025\026\330\024\032\230*\240A\240Q\330\024\032\230*\240A\240Q\360\006\000\r\020\210x\220t\320\033-\250S\260\001\340\020\023\320\023%\240S\250\001\330\030\033\320\033-\250S\260\001\330\030\033\320\033-\250S\260\001\330\030\033\320\033-\250S\260\001\330\024\032\230!\2307\240%\240q\330\020\023\320\023%\240S\250\001\330\024\035\230Q\230g\240W\250F\260!\2601\340\024\036\230a\230w\240g\250V\2601\260G\2701\360\010\000\t\014\2101\330\014\034\230A\230Q\230a\330\010\021\220\021\220!\360\006\000\005\014\2101\200\001\340\010\t\330\010\t\330\010\t\330\010\t\360*\000\005)\250\001\250\025\250a\250s\260#\260Q\330\004&\240e\2506\260\021\260,\270e\3006\310\021\310/\320Y^\320^d\320de\320ef\360\006\000\005#\240!\330\004&\240a\240q\330\004\"\240!\340\004\034\230A\360\006\000\005\010\200u\210I\220S\230\001\330\010\020\220\001\330\t\016\210h\220a\220s\230#\230Q\330\010\016\210j\230\001\230\021\330\t\016\210h\220a\220s\230#\230Y\240c\250\025\250h\260a\260s\270(\300#\300Q\330\010\016\210j\230\001\320\031a\320af\320fp\320pu\320uv\340\010\020\220\005\220X\230Q\230a\360\006\000\005\034\230<\240q\250\001\330\004\007\200{\220!\220=\240\003\2401\330\010\016\210j\230\001\230\021\330\034&\240a\330\004!\240\021\330\004\007\200|\2203\220a\330\010\034\230K\240q\250\001\360\006\000\005\006\330\r\016\330\014\026\220n\240A\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\024\220A\330\014\017\210q\330\020\031\230\021\330\014\026\220k\240\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021""\220\021\330\020\021\330\020\021\330\020\021\360\n\000\t\014\2108\2203\220a\330\014\022\220*\230A\230Z\240q\250\001\330\010\017\320\017(\250\001\250\031\260)\2701\340\010\016\210a\210q\330\010\021\220\021\220!\330\004\013\2101\200\001\340\010\t\330\010\t\330\010\t\330\010\t\360,\000\005(\240q\250\004\250A\250Q\330\004\"\240#\240Q\240a\330\004\037\230}\320,>\320>S\320ST\330\004\034\230A\340\t\n\330\010\t\330\014\026\320\026&\240a\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\026\320\026)\250\021\330\020\021\330\020\021\330\020\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\340\014\017\210x\220s\230\"\230E\240\027\250\003\250>\270\021\270)\3003\300a\330\025\026\330\024\032\230*\240A\240Q\330\024\032\230*\240A\240Q\330\014\035\230Q\230a\230x\240q\250\007\250|\270;\300a\340\014\025\220Q\220a\330\004\005\330\010\t\330\010\t\330\010\030\230\001\230\021\330\010\031\230\021\230!\200\001\360\010\000\t\n\330\010\t\360(\000\005)\250\001\250\021\250!\2501\250B\250d\260!\2601\260A\260R\260t\2701\270A\270Q\270b\300\001\330\004\037\230q\240\006\240a\240|\2601\260F\270!\2701\340\004!\240\021\360\006\000\005#\240!\330\004&\240a\240q\330\004\"\240!\340\004\034\230A\360\006\000\005\010\200r\210\023\210E\220\024\220R\220s\230!\330\010\034\230A\330\t\013\2103\210e\2203\220b\230\003\2301\330\010\016\210j\230\001\330\014\034\230A\230_\250B\250c\260\032\2701\330\014\016\210a\210\177\230b\240\003\240:\250Q\340\t\n\210&\220\001\220\023\220C\220q\230\006\230a\230s\240#\240Q\240f\250A\250S\260\003\2601\260F\270!\2701\330\010\016\210j\230\001\330\014;\2701\270A\270\\\310\021\310!\3101\340\t\n\210&\220\001\220\023\220C\220q\360\036\000\t\014\2101\210F\220!\2203\220c\230\021\330\014 \240\001\330\r\016\210f\220A\220S\230\002\230\"\230D\240\007\240u\250A\250Q\330\014 \240\001\330\r\016\210f\220A\220S\230\002\230\"\230D\240\007\240u\250A\250S\260\005\260Q\260c\270\025\270a\270q\330\014 \240\001\330\t\n\210&\220\001\220\023\220B\220b\230\004\230H""\240F\250!\2501\360\026\000\t\014\2101\210F\220!\2203\220c\230\021\330\014 \240\001\330\r\016\210f\220A\220S\230\002\230\"\230D\240\007\240u\250A\250Q\330\014 \240\001\340\004\007\320\007\031\230\023\230A\330\010\016\210j\230\001\330\014\r\330\014\020\220\001\220\021\220*\230A\230Q\230j\250\001\250\021\250!\360\010\000\005\010\200q\210\t\220\023\220A\330\010\017\210q\220\005\220Q\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\230\021\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\320\031c\320cd\320dn\320no\320op\340\010\017\210q\220\005\220Q\220h\230a\230q\340\004\007\200r\210\023\210E\220\023\220A\220Y\230c\240\021\330\010\017\210q\220\005\220Q\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\230\021\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\320\031c\320cd\320dn\320no\320op\340\010\017\210q\220\005\220Q\220h\230a\230q\340\004\007\200r\210\023\210E\220\023\220A\220Y\230c\240\021\330\010\017\210q\220\005\220Q\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\230\021\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\320\031c\320cd\320dn\320no\320op\340\010\017\210q\220\005\220Q\220h\230a\230q\360\006\000\005\006\330\r\016\330\014\026\220n\240A\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\024\220A\330\014\017\210q\330\020\031\230\021\330\014\026\320\026-\250Q\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\220\021\330\020\021\330\020\021\360\n\000\t\014\2108\2203\220a\330\014\022\220*\230A\230Z\240q\250\001\330\010\017\320\017(\250\001\250\031\260)\2701\340\010\016\210a\210q\330\010\021\220\021\220!\330\004\013\2101";
+    #else /* compression: none (4817 bytes) */
+static const char bytes[] = " U= V= and  and V  at 0x byte buffer is too small to decode ( channels does not match given colorspace  for shape  object> planes must be given, or neither(missing)(present)) image, .411420422440444: <MemoryView of <contiguous and direct><contiguous and indirect><strided and direct or indirect><strided and direct><strided and indirect>>?Cannot assign to read-only memoryviewInvalid mode, expected \047c\047 or \047fortran\047, got Invalid shape in axis NoneNote that Cython is deliberately stricter than PEP-484 and rejects subclasses of builtin types. If you need to pass subclasses then set the \047annotation_typing\047 directive to False.U and V planes must have matching shape, got U plane must have C contiguous rows, but strides are V plane must have C contiguous rows, but strides are Y plane must have C contiguous rows, but strides are add_notebroadcasting U plane rows is not supportedbroadcasting V plane rows is not supportedbroadcasting Y plane rows is not supportedbroadcasting rows is not supportedcannot determine chroma subsampling for planes of shape Y=collections.abccould not create JPEG decodercould not create JPEG encoderdisableeither both U enablegcimage must have C contiguous rows, but strides are isenabledno default __reduce__ due to non-trivial __cinit__numpy._core.multiarray failed to importnumpy._core.umath failed to importsimplejpeg/_jpeg.pyxunable to allocate array data.unable to allocate shape and strides.unknown JPEG errorABGRARGBASCIIBGRBGRABGRXCMYKEllipsisGrayRGBRGBARGBXSequenceUVView.MemoryViewXBGRXRGBYYCCKYCbCr__Pyx_PyDict_NextRef__annotate____class____class_getitem____dict____func____getstate____import____main____module____name____new____pyx_checksum__pyx_state__pyx_type__pyx_unpickle_Enum__pyx_vtable____qualname____reduce____reduce_cython____reduce_ex____set_name____setstate____setstate_cython____test___is_coroutineabcallocate_bufferappendasyncio.coroutinesbasebuffercchannelscline_in_tracebackcolorspacecolorspace_colorsubsamplingcolorsubsampl""ing_countddatadata_lendata_pdecode_jpegdecode_jpeg_headerdecoderdimsdtype_is_objectencodeencode_jpegencode_jpeg_yuv_planesencoderenumerateerrorfastdctfastupsampleflagsformatfortranfrombufferheightiidimageimage_pindexis_cmykitemsitemsizejpegjpegColorspacejpegSubsampjpegbufjpegbufbufjpegsizelowermemviewmin_factormin_heightmin_widthmodemsgmust_release_buffernamendimnpnumpyobjoutout_poutlenoutput_colorspacepackpfpitchplanespopqualityregisterreshaperetcodergbsetdefaultshapesimplejpeg._jpegsizestartstepstopstrictstridesstructsubtmptmp_colorspacetmp_puint8unknownunpackupdateuppervaluesviewwidthxzipO\200\001\340\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\330\010\t\360H\001\000\005(\240q\250\004\250A\250Q\330\004\"\240#\240Q\240a\340\004\030\230\001\330\004\036\230l\250!\2501\330\004!\240\034\250Q\250a\360\022\000\005%\240A\340\004\034\230A\360\006\000\005\006\340\r\016\330\014\026\320\026&\240a\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\026\320\026)\250\021\330\020\021\330\020\021\330\020\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\340\014\017\210x\220s\230!\330\025\026\330\024\032\230*\240A\240Q\330\024\032\230*\240A\240Q\330\014\035\230Q\230a\230x\240q\250\007\250|\270;\300a\360\006\000\t\014\210?\230#\230Z\240s\250/\270\023\270A\330\014\035\230Q\330\014\026\220a\360\006\000\t\022\220\027\230\002\230&\240\002\240+\250Q\250a\330\010\014\210A\210U\220!\330\010\014\210A\210U\220!\330\010\014\210A\210U\220+\230Q\230a\360\006\000\t\014\2107\220#\220Q\330\014\024\220N\240!\2403\240h\250l\270!\330\014\024\220A\220S\230\001\230\023\230C\230q\360\006\000\r\037\230a\230x\240q\250\006\250a\330\014\"\240!\340\014\017\210t\2205\230\002\230!\330\020\026\220j\240\001\240\021\330$(\250\006\250h\260g\270[\310\001\310\021\330\014\022\220\"\220K\230q\330\020\030\230\002\230(\240!\330\r\025\220R\220x\230w\240k\260\021\260!\330\014\024\320\024%\240T\250\021\360\006\000\t\014\210?\230#\230Q\330\014\020\220\001""\220\025\220k\240\021\240!\330\014\024\220N\240!\2403\240h\250l\270!\330\014\024\220A\220S\230\001\230\023\230C\230q\360\006\000\r\025\220A\360\006\000\016\017\330\014\024\220A\330\014\017\210q\330\020\031\230\021\330\014\017\210q\330\020\031\230\021\340\014\026\220m\2401\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\340\014\017\210x\220s\230\"\230E\240\027\250\003\250>\270\021\270)\3003\300a\330\025\026\330\024\032\230*\240A\240Q\330\024\032\230*\240A\240Q\360\006\000\r\020\210x\220t\320\033-\250S\260\001\340\020\023\320\023%\240S\250\001\330\030\033\320\033-\250S\260\001\330\030\033\320\033-\250S\260\001\330\030\033\320\033-\250S\260\001\330\024\032\230!\2307\240%\240q\330\020\023\320\023%\240S\250\001\330\024\035\230Q\230g\240W\250F\260!\2601\340\024\036\230a\230w\240g\250V\2601\260G\2701\360\010\000\t\014\2101\330\014\034\230A\230Q\230a\330\010\021\220\021\220!\360\006\000\005\014\2101\200\001\340\010\t\330\010\t\330\010\t\330\010\t\360*\000\005)\250\001\250\025\250a\250s\260#\260Q\330\004&\240e\2506\260\021\260,\270e\3006\310\021\310/\320Y^\320^d\320de\320ef\360\006\000\005#\240!\330\004&\240a\240q\330\004\"\240!\340\004\034\230A\360\006\000\005\010\200u\210I\220S\230\001\330\010\020\220\001\330\t\016\210h\220a\220s\230#\230Q\330\010\016\210j\230\001\230\021\330\t\016\210h\220a\220s\230#\230Y\240c\250\025\250h\260a\260s\270(\300#\300Q\330\010\016\210j\230\001\320\031a\320af\320fp\320pu\320uv\340\010\020\220\005\220X\230Q\230a\360\006\000\005\034\230<\240q\250\001\330\004\007\200{\220!\220=\240\003\2401\330\010\016\210j\230\001\230\021\330\034&\240a\330\004!\240\021\330\004\007\200|\2203\220a\330\010\034\230K\240q\250\001\360\006\000\005\006\330\r\016\330\014\026\220n\240A\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\024\220A\330\014\017\210q\330\020\031\230\021\330\014\026\220k\240\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021""\220\021\330\020\021\330\020\021\330\020\021\360\n\000\t\014\2108\2203\220a\330\014\022\220*\230A\230Z\240q\250\001\330\010\017\320\017(\250\001\250\031\260)\2701\340\010\016\210a\210q\330\010\021\220\021\220!\330\004\013\2101\200\001\340\010\t\330\010\t\330\010\t\330\010\t\360,\000\005(\240q\250\004\250A\250Q\330\004\"\240#\240Q\240a\330\004\037\230}\320,>\320>S\320ST\330\004\034\230A\340\t\n\330\010\t\330\014\026\320\026&\240a\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\026\320\026)\250\021\330\020\021\330\020\021\330\020\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\330\020\021\220\021\340\014\017\210x\220s\230\"\230E\240\027\250\003\250>\270\021\270)\3003\300a\330\025\026\330\024\032\230*\240A\240Q\330\024\032\230*\240A\240Q\330\014\035\230Q\230a\230x\240q\250\007\250|\270;\300a\340\014\025\220Q\220a\330\004\005\330\010\t\330\010\t\330\010\030\230\001\230\021\330\010\031\230\021\230!\200\001\360\010\000\t\n\330\010\t\360D\001\000\005)\250\001\250\021\250!\2501\250B\250d\260!\2601\260A\260R\260t\2701\270A\270Q\270b\300\001\330\004\037\230q\240\006\240a\240|\2601\260F\270!\2701\340\004!\240\021\360\006\000\005#\240!\330\004&\240a\240q\330\004\"\240!\340\004\034\230A\360\006\000\005\010\200r\210\023\210E\220\024\220R\220s\230!\330\010\034\230A\330\t\013\2103\210e\2203\220b\230\003\2301\330\010\016\210j\230\001\330\014\034\230A\230_\250B\250c\260\032\2701\330\014\016\210a\210\177\230b\240\003\240:\250Q\340\t\n\210&\220\001\220\023\220C\220q\230\006\230a\230s\240#\240Q\240f\250A\250S\260\003\2601\260F\270!\2701\330\010\016\210j\230\001\330\014;\2701\270A\270\\\310\021\310!\3101\340\t\n\210&\220\001\220\023\220C\220q\360\036\000\t\014\2101\210F\220!\2203\220c\230\021\330\014 \240\001\330\r\016\210f\220A\220S\230\002\230\"\230D\240\007\240u\250A\250Q\330\014 \240\001\330\r\016\210f\220A\220S\230\002\230\"\230D\240\007\240u\250A\250S\260\005\260Q\260c\270\025\270a\270q\330\014 \240\001\330\t\n\210&\220\001\220\023\220B\220b\230\004""\230H\240F\250!\2501\360\026\000\t\014\2101\210F\220!\2203\220c\230\021\330\014 \240\001\330\r\016\210f\220A\220S\230\002\230\"\230D\240\007\240u\250A\250Q\330\014 \240\001\340\004\007\320\007\031\230\023\230A\330\010\016\210j\230\001\330\014\r\330\014\020\220\001\220\021\220*\230A\230Q\230j\250\001\250\021\250!\360\010\000\005\010\200q\210\t\220\023\220A\330\010\017\210q\220\005\220Q\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\230\021\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\320\031c\320cd\320dn\320no\320op\340\010\017\210q\220\005\220Q\220h\230a\230q\340\004\007\200r\210\023\210E\220\023\220A\220Y\230c\240\021\330\010\017\210q\220\005\220Q\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\230\021\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\320\031c\320cd\320dn\320no\320op\340\010\017\210q\220\005\220Q\220h\230a\230q\340\004\007\200r\210\023\210E\220\023\220A\220Y\230c\240\021\330\010\017\210q\220\005\220Q\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\230\021\330\t\n\210(\220!\2203\220c\230\021\330\010\016\210j\230\001\320\031c\320cd\320dn\320no\320op\340\010\017\210q\220\005\220Q\220h\230a\230q\360\006\000\005\006\330\r\016\330\014\026\220n\240A\330\014\017\210x\220s\230!\330\020\026\220l\240!\2401\330\014\024\220A\330\014\017\210q\330\020\031\230\021\330\014\026\320\026-\250Q\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\330\020\021\220\021\330\020\021\330\020\021\360\n\000\t\014\2108\2203\220a\330\014\022\220*\230A\230Z\240q\250\001\330\010\017\320\017(\250\001\250\031\260)\2701\340\010\016\210a\210q\330\010\021\220\021\220!\330\004\013\2101";
     PyObject *data = NULL;
     #define __Pyx_DecompressString_UNUSED
     #define __Pyx_DecompressString_LZSS_UNUSED
@@ -20792,7 +20792,7 @@ static int __Pyx_CreateCodeObjects(__pyx_mstatetype *__pyx_mstate) {
   {
     const __Pyx_PyCode_New_function_description descr = {5, 0, 0, 17, (unsigned int)(CO_OPTIMIZED|CO_NEWLOCALS), 541};
     PyObject* const varnames[] = {__pyx_mstate->__pyx_n_u_Y, __pyx_mstate->__pyx_n_u_U, __pyx_mstate->__pyx_n_u_V, __pyx_mstate->__pyx_n_u_quality, __pyx_mstate->__pyx_n_u_fastdct, __pyx_mstate->__pyx_n_u_planes, __pyx_mstate->__pyx_n_u_retcode, __pyx_mstate->__pyx_n_u_height, __pyx_mstate->__pyx_n_u_width, __pyx_mstate->__pyx_n_u_strides, __pyx_mstate->__pyx_n_u_colorsubsampling_2, __pyx_mstate->__pyx_n_u_jpegbuf, __pyx_mstate->__pyx_n_u_jpegbufbuf, __pyx_mstate->__pyx_n_u_jpegsize, __pyx_mstate->__pyx_n_u_flags, __pyx_mstate->__pyx_n_u_encoder, __pyx_mstate->__pyx_n_u_jpeg};
-    __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_simplejpeg__jpeg_pyx, __pyx_mstate->__pyx_n_u_encode_jpeg_yuv_planes, __pyx_mstate->__pyx_kp_b_iso88591_1Bd_1ARt1AQb_q_a_1F_1_aq_A_r_E, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
+    __pyx_mstate_global->__pyx_codeobj_tab[3] = __Pyx_PyCode_New(descr, varnames, __pyx_mstate->__pyx_kp_u_simplejpeg__jpeg_pyx, __pyx_mstate->__pyx_n_u_encode_jpeg_yuv_planes, __pyx_mstate->__pyx_kp_b_iso88591_D_1Bd_1ARt1AQb_q_a_1F_1_aq_A_r, tuple_dedup_map); if (unlikely(!__pyx_mstate_global->__pyx_codeobj_tab[3])) goto bad;
   }
   Py_DECREF(tuple_dedup_map);
   return 0;
