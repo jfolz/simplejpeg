@@ -33,16 +33,25 @@ def _downsample(channel, horizontal, vertical):
 
 
 def rgb_to_yuv_planes(rgb, horizontal, vertical):
-    # JFIF BT.601 full-range conversion as used for encoding JPEGs
-    r = rgb[..., 0].astype(np.float32)
-    g = rgb[..., 1].astype(np.float32)
-    b = rgb[..., 2].astype(np.float32)
-    y = np.rint(0.299 * r + 0.587 * g + 0.114 * b).astype(np.uint8)
-    cb = np.rint(128 - 0.168736 * r - 0.331264 * g + 0.5 * b).astype(np.uint8)
-    cr = np.rint(128 + 0.5 * r - 0.418688 * g - 0.081312 * b).astype(np.uint8)
-    Y = np.ascontiguousarray(y)
-    U = np.ascontiguousarray(_downsample(cb, horizontal, vertical))
-    V = np.ascontiguousarray(_downsample(cr, horizontal, vertical))
+    # libjpeg's 16-bit fixed point RGB to YCbCr conversion (jccolor.c,
+    # rgb_ycc_start: FIX(x) = round(x * 2**16) with ONE_HALF-style
+    # rounding) - the same integer math the encoder's color conversion
+    # applies.  The B-entry rounding fudges for Cb and Cr combine into
+    # the CBCR_OFFSET constant (128 << 16) plus ONE_HALF - 1:
+    #   Y  = (19595 R + 38470 G +  7471 B +  32768) >> 16
+    #   Cb = ( 32768 B - 11059 R - 21709 G + 8421375) >> 16
+    #   Cr = ( 32768 R - 27439 G -  5329 B + 8421375) >> 16
+    r = rgb[..., 0].astype(np.int32)
+    g = rgb[..., 1].astype(np.int32)
+    b = rgb[..., 2].astype(np.int32)
+    y = (19595 * r + 38470 * g + 7471 * b + 32768) >> 16
+    cb = (32768 * b - 11059 * r - 21709 * g + 8421375) >> 16
+    cr = (32768 * r - 27439 * g - 5329 * b + 8421375) >> 16
+    Y = np.ascontiguousarray(y.astype(np.uint8))
+    U = np.ascontiguousarray(_downsample(cb.astype(np.uint8),
+                                         horizontal, vertical))
+    V = np.ascontiguousarray(_downsample(cr.astype(np.uint8),
+                                         horizontal, vertical))
     return Y, U, V
 
 

@@ -51,6 +51,8 @@ def test_decode_gray():
     for f, data, ref in yield_reference_images():
         expected = rgb2gray(ref)
         _, _, colorspace, _ = simplejpeg.decode_jpeg_header(data)
+        # skip here because of high error bound,
+        # test separately in test_decode_cmyk_gray
         if colorspace == 'CMYK':
             continue
         sim = simplejpeg.decode_jpeg(data, 'gray')
@@ -58,7 +60,8 @@ def test_decode_gray():
 
 
 def test_decode_buffer():
-    b = bytearray(1024*1024*8)
+    # large enough for the largest reference image (height * width * 3)
+    b = bytearray(1024*1024*3)
     for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, buffer=b)
         assert mean_absolute_difference(ref, sim) < 1, f
@@ -136,7 +139,7 @@ def test_decode_colorspace():
 
 def test_decode_writable():
     # bytes objects are read-only and reject a writable buffer request
-    b = b'x' * (1024*1024*8)
+    b = b'x' * 16
     for _, data, _ in yield_reference_images():
         with pytest.raises((BufferError, ValueError), match='writable'):
             simplejpeg.decode_jpeg(data, buffer=b)
@@ -239,21 +242,24 @@ def test_decode_cmyk_alpha():
             )
 
 
+def cmyk2gray(cmyk):
+    k = cmyk[..., 3].astype(np.int32)
+    channels = [
+        k - ((255 - cmyk[..., i].astype(np.int32)) * k >> 8)
+        for i in range(3)
+    ]
+    return ((4899 * channels[0] + 9617 * channels[1]
+        + 1868 * channels[2] + 8192) >> 14).astype(np.uint8)
+
+
 def test_decode_cmyk_gray():
-    # matches the exact math of cmyk2gray in simplejpeg/_color.c
     for name in ('peppers_cmyk', 'cat_cmyk'):
         with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
             data = fp.read()
         cmyk = simplejpeg.decode_jpeg(data, 'cmyk')
         sim = simplejpeg.decode_jpeg(data, 'gray')
-        k = cmyk[..., 3].astype(np.int32)
-        channels = [
-            k - ((255 - cmyk[..., i].astype(np.int32)) * k >> 8)
-            for i in range(3)
-        ]
-        luma = ((4899 * channels[0] + 9617 * channels[1]
-                 + 1868 * channels[2] + 8192) >> 14).astype(np.uint8)
-        np.testing.assert_array_equal(sim[..., 0], luma, name)
+        gray = cmyk2gray(cmyk)
+        np.testing.assert_array_equal(sim[..., 0], gray, name)
 
 
 def test_decode_cmyk_rgb():
