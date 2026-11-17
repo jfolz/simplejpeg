@@ -115,6 +115,20 @@ def encode_jpeg_yuv_planes(
     Encode an image in a YUV planar format to JPEG (JFIF) string.
     U and V planes may be None to encode grayscale, but if one is given,
     the other must be as well.
+
+    Important:
+    Color subsampling is defined by the size of the planes.
+    Given a Y plane of size W and H, the table below lists the required
+    size of U and V:
+
+        subsampling     U, V
+        '444'           H      x W
+        '422'           H      x W // 2
+        '420'           H // 2 x W // 2
+        '440'           H // 2 x W
+        '411'           H      x W // 4
+        'gray'          None
+
     Returns JPEG (JFIF) data.
 
     Parameters:
