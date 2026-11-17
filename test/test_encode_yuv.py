@@ -1,6 +1,5 @@
 import numpy as np
 import pytest
-
 from numpy.lib.stride_tricks import sliding_window_view
 
 import simplejpeg
@@ -20,6 +19,8 @@ def _box_blur(image, radius):
 
 
 def _downsample(channel, horizontal, vertical):
+    if horizontal == 1 and vertical == 1:
+        return channel  # no downsampling: the box filter is the identity
     # average over each block of `horizontal` x `vertical` samples
     # (a box kernel with round-to-nearest, applied to pseudo-padded edges)
     height, width = channel.shape
@@ -33,14 +34,6 @@ def _downsample(channel, horizontal, vertical):
 
 
 def rgb_to_yuv_planes(rgb, horizontal, vertical):
-    # libjpeg's 16-bit fixed point RGB to YCbCr conversion (jccolor.c,
-    # rgb_ycc_start: FIX(x) = round(x * 2**16) with ONE_HALF-style
-    # rounding) - the same integer math the encoder's color conversion
-    # applies.  The B-entry rounding fudges for Cb and Cr combine into
-    # the CBCR_OFFSET constant (128 << 16) plus ONE_HALF - 1:
-    #   Y  = (19595 R + 38470 G +  7471 B +  32768) >> 16
-    #   Cb = ( 32768 B - 11059 R - 21709 G + 8421375) >> 16
-    #   Cr = ( 32768 R - 27439 G -  5329 B + 8421375) >> 16
     r = rgb[..., 0].astype(np.int32)
     g = rgb[..., 1].astype(np.int32)
     b = rgb[..., 2].astype(np.int32)
