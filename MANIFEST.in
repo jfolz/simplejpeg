@@ -1,7 +1,6 @@
+global-exclude __pycache__ *.pyc
 recursive-include custom_build_backend *
-recursive-include lib *
-exclude lib/*.tar.gz
-prune lib/*/build
+include lib/libjpeg-turbo*.tar.gz
 recursive-include simplejpeg *.py *.pyi *.h *.c *.pyx
 recursive-include test *
 prune test/images/original
