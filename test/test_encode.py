@@ -2,22 +2,22 @@ import os.path as pt
 
 import numpy as np
 import pytest
+from harness import generate_image, mean_absolute_difference
 
 import simplejpeg
-from harness import generate_image, mean_absolute_difference
 
 ROOT = pt.abspath(pt.dirname(__file__))
 
 
 def test_encode_decode():
-    im = generate_image(1001, 1021)
+    im = generate_image(173, 251)
     encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = simplejpeg.decode_jpeg(encoded)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_subsampling():
-    im = generate_image(677, 659)
+    im = generate_image(197, 227)
     for subsampling, delta in (('422', 2), ('420', 3), ('440', 3), ('411', 9)):
         encoded = simplejpeg.encode_jpeg(im, 98, colorsubsampling=subsampling)
         decoded = simplejpeg.decode_jpeg(encoded)
@@ -25,14 +25,14 @@ def test_encode_decode_subsampling():
 
 
 def test_encode_fastdct():
-    im = generate_image(255, 2049)
+    im = generate_image(127, 131)
     encoded_fast = simplejpeg.encode_jpeg(im, 98, fastdct=True)
     decoded_fast = simplejpeg.decode_jpeg(encoded_fast)
     assert 0 < mean_absolute_difference(im, decoded_fast) < 2
 
 
 def test_encode_grayscale():
-    im = generate_image(589, 486, 1)
+    im = generate_image(89, 83, 1)
     encoded = simplejpeg.encode_jpeg(im, 98, colorspace='gray')
     decoded = simplejpeg.decode_jpeg(encoded, 'gray')
     assert 0 < mean_absolute_difference(im, decoded) < 2
@@ -50,7 +50,7 @@ def test_encode_grayscale_newaxis():
 
 
 def test_encode_colorspace():
-    im = generate_image(589, 486, 4)
+    im = generate_image(89, 83, 4)
     for colorspace in ('RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR',
                        'XRGB', 'RGBA', 'BGRA', 'ABGR', 'ARGB'):
         np_im = np.ascontiguousarray(im[:, :, :len(colorspace)])
@@ -69,32 +69,41 @@ def test_encode_noncontiguous():
 
 
 def test_encode_decode_padding_start():
-    im = generate_image(600, 1000)
+    im = generate_image(233, 307)
     # make an image that has padding bytes at the start of each row
-    im = im[:, 200:, :]
+    im = im[:, 116:, :]
     encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = simplejpeg.decode_jpeg(encoded)
-    assert decoded.shape == (600, 800, 3)
+    assert decoded.shape == (233, 191, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_padding_end():
-    im = generate_image(600, 1000)
+    im = generate_image(233, 307)
     # make an image that has padding bytes at the end of each row
-    im = im[:, :800, :]
+    im = im[:, :191, :]
     encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = simplejpeg.decode_jpeg(encoded)
-    assert decoded.shape == (600, 800, 3)
+    assert decoded.shape == (233, 191, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_padding_both():
-    im = generate_image(600, 1000)
+    im = generate_image(233, 307)
     # make an image that has padding bytes at the start and end of each row
-    im = im[:, 100:900, :]
+    im = im[:, 89:192, :]
     encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = simplejpeg.decode_jpeg(encoded)
-    assert decoded.shape == (600, 800, 3)
+    assert decoded.shape == (233, 103, 3)
+    assert 0 < mean_absolute_difference(im, decoded) < 2
+
+
+def test_encode_decode_tiny():
+    # smol image less than one MCU (8x8 for gray, 16x16 for subsampled color)
+    im = generate_image(7, 13)
+    encoded = simplejpeg.encode_jpeg(im, 98)
+    decoded = simplejpeg.decode_jpeg(encoded)
+    assert decoded.shape == (7, 13, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 

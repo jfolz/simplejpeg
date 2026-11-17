@@ -5,12 +5,12 @@ from harness import mean_absolute_difference
 
 import simplejpeg
 
-RGB = generate_rgb_image()
+RGB = generate_rgb_image(422, 436)
 
 
 def _downsample(channel, horizontal, vertical):
     if horizontal == 1 and vertical == 1:
-        return channel  # no downsampling: the box filter is the identity
+        return channel
     # average over each block of `horizontal` x `vertical` samples
     # (a box kernel with round-to-nearest, applied to pseudo-padded edges)
     height, width = channel.shape
