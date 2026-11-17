@@ -1,13 +1,11 @@
-import glob
-import os.path as pt
 import io
+import os.path as pt
 
 import numpy as np
-from PIL import Image
 import pytest
+from PIL import Image
 
 import simplejpeg
-
 
 ROOT = pt.abspath(pt.dirname(__file__))
 
@@ -162,3 +160,16 @@ def test_encode_broadcast_row():
     im = np.broadcast_to(im, (height, width, channels))
     with pytest.raises(ValueError, match='broadcasting rows is not supported'):
         simplejpeg.encode_jpeg(im, 98, colorspace='rgb')
+
+
+def test_encode_cmyk():
+    with Image.open(pt.join(ROOT, 'images', 'peppers_cmyk.jpg')) as im:
+        im = np.ascontiguousarray(np.asarray(im))
+    encoded = simplejpeg.encode_jpeg(im, 95, colorspace='cmyk')
+    height, width, colorspace, subsampling = simplejpeg.decode_jpeg_header(encoded)
+    assert (height, width) == im.shape[:2]
+    assert colorspace == 'YCCK' and subsampling == '444', (colorspace, subsampling)
+    decoded = simplejpeg.decode_jpeg(encoded, 'CMYK')
+    assert decoded.shape == im.shape
+    mad = mean_absolute_difference(im, decoded)
+    assert 0 < mad < 2, mad
