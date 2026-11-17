@@ -1,20 +1,13 @@
+*This project is in no way affiliated with the
+[libjpeg-turbo](https://github.com/libjpeg-turbo/libjpeg-turbo)
+project.*
 
-This project is in no way affiliated with the
-`libjpeg-turbo <https://github.com/libjpeg-turbo/libjpeg-turbo>`_
-project.
-
-
-
-simplejpeg
-==========
+# simplejpeg
 
 simplejpeg is a simple package based on recent versions
 of libturbojpeg for fast JPEG encoding and decoding.
 
-
-
-Why another library?
---------------------
+## Why another library?
 
 Pillow and OpenCV are excellent options for handling JPEG
 images and a variety of other formats.
@@ -27,87 +20,77 @@ over how your JPEGs are handled.
 
 These are the reasons why I started making this:
 
-#. Pillow is **very** slow compared to OpenCV.
-#. Pillow only accepts streams as input. Images in memory
-   have to be wrapped in ``BytesIO`` or similar.
+1. Pillow is **very** slow compared to OpenCV.
+2. Pillow only accepts streams as input. Images in memory
+   have to be wrapped in `BytesIO` or similar.
    This adds to the slowness.
-#. OpenCV is gigantic,
+3. OpenCV is gigantic,
    only accepts Numpy arrays as input,
    and returns images as BGR instead of RGB.
-#. Recent versions of libturbojpeg offer impressive speed
+4. Recent versions of libturbojpeg offer impressive speed
    gains on modern processors.
    Linux distributions and libraries tend to ship very old
    versions.
 
-
 This library is especially for you if you need:
 
-#. Speed.
-#. Read and write directly from/to memory.
-#. Advanced features of the underlying library.
+1. Speed.
+2. Read and write directly from/to memory.
+3. Advanced features of the underlying library.
 
-
-
-Installation
-------------
+## Installation
 
 - On Linux (x64, arm64), Windows (x64, arm64), or MacOS (10.9+, x64, arm64)
-  you can simply ``pip install simplejpeg``.
-  Update ``pip`` if it wants to build from source anyway.
+  you can simply `pip install simplejpeg`.
+  Update `pip` if it wants to build from source anyway.
 - On other platforms you can try to install from source.
   Make sure your system is setup to build CPython extensions
-  and install ``cmake`` as well as either ``nasm`` or ``yasm``.
-  Then run ``pip install simplejpeg`` to install from source.
-- You can also checkout the repository and run ``python -m build .``,
-  ``python setup.py bdist_wheel`` etc. as usual.
+  and install `cmake` as well as either `nasm` or `yasm`.
+  Then run `pip install simplejpeg` to install from source.
+- You can also checkout the repository and run `python -m build .`,
+  `python setup.py bdist_wheel` etc. as usual.
 - Instead of building and statically linking, you can install
-  ``libturbojpeg-dev`` (or similar) and set ``SIMPLEJPEG_DYNAMIC_LINKING=1``
+  `libturbojpeg-dev` (or similar) and set `SIMPLEJPEG_DYNAMIC_LINKING=1`
   in your environment to dynamically link it.
   Version 3.x strongly recommended, but 2.0.90+ should work.
   1.x definitely doesn't.
   Importantly, note that
-  `libjpeg-turbo != libturbojpeg <https://libjpeg-turbo.org/About/TurboJPEG>`_.
+  [libjpeg-turbo != libturbojpeg](https://libjpeg-turbo.org/About/TurboJPEG).
 
+## Usage
 
+This library provides five functions:
 
-Usage
------
-
-This library provides four functions:
-
-``decode_jpeg_header``, ``decode_jpeg``, ``encode_jpeg``, ``is_jpeg``.
+`decode_jpeg_header`, `decode_jpeg`, `encode_jpeg`,
+`encode_jpeg_yuv_planes`, `is_jpeg`.
 
 Uncompressed image data is stored as numpy arrays.
 Decoding functions can accept any Python object that supports the
-`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_,
-like ``array``, ``bytes``, ``bytearray``, ``memoryview``, etc.
+[buffer protocol](https://docs.python.org/3/c-api/buffer.html),
+like `array`, `bytes`, `bytearray`, `memoryview`, etc.
 
+### decode_jpeg_header
 
-
-decode_jpeg_header
-~~~~~~~~~~~~~~~~~~
-
-::
-
-    decode_jpeg_header(
-        data: Any,
-        min_height: SupportsInt=0,
-        min_width: SupportsInt=0,
-        min_factor: SupportsFloat=1,
-        strict: bool=True,
-    ) -> (SupportsInt, SupportsInt, Text, Text)
-
+```python
+decode_jpeg_header(
+    data: Any,
+    min_height: SupportsInt=0,
+    min_width: SupportsInt=0,
+    min_factor: SupportsFloat=1,
+    strict: bool=True,
+) -> (SupportsInt, SupportsInt, Text, Text)
+```
 
 Decode only the header of a JPEG image given as JPEG (JFIF) data from memory.
 Accepts any input that supports the
-`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+[buffer protocol](https://docs.python.org/3/c-api/buffer.html).
 This is very fast on the order of 100000+ images per second.
 Returns height and width in pixels of the image when decoded,
 and colorspace and subsampling as string.
 
 - data:
   JPEG data in memory; must support buffer interface
-  (e.g., ``bytes``, ``memoryview``)
+  (e.g., `bytes`, `memoryview`)
 - min_height:
   minimum height in pixels of the decoded image;
   values <= 0 are ignored
@@ -120,35 +103,32 @@ and colorspace and subsampling as string.
 - strict:
   if True, raise ValueError for recoverable errors;
   default True
-- returns: ``(height: int, width: int, colorspace: str, color subsampling: str)``
+- returns: `(height: int, width: int, colorspace: str, color subsampling: str)`
 
+### decode_jpeg
 
-
-decode_jpeg
-~~~~~~~~~~~
-
-::
-
-    def decode_jpeg(
-        data: SupportsBuffer,
-        colorspace: Text='RGB',
-        fastdct: Any=False,
-        fastupsample: Any=False,
-        min_height: SupportsInt=0,
-        min_width: SupportsInt=0,
-        min_factor: SupportsFloat=1,
-        buffer: SupportsBuffer=None,
-        strict: bool=True,
-    ) -> np.ndarray
+```python
+def decode_jpeg(
+    data: SupportsBuffer,
+    colorspace: Text='RGB',
+    fastdct: Any=False,
+    fastupsample: Any=False,
+    min_height: SupportsInt=0,
+    min_width: SupportsInt=0,
+    min_factor: SupportsFloat=1,
+    buffer: SupportsBuffer=None,
+    strict: bool=True,
+) -> np.ndarray
+```
 
 Decode a JPEG image given as JPEG (JFIF) data from memory.
 Accepts any input that supports the
-`buffer protocol <https://docs.python.org/3/c-api/buffer.html>`_.
+[buffer protocol](https://docs.python.org/3/c-api/buffer.html).
 Returns the image as numpy array in the requested colorspace.
 
 - data:
   JPEG data in memory; must support buffer interface
-  (e.g., ``bytes``, ``memoryview``);
+  (e.g., `bytes`, `memoryview`);
   row must be C-contiguous
 - colorspace:
   target colorspace, any of the following:
@@ -164,10 +144,10 @@ Returns the image as numpy array in the requested colorspace.
 - min_height:
   minimum height in pixels of the decoded image;
   values <= 0 are ignored
-- param min_width:
+- min_width:
   minimum width in pixels of the decoded image;
   values <= 0 are ignored
-- param min_factor:
+- min_factor:
   minimum downsampling factor when decoding to smaller size;
   factors smaller than 2 may take longer to decode
 - buffer:
@@ -178,22 +158,19 @@ Returns the image as numpy array in the requested colorspace.
 - strict:
   if True, raise ValueError for recoverable errors;
   default True
-- returns: image as ``numpy.ndarray``
+- returns: image as `numpy.ndarray`
 
+### encode_jpeg
 
-
-encode_jpeg
-~~~~~~~~~~~
-
-::
-
-    def encode_jpeg(
-            image: numpy.ndarray,
-            quality: SupportsInt=85,
-            colorspace: Text='RGB',
-            colorsubsampling: Text='444',
-            fastdct: Any=True,
-    ) -> bytes
+```python
+def encode_jpeg(
+    image: numpy.ndarray,
+    quality: SupportsInt=85,
+    colorspace: Text='RGB',
+    colorsubsampling: Text='444',
+    fastdct: Any=False,
+) -> bytes
+```
 
 Encode an image given as numpy array to JPEG (JFIF) string.
 Returns JPEG (JFIF) data.
@@ -202,7 +179,7 @@ Returns JPEG (JFIF) data.
   uncompressed image as uint8 array
 - quality:
   JPEG quantization factor;
-  0\-100, higher equals better quality
+  0-100, higher equals better quality
 - colorspace:
   source colorspace; one of
   'RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR', 'XRGB',
@@ -213,25 +190,38 @@ Returns JPEG (JFIF) data.
 - fastdct:
   If True, use fastest DCT method;
   usually no observable difference
-- returns: ``bytes`` object of encoded image as JPEG (JFIF) data
+- returns: `bytes` object of encoded image as JPEG (JFIF) data
 
+### encode_jpeg_yuv_planes
 
-
-encode_jpeg_yuv_planes
-~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    def encode_jpeg_yuv_planes(
-            Y: np.ndarray,
-            U: np.ndarray,
-            V: np.ndarray,
-            quality: SupportsInt=85,
-            fastdct: Any=False,
-    ) -> bytes
+```python
+def encode_jpeg_yuv_planes(
+    Y: np.ndarray,
+    U: np.ndarray,
+    V: np.ndarray,
+    quality: SupportsInt=85,
+    fastdct: Any=False,
+) -> bytes
+```
 
 Encode an image given as three numpy arrays to JPEG (JFIF) bytes.
-The color subsampling is deduced from the size of the three arrays.
+Color subsampling is defined by the size of the planes.
+
+**Important**
+
+Color subsampling is defined by the size of the planes.
+Given a Y plane of size `W` x `H`, the table below lists the
+required size of U and V:
+
+| subsampling | U, V               |
+| ----------- | ------------------ |
+| `'444'`     | `H      x W`       |
+| `'422'`     | `H      x W // 2`  |
+| `'420'`     | `H // 2 x W // 2`  |
+| `'440'`     | `H // 2 x W`       |
+| `'411'`     | `H      x W // 4`  |
+| `'gray'`    | `None`             |
+
 Returns JPEG (JFIF) data.
 
 - Y:
@@ -242,43 +232,40 @@ Returns JPEG (JFIF) data.
   uncompressed V plane as uint8 array
 - quality:
   JPEG quantization factor;
-  0\-100, higher equals better quality
+  0-100, higher equals better quality
 - fastdct:
   If True, use fastest DCT method;
   usually no observable difference
-- returns: ``bytes`` object of encoded image as JPEG (JFIF) data
+- returns: `bytes` object of encoded image as JPEG (JFIF) data
 
 *Using encode_jpeg_yuv_planes with OpenCV*
 
 OpenCV has limited support for YUV420 images, but where it does it
-will normally represent a ``W x H`` image (``W`` and ``H`` both
-assumed even) as an array of height ``H + H // 2`` and width ``W``.
+will normally represent a `W x H` image (`W` and `H` both
+assumed even) as an array of height `H + H // 2` and width `W`.
 
-Of these, the first ``H`` rows are the Y plane. Thereafter follow ``H
-// 2`` lots of ``W // 2`` bytes (the U plane), and then the same again
+Of these, the first `H` rows are the Y plane. Thereafter follow `H
+// 2` lots of `W // 2` bytes (the U plane), and then the same again
 for the V plane. Note how we have two rows of U or V in every *array*
-row. To unpack such an image for passing to ``encode_jpeg_yuv_planes``
+row. To unpack such an image for passing to `encode_jpeg_yuv_planes`
 use:
 
-::
+```python
+Y = image[:H]
+U = image.reshape(H * 3, W // 2)[H * 2: H * 2 + H // 2]
+V = image.reshape(H * 3, W // 2)[H * 2 + H // 2:]
+```
 
-    Y = image[:H]
-    U = image.reshape(H * 3, W // 2)[H * 2: H * 2 + H // 2]
-    V = image.reshape(H * 3, W // 2)[H * 2 + H // 2:]
-
-``encode_jpeg_yuv_planes`` saves us from having to convert first to
-RGB and then (within ``encode_jpeg``) back to YUV, all of which costs
+`encode_jpeg_yuv_planes` saves us from having to convert first to
+RGB and then (within `encode_jpeg`) back to YUV, all of which costs
 time and memory when dealing with large images on resource constrained
 platforms.
 
+### is_jpeg
 
-is_jpeg
-~~~~~~~
-
-::
-
-    def is_jpeg(data: SupportsBytes)
-
+```python
+def is_jpeg(data: SupportsBytes)
+```
 
 Check whether a bytes object (or similar) contains JPEG (JFIF) data.
 

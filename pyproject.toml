@@ -1,7 +1,7 @@
 [project]
 name = "simplejpeg"
 description = "A simple package for fast JPEG encoding and decoding."
-readme = "README.rst"
+readme = "README.md"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
@@ -23,7 +23,7 @@ keywords = [
 dynamic = ["dependencies", "version"]
 
 [project.urls]
-Documentation = "https://github.com/jfolz/simplejpeg/blob/master/README.rst"
+Documentation = "https://github.com/jfolz/simplejpeg/blob/master/README.md"
 Source = "https://github.com/jfolz/simplejpeg"
 Tracker = "https://github.com/jfolz/simplejpeg/issues"
 
