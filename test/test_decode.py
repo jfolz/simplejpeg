@@ -190,3 +190,70 @@ def test_decode_noncontiguous():
     for f, data, im in yield_reference_images():
         with pytest.raises(ValueError, match='contiguous'):
             simplejpeg.decode_jpeg(data, buffer=b.transpose((1, 2, 0)))
+
+
+def test_decode_cmyk():
+    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
+        path = pt.join(ROOT, 'images', name)
+        with open(path, 'rb') as fp:
+            data = fp.read()
+        height, width, colorspace, subsampling = simplejpeg.decode_jpeg_header(data)
+        assert colorspace == 'CMYK' and subsampling == '444', name
+        sim = simplejpeg.decode_jpeg(data, 'cmyk')
+        assert sim.shape == (height, width, 4)
+        with Image.open(path) as im:
+            ref = 255 - np.asarray(im)
+        assert mean_absolute_difference(ref, sim) < 0.5, name
+
+
+def _cmyk_reference(cmyk, colorspace):
+    out = np.empty(cmyk.shape[:2] + (4,), dtype=np.uint8)
+    k = cmyk[..., 3].astype(np.int32)
+    r_off, g_off, b_off, a_off = {
+        'RGBA': (0, 1, 2, 3),
+        'BGRA': (2, 1, 0, 3),
+        'ABGR': (3, 2, 1, 0),
+        'ARGB': (1, 2, 3, 0),
+    }[colorspace]
+    for src, dst in zip(range(3), (r_off, g_off, b_off)):
+        c = cmyk[..., src].astype(np.int32)
+        out[..., dst] = (k - ((255 - c) * k >> 8)).astype(np.uint8)
+    out[..., a_off] = 255
+    return out
+
+
+def test_decode_cmyk_alpha():
+    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
+        with open(pt.join(ROOT, 'images', name), 'rb') as fp:
+            data = fp.read()
+        cmyk = simplejpeg.decode_jpeg(data, 'cmyk')
+        for colorspace in ('RGBA', 'BGRA', 'ABGR', 'ARGB'):
+            sim = simplejpeg.decode_jpeg(data, colorspace)
+            np.testing.assert_array_equal(
+                sim, _cmyk_reference(cmyk, colorspace), name
+            )
+
+
+def test_decode_cmyk_gray():
+    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
+        with open(pt.join(ROOT, 'images', name), 'rb') as fp:
+            data = fp.read()
+        cmyk = simplejpeg.decode_jpeg(data, 'cmyk')
+        sim = simplejpeg.decode_jpeg(data, 'gray')
+        k = cmyk[..., 3].astype(np.int32)
+        channels = [
+            k - ((255 - cmyk[..., i].astype(np.int32)) * k >> 8)
+            for i in range(3)
+        ]
+        luma = ((4899 * channels[0] + 9617 * channels[1]
+                 + 1868 * channels[2] + 8192) >> 14).astype(np.uint8)
+        np.testing.assert_array_equal(sim[..., 0], luma, name)
+
+
+def test_decode_cmyk_rgb():
+    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
+        data = open(pt.join(ROOT, 'images', name), 'rb').read()
+        sim = simplejpeg.decode_jpeg(data, 'rgb')
+        with Image.open(pt.join(ROOT, 'images', name)) as im:
+            ref = np.asarray(im.convert('RGB'))
+        assert mean_absolute_difference(ref, sim) < 2, name
