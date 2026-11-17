@@ -326,137 +326,129 @@ def decode_jpeg(
     Returns:
         image as numpy array
     """
+    # input JPEG data
     cdef const unsigned char* data_p = &data[0]
     cdef unsigned long data_len = len(data)
-    cdef int retcode
-    cdef int width
-    cdef int height
-    cdef int jpegSubsamp
-    cdef int jpegColorspace
-
-    # get colorspace constants
+    # decoded header
+    cdef int retcode, width, height, jpegSubsamp, jpegColorspace
+    # requested output colorspace and the internal temporary colorspace
     cdef int tmp_colorspace = PIXELFORMATS[colorspace]
     cdef int output_colorspace = PIXELFORMATS[colorspace]
     cdef bint is_cmyk = 0
-
-    # initialize the decoder handle
-    cdef tjhandle decoder
-    with nogil:
-        decoder = tjInitDecompress()
-        if decoder == NULL:
-            raise RuntimeError('could not create JPEG decoder')
-        retcode = tjDecompressHeader3(
-            decoder,
-            data_p,
-            data_len,
-            &width,
-            &height,
-            &jpegSubsamp,
-            &jpegColorspace
-        )
-        if retcode != 0:
-            with gil:
-                msg = __tj_error(decoder)
-                tjDestroy(decoder)
-                raise ValueError(msg)
-        calc_height_width(&height, &width, min_height, min_width, min_factor)
-
-    # check whether JPEG is in CMYK/YCCK colorspace
-    if jpegColorspace == TJCS_CMYK or jpegColorspace == TJCS_YCCK:
-        tmp_colorspace = TJPF_CMYK
-        is_cmyk = 1
-
-    # some variables that may be needed
-    cdef np.npy_intp outlen = height * width * tjPixelSize[output_colorspace]
-    cdef np.ndarray[np.uint8_t, ndim = 3] tmp
-    cdef np.ndarray[np.uint8_t, ndim = 3] out
-    cdef unsigned char* tmp_p
-    cdef unsigned char* out_p
+    # decoder handle and output buffer; the finally block releases both on
+    # every path (only the buffer branch arms the release flag)
+    cdef tjhandle decoder = NULL
     cdef Py_buffer view
-    cdef np.npy_intp bufferlen = 0
-
-    # no buffer is given, make new output array
-    cdef np.npy_intp * dims = [height, width, tjPixelSize[output_colorspace]]
-    if buffer is None:
-        # a failed allocation must not leak the decoder handle
-        try:
-            out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
-        except:
-            tjDestroy(decoder)
-            raise
-        out_p = &out[0, 0, 0]
-    # attempt to create output array from given buffer
-    else:
-        if PyObject_GetBuffer(buffer, &view, DECODE_BUFFER_FLAGS) != 0:
-            tjDestroy(decoder)
-            raise ValueError('buffer object must support buffer interface '
-                             'and must be writable and contiguous')
-        # check memoryview size and extract pointer
-        bufferlen = view.len
-        if bufferlen < outlen:
-            PyBuffer_Release(&view)
-            tjDestroy(decoder)
-            raise ValueError('%d byte buffer is too small to decode (%d, %d, %d) image'
-                             % (bufferlen, height, width, tjPixelSize[output_colorspace]))
-        out = np.frombuffer(
-            buffer, np.uint8, outlen
-        ).reshape((height, width, tjPixelSize[output_colorspace]))
-        out_p = <unsigned char*> view.buf
-        PyBuffer_Release(&view)
-
-    # if temp is not output colorspace temporary array must be created
-    if tmp_colorspace != output_colorspace:
-        dims[:] = [height, width, tjPixelSize[tmp_colorspace]]
-        # a failed allocation must not leak the decoder handle
-        try:
-            tmp = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
-        except:
-            tjDestroy(decoder)
-            raise
-        tmp_p = &tmp[0, 0, 0]
-    # otherwise use output array as temp array
-    else:
-        tmp_p = out_p
-
-    # decode image
+    cdef bint must_release_buffer = 0
+    # output arrays and their geometry
+    cdef np.ndarray[np.uint8_t, ndim = 3] tmp, out
+    cdef unsigned char *tmp_p
+    cdef unsigned char *out_p
+    cdef np.npy_intp outlen
+    cdef np.npy_intp dims[3]
+    # decode flags
     cdef int flags
-    with nogil:
-        flags = TJFLAG_NOREALLOC
-        if fastdct:
-            flags |= TJFLAG_FASTDCT
-        if fastupsample:
-            flags |= TJFLAG_FASTUPSAMPLE
-        # decompress the image
-        retcode = tjDecompress2(
-            decoder,
-            data_p,
-            data_len,
-            tmp_p,
-            width,
-            0,
-            height,
-            tmp_colorspace,
-            flags
-        )
-        if retcode != 0 and (strict or tjGetErrorCode(decoder) == TJERR_FATAL):
-            with gil:
-                msg = __tj_error(decoder)
-                tjDestroy(decoder)
-                raise ValueError(msg)
-        tjDestroy(decoder)
 
-        # JPEG is CMYK color, but output is RGB, apply color conversion
-        if is_cmyk and output_colorspace != TJPF_CMYK:
-            # pre-fill alpha channel
-            if output_colorspace == TJPF_RGBA \
-                    or output_colorspace == TJPF_BGRA \
-                    or output_colorspace == TJPF_ABGR \
-                    or output_colorspace == TJPF_ARGB:
-                memset(out_p, 255, outlen)
-            if output_colorspace == TJPF_GRAY:
-                cmyk2gray(tmp_p, out_p, height*width)
-            else:
-                cmyk2color(tmp_p, out_p, height*width, output_colorspace)
+    try:
+        # initialize the decoder handle and parse the header
+        with nogil:
+            decoder = tjInitDecompress()
+            if decoder == NULL:
+                raise RuntimeError('could not create JPEG decoder')
+            retcode = tjDecompressHeader3(
+                decoder,
+                data_p,
+                data_len,
+                &width,
+                &height,
+                &jpegSubsamp,
+                &jpegColorspace
+            )
+            if retcode != 0:
+                with gil:
+                    msg = __tj_error(decoder)
+                    raise ValueError(msg)
+            calc_height_width(&height, &width, min_height, min_width, min_factor)
+
+        # check whether JPEG is in CMYK/YCCK colorspace
+        if jpegColorspace == TJCS_CMYK or jpegColorspace == TJCS_YCCK:
+            tmp_colorspace = TJPF_CMYK
+            is_cmyk = 1
+
+        # image dimensions for buffer creation
+        outlen = height * width * tjPixelSize[output_colorspace]
+        dims[0] = height
+        dims[1] = width
+        dims[2] = tjPixelSize[output_colorspace]
+
+        # no buffer is given, make new output array
+        if buffer is None:
+            out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+            out_p = &out[0, 0, 0]
+        # attempt to use the given buffer
+        else:
+            PyObject_GetBuffer(buffer, &view, DECODE_BUFFER_FLAGS)
+            must_release_buffer = 1
+            # check memoryview size and extract pointer
+            if view.len < outlen:
+                raise ValueError('%d byte buffer is too small to decode (%d, %d, %d) image'
+                                 % (view.len, height, width, tjPixelSize[output_colorspace]))
+            out = np.frombuffer(
+                buffer, np.uint8, outlen
+            ).reshape((height, width, tjPixelSize[output_colorspace]))
+            out_p = <unsigned char*> view.buf
+
+        # if temp is not output colorspace temporary array must be created
+        if tmp_colorspace != output_colorspace:
+            dims[2] = tjPixelSize[tmp_colorspace]
+            tmp = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+            tmp_p = &tmp[0, 0, 0]
+        # otherwise use output array as temp array
+        else:
+            tmp_p = out_p
+
+        # decode image
+        with nogil:
+            flags = TJFLAG_NOREALLOC
+            if fastdct:
+                flags |= TJFLAG_FASTDCT
+            if fastupsample:
+                flags |= TJFLAG_FASTUPSAMPLE
+            # decompress the image
+            retcode = tjDecompress2(
+                decoder,
+                data_p,
+                data_len,
+                tmp_p,
+                width,
+                0,
+                height,
+                tmp_colorspace,
+                flags
+            )
+            if retcode != 0 and (strict or tjGetErrorCode(decoder) == TJERR_FATAL):
+                with gil:
+                    msg = __tj_error(decoder)
+                    raise ValueError(msg)
+
+            # JPEG is CMYK color, but output is RGB, apply color conversion
+            if is_cmyk and output_colorspace != TJPF_CMYK:
+                # pre-fill alpha channel
+                if output_colorspace == TJPF_RGBA \
+                        or output_colorspace == TJPF_BGRA \
+                        or output_colorspace == TJPF_ABGR \
+                        or output_colorspace == TJPF_ARGB:
+                    memset(out_p, 255, outlen)
+                if output_colorspace == TJPF_GRAY:
+                    cmyk2gray(tmp_p, out_p, height*width)
+                else:
+                    cmyk2color(tmp_p, out_p, height*width, output_colorspace)
+    finally:
+        # release everything on every path: success, buffer rejection,
+        # allocation failures, decode errors
+        if must_release_buffer:
+            PyBuffer_Release(&view)
+        tjDestroy(decoder)
 
     # done
     return out
