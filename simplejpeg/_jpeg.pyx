@@ -333,6 +333,13 @@ def decode_jpeg(
     cdef int height
     cdef int jpegSubsamp
     cdef int jpegColorspace
+
+    # get colorspace constants
+    cdef int tmp_colorspace = PIXELFORMATS[colorspace]
+    cdef int output_colorspace = PIXELFORMATS[colorspace]
+    cdef bint is_cmyk = 0
+
+    # initialize the decoder handle
     cdef tjhandle decoder
     with nogil:
         decoder = tjInitDecompress()
@@ -354,10 +361,6 @@ def decode_jpeg(
                 raise ValueError(msg)
         calc_height_width(&height, &width, min_height, min_width, min_factor)
 
-    # get colorspace constants
-    cdef int tmp_colorspace = PIXELFORMATS[colorspace]
-    cdef int output_colorspace = PIXELFORMATS[colorspace]
-    cdef bint is_cmyk = 0
     # check whether JPEG is in CMYK/YCCK colorspace
     if jpegColorspace == TJCS_CMYK or jpegColorspace == TJCS_YCCK:
         tmp_colorspace = TJPF_CMYK
@@ -375,17 +378,24 @@ def decode_jpeg(
     # no buffer is given, make new output array
     cdef np.npy_intp * dims = [height, width, tjPixelSize[output_colorspace]]
     if buffer is None:
-        out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        # a failed allocation must not leak the decoder handle
+        try:
+            out = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        except:
+            tjDestroy(decoder)
+            raise
         out_p = &out[0, 0, 0]
     # attempt to create output array from given buffer
     else:
         if PyObject_GetBuffer(buffer, &view, DECODE_BUFFER_FLAGS) != 0:
+            tjDestroy(decoder)
             raise ValueError('buffer object must support buffer interface '
                              'and must be writable and contiguous')
         # check memoryview size and extract pointer
         bufferlen = view.len
         if bufferlen < outlen:
             PyBuffer_Release(&view)
+            tjDestroy(decoder)
             raise ValueError('%d byte buffer is too small to decode (%d, %d, %d) image'
                              % (bufferlen, height, width, tjPixelSize[output_colorspace]))
         out = np.frombuffer(
@@ -397,7 +407,12 @@ def decode_jpeg(
     # if temp is not output colorspace temporary array must be created
     if tmp_colorspace != output_colorspace:
         dims[:] = [height, width, tjPixelSize[tmp_colorspace]]
-        tmp = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        # a failed allocation must not leak the decoder handle
+        try:
+            tmp = np.PyArray_EMPTY(3, dims, np.NPY_UINT8, 0)
+        except:
+            tjDestroy(decoder)
+            raise
         tmp_p = &tmp[0, 0, 0]
     # otherwise use output array as temp array
     else:
@@ -520,14 +535,16 @@ def encode_jpeg(
             quality,
             flags
         )
+    # without TJFLAG_NOREALLOC the library allocates the output buffer and
+    # returns its ownership on failure as well as success: buffer and
+    # encoder are owned by this wrapper from here on
+    try:
         if retcode != 0:
-            with gil:
-                msg = __tj_error(encoder)
-                tjDestroy(encoder)
-                raise ValueError(msg)
-    jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
-    tjFree(jpegbuf)
-    tjDestroy(encoder)
+            raise ValueError(__tj_error(encoder))
+        jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
+    finally:
+        tjFree(jpegbuf)
+        tjDestroy(encoder)
     return jpeg
 
 
@@ -671,12 +688,14 @@ def encode_jpeg_yuv_planes(
             quality,
             flags
         )
+    # without TJFLAG_NOREALLOC the library allocates the output buffer and
+    # returns its ownership on failure as well as success: buffer and
+    # encoder are owned by this wrapper from here on
+    try:
         if retcode != 0:
-            with gil:
-                msg = __tj_error(encoder)
-                tjDestroy(encoder)
-                raise ValueError(msg)
-    jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
-    tjFree(jpegbuf)
-    tjDestroy(encoder)
+            raise ValueError(__tj_error(encoder))
+        jpeg = PyBytes_FromStringAndSize(<char *> jpegbuf, jpegsize)
+    finally:
+        tjFree(jpegbuf)
+        tjDestroy(encoder)
     return jpeg
