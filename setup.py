@@ -1,20 +1,17 @@
+import hashlib
 import os
 import os.path as pt
-import re
 import platform
-import sys
-import urllib.request
-import tarfile
+import re
 import shutil
 import subprocess
-import hashlib
+import sys
+import tarfile
+import urllib.request
 import warnings
 
-from setuptools import setup
-from setuptools import find_packages
-from setuptools import Extension
+from setuptools import Extension, find_packages, setup
 from setuptools.command.build_ext import build_ext
-
 
 # fall back to system cmake if cmake package is not installed
 try:
@@ -83,7 +80,7 @@ def verify_file(path, reference_digest, read_size=128*1024):
 
 
 def untar_url(url, filename, reference_digest):
-    path = filename.rstrip('.tar.gz')
+    path, _ = filename.rsplit('.tar.gz', maxsplit=1)
     if not pt.exists(filename):
         os.makedirs(pt.dirname(filename), exist_ok=True)
         print('downloading', url)
@@ -138,9 +135,8 @@ class cmake_build_ext(build_ext):
 
     def build_cmake_dependencies(self):
         flags = []
-        if OS == 'darwin':
-            if ARCHFLAGS:
-                flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
+        if OS == 'darwin' and ARCHFLAGS:
+            flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
 
         cflags = os.getenv('CFLAGS', '')
         ldflags = os.getenv('LDFLAGS', '')
@@ -273,7 +269,7 @@ def read(*names):
 def find_version(*file_paths):
     version_file = read(*file_paths)
     version_match = re.search(r'^__version__ = [\'"]([^\'"]*)[\'"]',
-                              version_file, re.M)
+                              version_file, re.MULTILINE)
     if version_match:
         return version_match.group(1)
     raise RuntimeError('Unable to find version string.')
