@@ -1,12 +1,13 @@
 import glob
 import os.path as pt
+import threading
+import time
 
 import numpy as np
-from PIL import Image
 import pytest
+from PIL import Image
 
 import simplejpeg
-
 
 ROOT = pt.abspath(pt.dirname(__file__))
 
@@ -24,7 +25,7 @@ def yield_reference_images():
 
 def test_decode_header():
     for f, data, im in yield_reference_images():
-        height, width, colorspace, subsampling = simplejpeg.decode_jpeg_header(data)
+        height, width, _, _ = simplejpeg.decode_jpeg_header(data)
         assert width == im.size[0] and height == im.size[1], f
 
 
@@ -133,6 +134,55 @@ def test_decode_writable():
     for f, data, im in yield_reference_images():
         with pytest.raises((BufferError, ValueError), match='writable'):
             simplejpeg.decode_jpeg(data, buffer=b)
+
+
+def test_decode_resize_buffer_concurrent():
+    # create a big jpeg that takes a while to decode
+    image = np.random.default_rng(1337).integers(
+        0, 255, size=(2048, 2048, 3), dtype=np.uint8,
+    )
+    data = simplejpeg.encode_jpeg(image)
+    height, width, _, _ = simplejpeg.decode_jpeg_header(data)
+    size = height * width * 3  # default 'rgb' colorspace
+
+    # function to decode in another thread and receive results
+    decode_error = None
+    decoded_image = None
+    def decode():
+        nonlocal decode_error, decoded_image
+        try:
+            decoded_image = simplejpeg.decode_jpeg(data, buffer=buf)
+        except Exception as e:
+            decode_error = e
+
+    # measure how long decoding takes
+    decode_durations = []
+    for _ in range(3):
+        start = time.monotonic()
+        simplejpeg.decode_jpeg(data)
+        decode_durations.append(time.monotonic() - start)
+    decode_duration = max(decode_durations)
+
+    # create an output buffer that is 1 bigger than we need
+    # so we can safely chop it off later
+    buf = bytearray(size + 1)
+    decode_thread = threading.Thread(target=decode)
+    decode_thread.start()
+
+    # provoke a buffer error by resizing the bytearray while it's exported
+    # use decode duration to schedule trials
+    with pytest.raises(BufferError):
+        time.sleep(0.05 * decode_duration)
+        for _ in range(11):
+            del buf[-1:]
+            buf += b'\x00'
+            time.sleep(0.1 * decode_duration)
+
+    # verify that the image still decoded correctly
+    decode_thread.join()
+    if decode_error is not None:
+        raise decode_error
+    assert decoded_image.shape == (height, width, 3)
 
 
 def test_decode_noncontiguous():
