@@ -14,6 +14,7 @@ from cpython cimport PyBUF_SIMPLE
 from cpython cimport PyBUF_WRITABLE
 from cpython cimport PyBUF_ANY_CONTIGUOUS
 from cpython cimport PyBuffer_Release
+from libc.string cimport memset
 
 
 np.import_array()
@@ -115,9 +116,9 @@ cdef extern from "turbojpeg.h" nogil:
 
 
 cdef extern from "_color.h" nogil:
-    cdef void cmyk2gray(unsigned char* cmyk, unsigned char* out, int npixels)
+    cdef void cmyk2gray(unsigned char* cmyk, unsigned char* out, int npixels) noexcept
     cdef void cmyk2color(unsigned char* cmyk, unsigned char* out,
-                         int npixels, int pixelformat)
+                         int npixels, int pixelformat) noexcept
 
 
 # Allow building against turbojpeg 2.x
@@ -429,18 +430,18 @@ def decode_jpeg(
                 raise ValueError(msg)
         tjDestroy(decoder)
 
-    # JPEG is CMYK color, but output is RGB, apply color conversion
-    if is_cmyk and output_colorspace != TJPF_CMYK:
-        # pre-fill alpha channel
-        if output_colorspace == TJPF_RGBA \
-          or output_colorspace == TJPF_BGRA \
-          or output_colorspace == TJPF_ABGR \
-          or output_colorspace == TJPF_ARGB:
-            np.PyArray_FILLWBYTE(out, 255)
-        if output_colorspace == TJPF_GRAY:
-            cmyk2gray(tmp_p, out_p, height*width)
-        else:
-            cmyk2color(tmp_p, out_p, height*width, output_colorspace)
+        # JPEG is CMYK color, but output is RGB, apply color conversion
+        if is_cmyk and output_colorspace != TJPF_CMYK:
+            # pre-fill alpha channel
+            if output_colorspace == TJPF_RGBA \
+                    or output_colorspace == TJPF_BGRA \
+                    or output_colorspace == TJPF_ABGR \
+                    or output_colorspace == TJPF_ARGB:
+                memset(out_p, 255, outlen)
+            if output_colorspace == TJPF_GRAY:
+                cmyk2gray(tmp_p, out_p, height*width)
+            else:
+                cmyk2color(tmp_p, out_p, height*width, output_colorspace)
 
     # done
     return out
