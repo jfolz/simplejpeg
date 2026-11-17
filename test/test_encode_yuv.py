@@ -1,43 +1,61 @@
-import io
-
 import numpy as np
-from PIL import Image
 import pytest
 
+from numpy.lib.stride_tricks import sliding_window_view
+
 import simplejpeg
-
-
-def decode_pil(encoded):
-    return np.array(Image.open(io.BytesIO(encoded)))
 
 
 def mean_absolute_difference(a, b):
     return np.abs(a.astype(np.float32) - b.astype(np.float32)).mean()
 
 
+def _box_blur(image, radius):
+    # soften the block edges of the synthetic image so that chroma
+    # subsampling behaves like on natural images
+    padded = np.pad(image, [(radius, radius), (radius, radius), (0, 0)],
+                    mode='edge').astype(np.float32)
+    return sliding_window_view(padded, (2*radius + 1, 2*radius + 1),
+                               axis=(0, 1)).mean(axis=(-1, -2))
+
+
+def _downsample(channel, horizontal, vertical):
+    # average over each block of `horizontal` x `vertical` samples
+    # (a box kernel with round-to-nearest, applied to pseudo-padded edges)
+    height, width = channel.shape
+    rh = -(-height // vertical) * vertical
+    rw = -(-width // horizontal) * horizontal
+    padded = np.pad(channel, [(0, rh - height), (0, rw - width)], mode='edge')
+    return np.rint(
+        padded.reshape(rh // vertical, vertical, rw // horizontal, horizontal)
+              .mean(axis=(1, 3)),
+    ).astype(np.uint8)
+
+
 def rgb_to_yuv_planes(rgb, horizontal, vertical):
-    yuv = np.array(Image.fromarray(rgb).convert('YCbCr'))
-    c = np.ascontiguousarray
-    Y = c(yuv[:,:,0])
-    height, width, _ = rgb.shape
-    padded_rgb = np.pad(rgb, [(0, height % vertical), (0, width % horizontal), (0, 0)], mode='edge')
-    height, width, _ = padded_rgb.shape
-    yuv = np.array(
-        Image.fromarray(padded_rgb).resize(
-            (width // horizontal, height // vertical),
-            resample=Image.Resampling.BOX,
-        ).convert('YCbCr')
-    )
-    U, V = c(yuv[:,:,1]), c(yuv[:,:,2])
+    # JFIF BT.601 full-range conversion as used for encoding JPEGs
+    r = rgb[..., 0].astype(np.float32)
+    g = rgb[..., 1].astype(np.float32)
+    b = rgb[..., 2].astype(np.float32)
+    y = np.rint(0.299 * r + 0.587 * g + 0.114 * b).astype(np.uint8)
+    cb = np.rint(128 - 0.168736 * r - 0.331264 * g + 0.5 * b).astype(np.uint8)
+    cr = np.rint(128 + 0.5 * r - 0.418688 * g - 0.081312 * b).astype(np.uint8)
+    Y = np.ascontiguousarray(y)
+    U = np.ascontiguousarray(_downsample(cb, horizontal, vertical))
+    V = np.ascontiguousarray(_downsample(cr, horizontal, vertical))
     return Y, U, V
 
 
 def generate_image(width=800, height=600):
     rng = np.random.default_rng(9)
-    # reduce frequency of noise to make it easier to encode with chroma subsampling
-    rgb = rng.integers(0, 255, (height // 8, width // 8, 3), dtype=np.uint8)
-    rgb = np.array(Image.fromarray(rgb).resize((width, height), resample=Image.Resampling.BICUBIC))
-    return rgb, width, height
+    # blocks of constant color reduce the amount of high frequency noise,
+    # which makes encoding with chroma subsampling less lossy
+    rgb = rng.integers(
+        0, 255, (-(-height // 8), -(-width // 8), 3), dtype=np.uint8,
+    )
+    rgb = rgb.repeat(8, axis=0)[:height].repeat(8, axis=1)[:width]
+    rgb = _box_blur(rgb, 6)
+    return np.ascontiguousarray(np.rint(rgb).astype(np.uint8)), width, height
 
 
 def encode_decode_gray(padding_start, padding_end, delta, width=800):
@@ -47,9 +65,10 @@ def encode_decode_gray(padding_start, padding_end, delta, width=800):
     right = width-padding_end
     gray = gray[:, left:right]
     encoded = simplejpeg.encode_jpeg_yuv_planes(gray, None, None, 98)
-    decoded = decode_pil(encoded)
-    assert decoded.shape == gray.shape
-    assert 0 < mean_absolute_difference(gray, decoded) < delta
+    decoded = simplejpeg.decode_jpeg(encoded, 'gray')
+    # simplejpeg returns a 3-dimensional (height, width, 1) array
+    assert decoded.shape == gray.shape + (1,)
+    assert 0 < mean_absolute_difference(gray, decoded[..., 0]) < delta
 
 
 def test_encode_decode_yuv_gray():
@@ -88,7 +107,7 @@ def encode_decode_yuv(
     U = U[:, padding_start:chroma_width-padding_end]
     V = V[:, padding_start:chroma_width-padding_end]
     encoded = simplejpeg.encode_jpeg_yuv_planes(Y, U, V, 98)
-    decoded = decode_pil(encoded)
+    decoded = simplejpeg.decode_jpeg(encoded)
     assert decoded.shape == cropped_rgb.shape
     assert 0 < mean_absolute_difference(cropped_rgb, decoded) < delta
 

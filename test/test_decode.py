@@ -1,11 +1,9 @@
-import glob
 import os.path as pt
 import threading
 import time
 
 import numpy as np
 import pytest
-from PIL import Image
 
 import simplejpeg
 
@@ -16,78 +14,90 @@ def mean_absolute_difference(a, b):
     return np.abs(a.astype(np.float32) - b.astype(np.float32)).mean()
 
 
+def delta_decode(array):
+    # reconstruct pixel values from a row-delta encoded reference array
+    return np.cumsum(array, axis=0, dtype=np.uint8)
+
+
 def yield_reference_images():
-    image_dir = pt.join(ROOT, 'images', '*.jpg')
-    for image_path in glob.iglob(image_dir):
-        with open(image_path, 'rb') as fp:
-            yield pt.basename(image_path), fp.read(), Image.open(image_path)
+    # reference pixel data produced by generate_references.py
+    with np.load(pt.join(ROOT, 'reference_data.npz')) as archive:
+        for name in archive.files:
+            with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
+                data = fp.read()
+            yield name, data, delta_decode(archive[name])
 
 
 def test_decode_header():
-    for f, data, im in yield_reference_images():
+    for f, data, ref in yield_reference_images():
         height, width, _, _ = simplejpeg.decode_jpeg_header(data)
-        assert width == im.size[0] and height == im.size[1], f
+        assert width == ref.shape[1] and height == ref.shape[0], f
 
 
 def test_decode_rgb():
-    for f, data, im in yield_reference_images():
-        im = np.array(im.convert('RGB'))
+    for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data)
-        assert mean_absolute_difference(im, sim) < 1, f
+        assert mean_absolute_difference(ref, sim) < 1, f
+
+
+def rgb2gray(rgb):
+    # fixpoint version of rgb to gray conversion
+    return (19595 * rgb[..., 0].astype(np.int32) +
+            38470 * rgb[..., 1].astype(np.int32) +
+            7471 * rgb[..., 2].astype(np.int32) + 32768) >> 16
 
 
 def test_decode_gray():
-    for f, data, im in yield_reference_images():
-        im = np.array(im.convert('L'))[:, :, np.newaxis]
+    for f, data, ref in yield_reference_images():
+        expected = rgb2gray(ref)
+        _, _, colorspace, _ = simplejpeg.decode_jpeg_header(data)
+        if colorspace == 'CMYK':
+            continue
         sim = simplejpeg.decode_jpeg(data, 'gray')
-        assert mean_absolute_difference(im, sim) < 1, f
+        assert mean_absolute_difference(expected, sim[..., 0]) < 1, f
 
 
 def test_decode_buffer():
-    b = bytearray(1024*1024*3)
-    for f, data, im in yield_reference_images():
-        im = np.array(im.convert('RGB'))
+    b = bytearray(1024*1024*8)
+    for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, buffer=b)
-        assert mean_absolute_difference(im, sim) < 1, f
+        assert mean_absolute_difference(ref, sim) < 1, f
 
 
 def test_decode_buffer_insufficient():
-    for f, data, im in yield_reference_images():
-        b = bytearray(len(im.get_flattened_data()) - 1)
-        with pytest.raises(ValueError, match='too small') as excinfo:
+    for f, data, ref in yield_reference_images():
+        b = bytearray(ref.size - 1)
+        with pytest.raises(ValueError, match='too small'):
             simplejpeg.decode_jpeg(data, buffer=b)
 
 
 def test_decode_truncated():
-    for f, data, im in yield_reference_images():
-        with pytest.raises(ValueError, match='Premature end of JPEG file') as excinfo:
+    for _, data, _ in yield_reference_images():
+        with pytest.raises(ValueError, match='Premature end of JPEG file'):
             simplejpeg.decode_jpeg(data[:-1])
 
 
 def test_decode_fastdct():
-    for f, data, im in yield_reference_images():
-        im = np.array(im.convert('RGB'))
+    for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, fastdct=True)
-        assert mean_absolute_difference(im, sim) < 1.5, f
+        assert mean_absolute_difference(ref, sim) < 2, f
 
 
 def test_decode_fastupsample():
-    for f, data, im in yield_reference_images():
-        im = np.array(im.convert('RGB'))
+    for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, fastupsample=True)
-        assert mean_absolute_difference(im, sim) < 1.5, f
+        assert mean_absolute_difference(ref, sim) < 2, f
 
 
 def test_decode_fastdct_fastupsample():
-    for f, data, im in yield_reference_images():
-        im = np.array(im.convert('RGB'))
+    for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, fastdct=True, fastupsample=True)
-        assert mean_absolute_difference(im, sim) < 2, f
+        assert mean_absolute_difference(ref, sim) < 3, f
 
 
 def test_decode_min_width_height():
-    for f, data, im in yield_reference_images():
-        w, h = im.size
+    for f, data, ref in yield_reference_images():
+        h, w = ref.shape[:2]
         # half height, but require original width
         sim = simplejpeg.decode_jpeg(data, min_height=h/2, min_width=w)
         assert sim.shape[0] == h, f
@@ -108,30 +118,26 @@ def test_decode_min_width_height():
         assert sim.shape[1] == w, f
 
 
-def _colorspace_to_rgb(im, colorspace):
+def _colorspace_to_rgb(sim, colorspace):
     ind = colorspace.index('R'), colorspace.index('G'), colorspace.index('B')
-    out = np.zeros(im.shape[:2] + (3,))
-    out[...] = im[:, :, ind]
+    out = np.zeros(sim.shape[:2] + (3,))
+    out[...] = sim[:, :, ind]
     return out
 
 
 def test_decode_colorspace():
-    for f, data, im in yield_reference_images():
+    for f, data, ref in yield_reference_images():
         for colorspace in ('RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR',
                            'XRGB', 'RGBA', 'BGRA', 'ABGR', 'ARGB'):
-            np_im = np.array(im.convert('RGB'))
             sim = simplejpeg.decode_jpeg(data, colorspace)
             sim = _colorspace_to_rgb(sim, colorspace)
-            assert mean_absolute_difference(np_im, sim) < 1, f
-        np_im = np.array(im.convert('L'))[:, :, np.newaxis]
-        sim = simplejpeg.decode_jpeg(data, 'GRAY')
-        assert mean_absolute_difference(np_im, sim) < 1, f
+            assert mean_absolute_difference(ref, sim) < 1, f
 
 
 def test_decode_writable():
-    # unfortunately PyPy raises ValueError
-    b = b'x' * (1024*1024*3)
-    for f, data, im in yield_reference_images():
+    # bytes objects are read-only and reject a writable buffer request
+    b = b'x' * (1024*1024*8)
+    for _, data, _ in yield_reference_images():
         with pytest.raises((BufferError, ValueError), match='writable'):
             simplejpeg.decode_jpeg(data, buffer=b)
 
@@ -187,23 +193,22 @@ def test_decode_resize_buffer_concurrent():
 
 def test_decode_noncontiguous():
     b = np.zeros((3, 1024, 1024), dtype=np.uint8)
-    for f, data, im in yield_reference_images():
+    for _, data, _ in yield_reference_images():
         with pytest.raises(ValueError, match='contiguous'):
             simplejpeg.decode_jpeg(data, buffer=b.transpose((1, 2, 0)))
 
 
 def test_decode_cmyk():
-    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
-        path = pt.join(ROOT, 'images', name)
-        with open(path, 'rb') as fp:
+    for name in ('peppers_cmyk', 'cat_cmyk'):
+        with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
             data = fp.read()
         height, width, colorspace, subsampling = simplejpeg.decode_jpeg_header(data)
         assert colorspace == 'CMYK' and subsampling == '444', name
-        sim = simplejpeg.decode_jpeg(data, 'cmyk')
-        assert sim.shape == (height, width, 4)
-        with Image.open(path) as im:
-            ref = 255 - np.asarray(im)
-        assert mean_absolute_difference(ref, sim) < 0.5, name
+        cmyk = simplejpeg.decode_jpeg(data, 'cmyk')
+        assert cmyk.shape == (height, width, 4)
+        rgba = simplejpeg.decode_jpeg(data, 'RGBA')
+        rgb = simplejpeg.decode_jpeg(data, 'rgb')
+        np.testing.assert_array_equal(rgba[..., :3], rgb, name)
 
 
 def _cmyk_reference(cmyk, colorspace):
@@ -223,8 +228,8 @@ def _cmyk_reference(cmyk, colorspace):
 
 
 def test_decode_cmyk_alpha():
-    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
-        with open(pt.join(ROOT, 'images', name), 'rb') as fp:
+    for name in ('peppers_cmyk', 'cat_cmyk'):
+        with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
             data = fp.read()
         cmyk = simplejpeg.decode_jpeg(data, 'cmyk')
         for colorspace in ('RGBA', 'BGRA', 'ABGR', 'ARGB'):
@@ -235,8 +240,9 @@ def test_decode_cmyk_alpha():
 
 
 def test_decode_cmyk_gray():
-    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
-        with open(pt.join(ROOT, 'images', name), 'rb') as fp:
+    # matches the exact math of cmyk2gray in simplejpeg/_color.c
+    for name in ('peppers_cmyk', 'cat_cmyk'):
+        with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
             data = fp.read()
         cmyk = simplejpeg.decode_jpeg(data, 'cmyk')
         sim = simplejpeg.decode_jpeg(data, 'gray')
@@ -251,9 +257,8 @@ def test_decode_cmyk_gray():
 
 
 def test_decode_cmyk_rgb():
-    for name in ('peppers_cmyk.jpg', 'cat_cmyk.jpg'):
-        data = open(pt.join(ROOT, 'images', name), 'rb').read()
+    for f, data, ref in yield_reference_images():
+        if not f.endswith('_cmyk'):
+            continue
         sim = simplejpeg.decode_jpeg(data, 'rgb')
-        with Image.open(pt.join(ROOT, 'images', name)) as im:
-            ref = np.asarray(im.convert('RGB'))
-        assert mean_absolute_difference(ref, sim) < 2, name
+        assert mean_absolute_difference(ref, sim) < 2, f

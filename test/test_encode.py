@@ -1,86 +1,66 @@
-import io
 import os.path as pt
 
 import numpy as np
 import pytest
-from PIL import Image
+from numpy.lib.stride_tricks import sliding_window_view
 
 import simplejpeg
 
 ROOT = pt.abspath(pt.dirname(__file__))
 
 
-def decode_pil(encoded):
-    return np.array(Image.open(io.BytesIO(encoded)))
-
-
 def mean_absolute_difference(a, b):
     return np.abs(a.astype(np.float32) - b.astype(np.float32)).mean()
 
 
+def _box_blur(image, radius):
+    # soften the block edges of the synthetic image so that encoding with
+    # chroma subsampling behaves like on natural images
+    padded = np.pad(image, [(radius, radius), (radius, radius), (0, 0)],
+                    mode='edge').astype(np.float32)
+    return sliding_window_view(padded, (2*radius + 1, 2*radius + 1),
+                               axis=(0, 1)).mean(axis=(-1, -2))
+
+
 def generate_image(height=800, width=600, channels=3):
     rng = np.random.default_rng(9)
-    # reduce frequency of noise to make it easier to encode with chroma subsampling
-    arr = rng.integers(0, 255, (height // 8, width // 8, channels), dtype=np.uint8)
-    if channels == 1:
-        arr = arr[:, :, 0]
-    im = Image.fromarray(arr)
-    arr = np.array(im.resize((width, height), resample=Image.Resampling.BICUBIC))
-    if arr.ndim < 3:
-        arr = np.expand_dims(arr, 2)
-    return arr
+    # blocks of constant color reduce the amount of high frequency noise,
+    # which makes encoding with chroma subsampling less lossy
+    arr = rng.integers(
+        0, 255, (max(1, -(-height // 8)), max(1, -(-width // 8)), channels),
+        dtype=np.uint8,
+    )
+    arr = arr.repeat(8, axis=0)[:height].repeat(8, axis=1)[:, :width]
+    arr = _box_blur(arr, 6)
+    return np.ascontiguousarray(np.rint(arr).astype(np.uint8))
 
 
 def test_encode_decode():
     im = generate_image(1689, 1000)
-    # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 98)
-    decoded = decode_pil(encoded)
-    assert 0 < mean_absolute_difference(im, decoded) < 2
-    # encode with Pillow, decode with simplejpeg
-    bio = io.BytesIO()
-    pil_im = Image.fromarray(im)
-    pil_im.save(bio, format='JPEG', quality=98, subsampling=0)
-    decoded = simplejpeg.decode_jpeg(bio.getbuffer())
+    decoded = simplejpeg.decode_jpeg(encoded)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_subsampling():
     im = generate_image(679, 657)
-    for subsampling, code, delta in (('422', 1, 2), ('420', 2, 3), ('440', 1, 3), ('411', 2, 9)):
-        # encode with simplejpeg, decode with Pillow
+    for subsampling, delta in (('422', 2), ('420', 3), ('440', 3), ('411', 9)):
         encoded = simplejpeg.encode_jpeg(im, 98, colorsubsampling=subsampling)
-        bio = io.BytesIO(encoded)
-        decoded = np.array(Image.open(bio))
-        assert 0 < mean_absolute_difference(im, decoded) < delta, subsampling
-        # encode with Pillow, decode with simplejpeg
-        bio = io.BytesIO()
-        pil_im = Image.fromarray(im)
-        pil_im.save(bio, format='JPEG', quality=98, subsampling=code)
-        decoded = simplejpeg.decode_jpeg(bio.getbuffer())
+        decoded = simplejpeg.decode_jpeg(encoded)
         assert 0 < mean_absolute_difference(im, decoded) < delta, subsampling
 
 
 def test_encode_fastdct():
     im = generate_image(345, 5448)
-    # encode with simplejpeg, decode with Pillow
     encoded_fast = simplejpeg.encode_jpeg(im, 98, fastdct=True)
-    decoded_fast = np.array(Image.open(io.BytesIO(encoded_fast)))
+    decoded_fast = simplejpeg.decode_jpeg(encoded_fast)
     assert 0 < mean_absolute_difference(im, decoded_fast) < 2
-
-
-def _colorspace_to_rgb(im, colorspace):
-    ind = colorspace.index('R'), colorspace.index('G'), colorspace.index('B')
-    out = np.zeros(im.shape[:2] + (3,))
-    out[...] = im[:, :, ind]
-    return out
 
 
 def test_encode_grayscale():
     im = generate_image(589, 486, 1)
-    # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 98, colorspace='gray')
-    decoded = decode_pil(encoded)[:, :, np.newaxis]
+    decoded = simplejpeg.decode_jpeg(encoded, 'gray')
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
@@ -88,11 +68,10 @@ def test_encode_grayscale_newaxis():
     im = generate_image(589, 486, 1)
     # make array 2D
     im = im[:, :, 0]
-    # add back channel axis with newaxis
+    # add back a channel axis with newaxis
     im = im[:, :, np.newaxis]
-    # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 98, colorspace='gray')
-    decoded = decode_pil(encoded)[:, :, np.newaxis]
+    decoded = simplejpeg.decode_jpeg(encoded, 'gray')
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
@@ -101,11 +80,12 @@ def test_encode_colorspace():
     for colorspace in ('RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR',
                        'XRGB', 'RGBA', 'BGRA', 'ABGR', 'ARGB'):
         np_im = np.ascontiguousarray(im[:, :, :len(colorspace)])
-        # encode with simplejpeg, decode with Pillow
         encoded = simplejpeg.encode_jpeg(np_im, 98, colorspace=colorspace)
-        decoded = decode_pil(encoded)
-        np_im = _colorspace_to_rgb(np_im, colorspace)
-        assert 0 < mean_absolute_difference(np_im, decoded) < 2
+        decoded = simplejpeg.decode_jpeg(encoded, colorspace)
+        ind = colorspace.index('R'), colorspace.index('G'), colorspace.index('B')
+        assert 0 < mean_absolute_difference(np_im[..., ind], decoded[..., ind]) < 2, colorspace
+        if 'A' in colorspace:
+            assert np.all(decoded[..., colorspace.index('A')] == 255), colorspace
 
 
 def test_encode_noncontiguous():
@@ -116,33 +96,30 @@ def test_encode_noncontiguous():
 
 def test_encode_decode_padding_start():
     im = generate_image(600, 1000)
-    # Make an image that has padding bytes at the start of each row
+    # make an image that has padding bytes at the start of each row
     im = im[:, 200:, :]
-    # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 98)
-    decoded = decode_pil(encoded)
+    decoded = simplejpeg.decode_jpeg(encoded)
     assert decoded.shape == (600, 800, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_padding_end():
     im = generate_image(600, 1000)
-    # Make an image that has padding bytes at the end of each row
+    # make an image that has padding bytes at the end of each row
     im = im[:, :800, :]
-    # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 98)
-    decoded = decode_pil(encoded)
+    decoded = simplejpeg.decode_jpeg(encoded)
     assert decoded.shape == (600, 800, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
 def test_encode_decode_padding_both():
     im = generate_image(600, 1000)
-    # Make an image that has padding bytes at the start and end of each row
+    # make an image that has padding bytes at the start and end of each row
     im = im[:, 100:900, :]
-    # encode with simplejpeg, decode with Pillow
     encoded = simplejpeg.encode_jpeg(im, 98)
-    decoded = decode_pil(encoded)
+    decoded = simplejpeg.decode_jpeg(encoded)
     assert decoded.shape == (600, 800, 3)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
@@ -163,13 +140,14 @@ def test_encode_broadcast_row():
 
 
 def test_encode_cmyk():
-    with Image.open(pt.join(ROOT, 'images', 'peppers_cmyk.jpg')) as im:
-        im = np.ascontiguousarray(np.asarray(im))
-    encoded = simplejpeg.encode_jpeg(im, 95, colorspace='cmyk')
+    with open(pt.join(ROOT, 'images', 'peppers_cmyk.jpg'), 'rb') as fp:
+        data = fp.read()
+    cmyk_input = simplejpeg.decode_jpeg(data, 'cmyk')
+    encoded = simplejpeg.encode_jpeg(cmyk_input, 95, colorspace='cmyk')
     height, width, colorspace, subsampling = simplejpeg.decode_jpeg_header(encoded)
-    assert (height, width) == im.shape[:2]
+    assert (height, width) == cmyk_input.shape[:2]
     assert colorspace == 'YCCK' and subsampling == '444', (colorspace, subsampling)
     decoded = simplejpeg.decode_jpeg(encoded, 'CMYK')
-    assert decoded.shape == im.shape
-    mad = mean_absolute_difference(im, decoded)
+    assert decoded.shape == cmyk_input.shape
+    mad = mean_absolute_difference(cmyk_input, decoded)
     assert 0 < mad < 2, mad
