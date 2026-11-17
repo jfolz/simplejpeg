@@ -5,6 +5,7 @@ readme = "README.rst"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: Free Threading",
 ]
 requires-python = ">=3.10"
 license = "MIT"
