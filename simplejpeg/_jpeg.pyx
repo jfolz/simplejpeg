@@ -2,6 +2,7 @@
 # cython: embedsignature=False
 # cython: boundscheck=False
 # cython: emit_code_comments=False
+# cython: freethreading_compatible=True
 from __future__ import print_function, division, unicode_literals
 
 import cython
