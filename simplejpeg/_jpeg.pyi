@@ -1,10 +1,6 @@
-from typing import Any
-from typing import Text
-from typing import Tuple
-from typing import SupportsInt
-from typing import SupportsFloat
-import numpy as np
+from typing import Any, SupportsFloat, SupportsInt
 
+import numpy as np
 
 def decode_jpeg_header(
         data: Any,
@@ -12,7 +8,7 @@ def decode_jpeg_header(
         min_width: SupportsInt=0,
         min_factor: SupportsFloat=1,
         strict: bool=True,
-) -> Tuple[SupportsInt, SupportsInt, Text, Text]:
+) -> tuple[int, int, str, str]:
     """
     Decode the header of a JPEG image.
     Returns height and width in pixels
@@ -33,12 +29,11 @@ def decode_jpeg_header(
     Returns:
         height, width, colorspace, color subsampling
     """
-    return 0, 0, 'rgb', '444'
 
 
 def decode_jpeg(
         data: Any,
-        colorspace: Text='rgb',
+        colorspace: str='rgb',
         fastdct: Any=False,
         fastupsample: Any=False,
         min_height: SupportsInt=0,
@@ -80,14 +75,13 @@ def decode_jpeg(
     Returns:
         image as numpy array
     """
-    return np.empty((1, 1, 1))
 
 
 def encode_jpeg(
         image: np.ndarray,
         quality: SupportsInt=85,
-        colorspace: Text='rgb',
-        colorsubsampling: Text='444',
+        colorspace: str='rgb',
+        colorsubsampling: str='444',
         fastdct: Any=False,
 ) -> bytes:
     """
@@ -108,7 +102,6 @@ def encode_jpeg(
     Returns:
         encoded image as JPEG (JFIF) data
     """
-    return b''
 
 
 def encode_jpeg_yuv_planes(
