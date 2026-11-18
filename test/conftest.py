@@ -28,7 +28,18 @@ def _is_free_threaded_build():
 
 
 def _rss_bytes():
-    """Working set of the current process, None when not measurable."""
+    """Working set of the current process in bytes, None if unmeasurable.
+
+    psutil is used when available since it is maintained across
+    platforms; the fallbacks cover environments without it: psapi on
+    Windows via ctypes, getrusage elsewhere (bytes on macOS, KiB on
+    Linux, hence the scaling).
+    """
+    try:
+        import psutil
+        return psutil.Process().memory_info().rss
+    except ImportError:
+        pass
     if sys.platform == 'win32':
         class MEMORY_COUNTERS(ctypes.Structure):
             _fields_ = [
