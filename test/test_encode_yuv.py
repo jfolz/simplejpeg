@@ -1,7 +1,11 @@
 import numpy as np
 import pytest
+from harness import (
+    assert_released_after_call,
+    assert_released_after_error,
+    mean_absolute_difference,
+)
 from harness import generate_image as generate_rgb_image
-from harness import mean_absolute_difference
 
 import simplejpeg
 
@@ -284,3 +288,66 @@ def test_encode_yuv_broadcast_row_V():
     V = _broadcast_rows(V)
     with pytest.raises(ValueError, match='broadcasting V plane rows is not supported'):
         simplejpeg.encode_jpeg_yuv_planes(Y, U, V, 98)
+
+
+def test_encode_yuv_planes_released():
+    # the exported planes are only held for the duration of the call: a
+    # reference kept after the call shows up in the refcount
+    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+
+    def encode(y, u, v):
+        return simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98)
+
+    assert_released_after_call(encode, Y, U, V)
+
+
+def test_encode_yuv_gray_released():
+    gray = RGB.mean(axis=2, dtype=np.uint8)
+
+    def encode(y):  # U and V are not passed on
+        return simplejpeg.encode_jpeg_yuv_planes(y, None, None, 98)
+
+    assert_released_after_call(encode, gray)
+
+
+def test_encode_yuv_missing_U_released():
+    # the refusal happens with Y and V already exported and must release
+    # both on the way out
+    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+
+    def encode(y, u, v):  # U is not passed on
+        return simplejpeg.encode_jpeg_yuv_planes(y, None, v, 98)
+
+    assert_released_after_error(
+        encode, Y, U, V, match=r'U \(missing\) and V \(present\)')
+
+
+def test_encode_yuv_missing_V_released():
+    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+
+    def encode(y, u, v):  # V is not passed on
+        return simplejpeg.encode_jpeg_yuv_planes(y, u, None, 98)
+
+    assert_released_after_error(
+        encode, Y, U, V, match=r'U \(present\) and V \(missing\)')
+
+
+def test_encode_yuv_1d_U_released():
+    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+
+    def encode(y, u, v):  # only the first U column is passed on
+        return simplejpeg.encode_jpeg_yuv_planes(y, u[:, 0], v, 98)
+
+    assert_released_after_error(
+        encode, Y, U, V, match='wrong number of dimensions')
+
+
+def test_encode_yuv_broadcast_U_released():
+    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+
+    def encode(y, u, v):  # U rows are broadcast, not passed on directly
+        return simplejpeg.encode_jpeg_yuv_planes(
+            y, _broadcast_rows(u), v, 98)
+
+    assert_released_after_error(
+        encode, Y, U, V, match='broadcasting U plane rows is not supported')

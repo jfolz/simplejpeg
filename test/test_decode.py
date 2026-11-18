@@ -4,7 +4,11 @@ import time
 
 import numpy as np
 import pytest
-from harness import mean_absolute_difference
+from harness import (
+    assert_released_after_call,
+    assert_released_after_error,
+    mean_absolute_difference,
+)
 
 import simplejpeg
 
@@ -65,7 +69,7 @@ def test_decode_buffer():
 
 
 def test_decode_buffer_insufficient():
-    for f, data, ref in yield_reference_images():
+    for _, data, ref in yield_reference_images():
         b = bytearray(ref.size - 1)
         with pytest.raises(ValueError, match='too small'):
             simplejpeg.decode_jpeg(data, buffer=b)
@@ -158,7 +162,7 @@ def test_decode_resize_buffer_concurrent():
         nonlocal decode_error, decoded_image
         try:
             decoded_image = simplejpeg.decode_jpeg(data, buffer=buf)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             decode_error = e
 
     # measure how long decoding takes
@@ -188,7 +192,81 @@ def test_decode_resize_buffer_concurrent():
     decode_thread.join()
     if decode_error is not None:
         raise decode_error
+    assert decoded_image is not None
     assert decoded_image.shape == (height, width, 3)
+
+
+def _rgb_jpeg():
+    rng = np.random.default_rng(1337)
+    return simplejpeg.encode_jpeg(
+        rng.integers(0, 255, size=(64, 64, 3), dtype=np.uint8))
+
+
+def _yuv_jpeg():
+    rng = np.random.default_rng(1337)
+    return simplejpeg.encode_jpeg_yuv_planes(
+        rng.integers(0, 255, size=(64, 64), dtype=np.uint8),
+        rng.integers(0, 255, size=(32, 32), dtype=np.uint8),
+        rng.integers(0, 255, size=(32, 32), dtype=np.uint8),
+    )
+
+
+def test_decode_rgb_released():
+    # input and output buffers stay exported only for the duration of
+    # the call: resizing after the call must stay clean, a BufferError
+    # would mean a leaked export
+    data = bytearray(_rgb_jpeg())
+    buffer = bytearray(64 * 64 * 3)
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_call(decode, data, buffer)
+
+
+def test_decode_yuv_released():
+    data = bytearray(_yuv_jpeg())
+    buffer = bytearray(64 * 64 * 3)
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_call(decode, data, buffer)
+
+
+def test_decode_garbage_released():
+    garbage = bytearray(b'definitely not a jpeg')
+    buffer = bytearray(64 * 64 * 3)
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_error(
+        decode, garbage, buffer, match='JPEG')
+
+
+def test_decode_truncated_released():
+    # the truncated failure happens mid-decode, with a decoder and both
+    # buffers exported along the way
+    data = bytearray(_rgb_jpeg()[:-8])
+    buffer = bytearray(64 * 64 * 3)
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_error(
+        decode, data, buffer, match='Premature end of JPEG file')
+
+
+def test_decode_too_small_released():
+    data = bytearray(_rgb_jpeg())
+    buffer = bytearray(64 * 64 * 3 - 1)
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_error(
+        decode, data, buffer, match='too small')
 
 
 def test_decode_noncontiguous():

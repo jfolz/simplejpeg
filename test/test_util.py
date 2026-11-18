@@ -1,8 +1,7 @@
-import os.path as pt
 import glob
+import os.path as pt
 
 import simplejpeg
-
 
 ROOT = pt.abspath(pt.dirname(__file__))
 
