@@ -236,8 +236,7 @@ def test_decode_garbage_released():
     def decode(data, buffer):
         return simplejpeg.decode_jpeg(data, buffer=buffer)
 
-    assert_released_after_error(
-        decode, garbage, buffer, match='JPEG')
+    assert_released_after_error(decode, garbage, buffer, match='JPEG')
 
 
 def test_decode_truncated_released():
@@ -249,8 +248,7 @@ def test_decode_truncated_released():
     def decode(data, buffer):
         return simplejpeg.decode_jpeg(data, buffer=buffer)
 
-    assert_released_after_error(
-        decode, data, buffer, match='Premature end of JPEG file')
+    assert_released_after_error(decode, data, buffer, match='Premature end of JPEG file')
 
 
 def test_decode_too_small_released():
@@ -260,8 +258,7 @@ def test_decode_too_small_released():
     def decode(data, buffer):
         return simplejpeg.decode_jpeg(data, buffer=buffer)
 
-    assert_released_after_error(
-        decode, data, buffer, match='too small')
+    assert_released_after_error(decode, data, buffer, match='too small')
 
 
 def test_decode_header_garbage_released():
@@ -283,9 +280,7 @@ def test_decode_readonly_released():
     def decode(data, buffer):
         return simplejpeg.decode_jpeg(data, buffer=buffer)
 
-    assert_released_after_error(
-        decode, data, buffer, error=(BufferError, ValueError),
-        match='writable')
+    assert_released_after_error(decode, data, buffer, error=(BufferError, ValueError), match='writable')
 
 
 def test_decode_strided_buffer_released():
@@ -297,8 +292,7 @@ def test_decode_strided_buffer_released():
     def decode(data, buffer):
         return simplejpeg.decode_jpeg(data, buffer=buffer)
 
-    assert_released_after_error(
-        decode, data, buffer, match='contiguous')
+    assert_released_after_error(decode, data, buffer, match='contiguous')
 
 
 def test_decode_noncontiguous():

@@ -180,8 +180,7 @@ def test_encode_channels_released():
     def encode(image):
         return simplejpeg.encode_jpeg(image, 98)
 
-    assert_released_after_error(
-        encode, channels, match='channels does not match')
+    assert_released_after_error(encode, channels, match='channels does not match')
 
 
 def test_encode_strided_released():
@@ -190,8 +189,7 @@ def test_encode_strided_released():
     def encode(image):
         return simplejpeg.encode_jpeg(image, 98)
 
-    assert_released_after_error(
-        encode, strided, match='contiguous rows')
+    assert_released_after_error(encode, strided, match='contiguous rows')
 
 
 def test_encode_broadcast_released():
@@ -201,8 +199,7 @@ def test_encode_broadcast_released():
     def encode(image):
         return simplejpeg.encode_jpeg(image, 98)
 
-    assert_released_after_error(
-        encode, broadcast, match='broadcasting rows is not supported')
+    assert_released_after_error(encode, broadcast, match='broadcasting rows is not supported')
 
 
 def test_encode_2d_released():
@@ -212,5 +209,4 @@ def test_encode_2d_released():
     def encode(image):
         return simplejpeg.encode_jpeg(image, 98, colorspace='gray')
 
-    assert_released_after_error(
-        encode, flat, match='wrong number of dimensions')
+    assert_released_after_error(encode, flat, match='wrong number of dimensions')

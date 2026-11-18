@@ -55,8 +55,7 @@ def _fresh_refcount():
     # exactly (result name, filtered tuple, measurement binding), and
     # freshly created bytes and ndarray must measure the same
     counts = []
-    for fresh in (lambda: bytes(bytearray(b'fresh output')),
-                  lambda: np.zeros((2, 3), np.uint8)):
+    for fresh in (lambda: bytes(bytearray(b'fresh output')), lambda: np.zeros((2, 3), np.uint8)):
         result = fresh()
         fresh_tuple = _fresh_outputs(result)
         counts.append(_refcounts(fresh_tuple)[0])
