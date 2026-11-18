@@ -2,7 +2,10 @@
 Shared fixtures and helpers for the test modules.
 """
 
+import array
 import sys
+from collections.abc import Collection
+from typing import Any
 
 import numpy as np
 import pytest
@@ -38,42 +41,44 @@ def generate_image(height=800, width=600, channels=3):
 
 
 def _refcounts(supplied):
-    return tuple(sys.getrefcount(buffer) for buffer in supplied)
+    # -1 because we hold a reference in our for loop
+    return tuple(sys.getrefcount(buffer) - 1 for buffer in supplied)
 
 
 def _ensure_tuple(v):
     return v if isinstance(v, tuple) else (v,)
 
 
-def _deduplicate_values(result, ignore_objects=()):
-    # freshly created outputs worth checking: scalars and strings may be
-    # interned and are not fresh; outputs that are one of the inputs are
-    # caller-held by design and verified on the input side instead, and
-    # outputs that appear more than once in the returned structure are
-    # skipped altogether: their refcount carries caller-side holders that
-    # do not scale predictably with the occurrence count, so a floor
-    # comparison has no stable meaning for them (verified: a duplicated
-    # fresh bytes measured one above the floor through its second slot)
-    result = _ensure_tuple(result)
+def _deduplicate_values(
+    values: Any | tuple[Any],
+    ignore_objects: Collection[Any] = (),
+    keep_types: tuple[type,...] = (array.array, bytes, bytearray, np.ndarray),
+):
+    """
+    Deduplicate the given value(s).
+    Optionally ignore everything in ignore_objects.
+    Keep only types listed in keep_types.
+    """
+    values = _ensure_tuple(values)
     dedup = {}
     ignore_ids = set(map(id, ignore_objects))
-    for value in result:
-        if id(value) not in ignore_ids and isinstance(value, (bytes, bytearray, np.ndarray)):
+    for value in values:
+        if id(value) not in ignore_ids and isinstance(value, keep_types):
             dedup[id(value)] = value
     return tuple(dedup.values())
 
 
-def _assert_released(supplied, baselines):
-    # a still held bytearray export refuses the post-call resize with a
-    # BufferError, a still held ndarray reference shows up in the
-    # refcount; after is measured with the same helper as the baseline so
-    # that the measurement of one buffer cannot inflate another
-    after = _refcounts(supplied)
-    for buffer, baseline, refcount in zip(supplied, baselines, after):
-        if isinstance(buffer, bytearray):
-            buffer += b'\x00'
-        else:
-            assert refcount == baseline, f'a reference to {type(buffer)!r} survived the call'
+def _assert_released(values, reference):
+    """
+    Assert that the refcount of the given values matches the given reference values.
+    Additionally, for mutable types array.array and bytearray, check whether they
+    can be mutated without issue.
+    """
+    after = _refcounts(values)
+    for value, baseline, refcount in zip(values, reference, after):
+        if isinstance(value, (array.array, bytearray)):
+            value.append(0)
+        assert refcount == baseline, f'refcount to {type(value)!r} increased'
 
 
 def assert_released_after_call(operation, *inputs):
@@ -90,21 +95,15 @@ def assert_released_after_call(operation, *inputs):
     output buffer, is not checked here: it is legitimately caller-held
     beyond the harness and its release is verified on the input side.
     """
+    # store refcounts before the operation
     before = _refcounts(inputs)
-    result = operation(*inputs)
-    fresh = _deduplicate_values(result, inputs)
-    refcounts = [sys.getrefcount(value) for value in fresh]
-    # drop the returned structure and every holder before checking: a
-    # bytearray input must resize without BufferError afterwards, and
-    # while the checker still holds each output in this structure a
-    # clean output measures exactly three, on GIL and free-threaded
-    # builds alike, a reference the operation kept would measure four
-    del result, fresh
-    for refcount in refcounts:
-        assert refcount == 3, (
-            f'the operation kept a reference to the returned output: '
-            f'refcount {refcount}'
-        )
+    outputs = operation(*inputs)
+    # verify we did not hold onto references of our outputs
+    outputs = _deduplicate_values(outputs, inputs)
+    refcounts = _refcounts(outputs)
+    assert all(c == 1 for c in refcounts), f'an output has refcount != 1: {refcounts}'
+    # delete outputs in case a returned value references one of the inputs.
+    del outputs
     _assert_released(inputs, before)
 
 

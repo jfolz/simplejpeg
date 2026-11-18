@@ -1,6 +1,7 @@
 import os.path as pt
 import threading
 import time
+from array import array
 
 import numpy as np
 import pytest
@@ -293,6 +294,18 @@ def test_decode_strided_buffer_released():
         return simplejpeg.decode_jpeg(data, buffer=buffer)
 
     assert_released_after_error(decode, data, buffer, match='contiguous')
+
+
+def test_decode_array_input_released():
+    # array.array has the same export-refusing resize semantics as
+    # bytearray and must release its export after the call as well
+    data = array('B', _rgb_jpeg())
+    buffer = bytearray(64 * 64 * 3)
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_call(decode, data, buffer)
 
 
 def test_decode_noncontiguous():
