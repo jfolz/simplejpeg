@@ -13,7 +13,7 @@ import contextlib
 import sys
 
 import numpy as np
-from harness import fixture_rss, generate_image
+from harness import generate_image
 
 import simplejpeg
 def _assert_no_growth(rss, battery, warmup=256, count=1000):
