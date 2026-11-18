@@ -63,8 +63,11 @@ def _assert_batches(rss, battery, warmup=64, batch=400):
     # importer caches), the following batches must plateau: a leaking
     # call grows the working set by a fixed amount every batch, while a
     # clean call reuses the same working set. measured deltas are zero
-    # here, so the threshold leaves room for allocator noise while every
-    # leaked turbojpeg instance (kilobytes per call) would trip it
+    # here, so the threshold leaves room for allocator noise; for scale:
+    # an un-destroyed tjhandle leaves 4113 bytes of heap behind (the
+    # 1952-byte tjinstance malloc plus its jpeg memory manager records,
+    # measured against vendored libjpeg-turbo 3.2.1), so the threshold
+    # trips after about 64 of the 400 calls in a batch leak
     battery(warmup)
     previous = rss()
     for _ in range(3):
