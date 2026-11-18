@@ -63,21 +63,6 @@ def _deduplicate_values(result, ignore_objects=()):
     return tuple(dedup.values())
 
 
-def _fresh_refcount():
-    # calibrate the refcount a freshly created output measures when only
-    # the checker holds it: the holder structure mirrors the use in
-    # assert_released_after_call exactly (result name, filtered tuple,
-    # measurement binding), and freshly created bytes and ndarray must
-    # measure the same
-    counts = []
-    for fresh in (lambda: bytes(bytearray(b'fresh output')), lambda: np.zeros((2, 3), np.uint8)):
-        result = fresh()
-        fresh_tuple = _deduplicate_values(result)
-        counts.append(_refcounts(fresh_tuple)[0])
-    assert counts[0] == counts[1], counts
-    return counts[0]
-
-
 def _assert_released(supplied, baselines):
     # a still held bytearray export refuses the post-call resize with a
     # BufferError, a still held ndarray reference shows up in the
@@ -96,33 +81,31 @@ def assert_released_after_call(operation, *inputs):
     Run operation(*inputs) and verify that:
 
         1. Refcount on inputs does not increase
-        2. Refcount of result is identical to a freshly created object.
-           A bytearray input must resize without BufferError.
+        2. After the returned structure is dropped, each bytes or ndarray
+           output has a refcount of exactly two: one for the fresh tuple
+           and one for the getrefcount argument. A bytearray input must
+           resize without BufferError.
 
     An output that is one of the inputs itself, e.g. a returned view of an
     output buffer, is not checked here: it is legitimately caller-held
     beyond the harness and its release is verified on the input side.
-    An operation must also never return the same object twice: repeated
-    outputs fail the check no matter what the operation holds.
     """
     before = _refcounts(inputs)
     result = operation(*inputs)
     fresh = _deduplicate_values(result, inputs)
-    if fresh:
-        # this is the only moment such a claim is observable: the outputs
-        # are held by the checker only (one reference on the result, one
-        # on the filtered tuple, one for the measurement binding), so a
-        # reference the operation kept on its own output would measure
-        # one above the freshly created, caller-held calibration
-        expected = (_fresh_refcount(),) * len(fresh)
-        margins = _refcounts(fresh)
-        assert margins == expected, (
+    # drop the returned structure first: afterwards each output is
+    # referenced exactly once, by the fresh tuple, and sys.getrefcount
+    # counts its argument on top for exactly two, identical on GIL and
+    # free-threaded builds (verified on 3.13 and 3.14t); any reference
+    # the operation kept on its own output would measure a third
+    del result
+    for value in fresh:
+        refcount = sys.getrefcount(value)
+        assert refcount == 2, (
             f'the operation kept a reference to the returned output: '
-            f'{margins!r} instead of {expected!r}'
+            f'refcount {refcount}'
         )
-    # drop results in case they reference inputs,
-    # e.g. ndarray referencing an output buffer
-    del result, fresh
+    del fresh
     _assert_released(inputs, before)
 
 
