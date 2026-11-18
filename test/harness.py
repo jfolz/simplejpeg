@@ -45,7 +45,7 @@ def _ensure_tuple(v):
     return v if isinstance(v, tuple) else (v,)
 
 
-def _fresh_outputs(result, held_ids=frozenset()):
+def _fresh_outputs(result, ignore_objects=()):
     # freshly created outputs worth checking: scalars and strings may be
     # interned and are not fresh; outputs that are one of the inputs are
     # caller-held by design and verified on the input side instead, and
@@ -54,17 +54,13 @@ def _fresh_outputs(result, held_ids=frozenset()):
     # do not scale predictably with the occurrence count, so a floor
     # comparison has no stable meaning for them (verified: a duplicated
     # fresh bytes measured one above the floor through its second slot)
-    returned = _ensure_tuple(result)
-    occurrences = {}
-    for value in returned:
-        if isinstance(value, (bytes, bytearray, np.ndarray)):
-            occurrences[id(value)] = occurrences.get(id(value), 0) + 1
-    return tuple(
-        value for value in returned
-        if isinstance(value, (bytes, bytearray, np.ndarray))
-        and occurrences[id(value)] == 1
-        and id(value) not in held_ids
-    )
+    result = _ensure_tuple(result)
+    dedup = {}
+    ignore_ids = set(map(id, ignore_objects))
+    for value in result:
+        if id(value) not in ignore_ids and isinstance(value, (bytes, bytearray, np.ndarray)):
+            dedup[id(value)] = value
+    return tuple(dedup.values())
 
 
 def _fresh_refcount():
@@ -106,10 +102,12 @@ def assert_released_after_call(operation, *inputs):
     An output that is one of the inputs itself, e.g. a returned view of an
     output buffer, is not checked here: it is legitimately caller-held
     beyond the harness and its release is verified on the input side.
+    An operation must also never return the same object twice: repeated
+    outputs fail the check no matter what the operation holds.
     """
     before = _refcounts(inputs)
     result = operation(*inputs)
-    fresh = _fresh_outputs(result, {id(value) for value in inputs})
+    fresh = _fresh_outputs(result, inputs)
     if fresh:
         # this is the only moment such a claim is observable: the outputs
         # are held by the checker only (one reference on the result, one
