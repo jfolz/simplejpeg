@@ -10,54 +10,12 @@ hardest.
 """
 
 import contextlib
-import ctypes
 import sys
 
 import numpy as np
-import pytest
-from harness import generate_image
+from harness import generate_image, rss
 
 import simplejpeg
-
-
-def _rss_bytes():
-    """Working set of the current process, None when not measurable."""
-    if sys.platform == 'win32':
-        class MEMORY_COUNTERS(ctypes.Structure):
-            _fields_ = [
-                ('cb', ctypes.c_uint32),
-                ('page_faults', ctypes.c_uint32),
-                ('peak_working_set', ctypes.c_size_t),
-                ('working_set', ctypes.c_size_t),
-                ('quota_peak_paged_pool', ctypes.c_size_t),
-                ('quota_paged_pool', ctypes.c_size_t),
-                ('quota_peak_non_paged_pool', ctypes.c_size_t),
-                ('quota_non_paged_pool', ctypes.c_size_t),
-                ('pagefile', ctypes.c_size_t),
-                ('peak_pagefile', ctypes.c_size_t),
-            ]
-
-        counters = MEMORY_COUNTERS()
-        counters.cb = ctypes.sizeof(counters)
-        process = ctypes.windll.kernel32.GetCurrentProcess()
-        if not ctypes.windll.psapi.GetProcessMemoryInfo(
-                process, ctypes.byref(counters), counters.cb):
-            return None
-        return counters.working_set
-    import resource
-    maxrss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    if sys.platform == 'darwin':
-        return maxrss
-    return maxrss * 1024
-
-
-@pytest.fixture(name='rss')
-def fixture_rss():
-    if _rss_bytes() is None:
-        pytest.skip('no working set measurement available')
-    return _rss_bytes
-
-
 def _assert_no_growth(rss, battery, warmup=256, count=1000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches); afterwards a single long battery run must leave

@@ -3,6 +3,7 @@ Shared fixtures and helpers for the test modules.
 """
 
 import array
+import ctypes
 import sys
 from collections.abc import Collection
 from typing import Any
@@ -45,6 +46,48 @@ def _refcounts(supplied):
     return tuple(sys.getrefcount(buffer) - 1 for buffer in supplied)
 
 
+def _rss_bytes():
+    """Working set of the current process, None when not measurable."""
+    if sys.platform == 'win32':
+        class MEMORY_COUNTERS(ctypes.Structure):
+            _fields_ = [
+                ('cb', ctypes.c_uint32),
+                ('page_faults', ctypes.c_uint32),
+                ('peak_working_set', ctypes.c_size_t),
+                ('working_set', ctypes.c_size_t),
+                ('quota_peak_paged_pool', ctypes.c_size_t),
+                ('quota_paged_pool', ctypes.c_size_t),
+                ('quota_peak_non_paged_pool', ctypes.c_size_t),
+                ('quota_non_paged_pool', ctypes.c_size_t),
+                ('pagefile', ctypes.c_size_t),
+                ('peak_pagefile', ctypes.c_size_t),
+            ]
+
+        counters = MEMORY_COUNTERS()
+        counters.cb = ctypes.sizeof(counters)
+        process = ctypes.windll.kernel32.GetCurrentProcess()
+        if not ctypes.windll.psapi.GetProcessMemoryInfo(
+                process, ctypes.byref(counters), counters.cb):
+            return None
+        return counters.working_set
+    import resource
+    maxrss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    if sys.platform == 'darwin':
+        return maxrss
+    return maxrss * 1024
+
+
+@pytest.fixture(name='rss')
+def fixture_rss():
+    """
+    Yield a callable that returns the current working set in bytes, so
+    that tests can sample the working set between battery runs.
+    """
+    if _rss_bytes() is None:
+        pytest.skip('no working set measurement available')
+    return _rss_bytes
+
+
 def _ensure_tuple(v):
     return v if isinstance(v, tuple) else (v,)
 
@@ -57,18 +100,12 @@ def _deduplicate_values(
     """
     Deduplicate the given value(s).
     Optionally ignore everything in ignore_objects.
-    Keep only types listed in keep_types.
-
-    The decode_jpeg_header outputs (int and str) are deliberately not
-    kept: small ints are interned by CPython and larger ones are fresh
-    depending on the value, and the colorspace/subsampling strings are
-    module-level constants, so a refcount of one is not reachable for
-    them.
+    Keep only types listed in keep_types. In particular str and int can have
+    unpredictable refcounts (interning, immortalization).
     """
-    values = _ensure_tuple(values)
-    dedup = {}
     ignore_ids = set(map(id, ignore_objects))
-    for value in values:
+    dedup = {}
+    for value in _ensure_tuple(values):
         if id(value) not in ignore_ids and isinstance(value, keep_types):
             dedup[id(value)] = value
     return tuple(dedup.values())
@@ -92,18 +129,16 @@ def assert_released_after_call(operation, *inputs):
     Run operation(*inputs) and verify that:
 
         1. Refcount on inputs does not increase
-        2. Each fresh bytes or ndarray output is held exactly once, by the
-           tuple of outputs this checker keeps.
-           A bytearray input must resize without BufferError.
+        2. Each newly-created output is held exactly once (by the tuple of outputs).
+        3. Input array.array and bytearray must resize without BufferError.
 
-    An output that is one of the inputs itself, e.g. a returned view of an
-    output buffer, is not checked here: it is legitimately caller-held
-    beyond the harness and its release is verified on the input side.
+    Excluded are outputs that are also inputs, e.g. a view of an output buffer,
+    since these naturally have higher (and unpredictable) refcounts.
     """
     # store refcounts before the operation
     before = _refcounts(inputs)
     outputs = operation(*inputs)
-    # verify we did not hold onto references of our outputs
+    # verify we did not hold onto references of created outputs
     outputs = _deduplicate_values(outputs, inputs)
     refcounts = _refcounts(outputs)
     assert all(c == 1 for c in refcounts), f'an output has refcount != 1: {refcounts}'
