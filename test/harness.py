@@ -106,8 +106,17 @@ def assert_released_after_call(operation, *inputs):
     result = operation(*inputs)
     fresh = _fresh_outputs(result, {id(value) for value in inputs})
     if fresh:
+        # this is the only moment such a claim is observable: the outputs
+        # are held by the checker only (one reference on the result, one
+        # on the filtered tuple, one for the measurement binding), so a
+        # reference the operation kept on its own output would measure
+        # one above the freshly created, caller-held calibration
+        expected = (_fresh_refcount(),) * len(fresh)
         margins = _refcounts(fresh)
-        assert margins == (_fresh_refcount(),) * len(fresh), f'the operation kept a reference to the returned output: {margins!r}'
+        assert margins == expected, (
+            f'the operation kept a reference to the returned output: '
+            f'{margins!r} instead of {expected!r}'
+        )
     # drop results in case they reference inputs,
     # e.g. ndarray referencing an output buffer
     del result, fresh
