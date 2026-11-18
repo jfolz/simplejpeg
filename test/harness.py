@@ -52,12 +52,18 @@ def _ensure_tuple(v):
 def _deduplicate_values(
     values: Any | tuple[Any],
     ignore_objects: Collection[Any] = (),
-    keep_types: tuple[type,...] = (array.array, bytes, bytearray, np.ndarray),
+    keep_types: tuple[type,...] = (str, bytes, array.array, bytearray, np.ndarray),
 ):
     """
     Deduplicate the given value(s).
     Optionally ignore everything in ignore_objects.
     Keep only types listed in keep_types.
+
+    The decode_jpeg_header outputs (int and str) are deliberately not
+    kept: small ints are interned by CPython and larger ones are fresh
+    depending on the value, and the colorspace/subsampling strings are
+    module-level constants, so a refcount of one is not reachable for
+    them.
     """
     values = _ensure_tuple(values)
     dedup = {}
