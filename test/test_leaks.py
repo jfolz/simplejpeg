@@ -62,13 +62,15 @@ def _assert_batches(rss, battery, warmup=64, batch=400):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches), the following batches must plateau: a leaking
     # call grows the working set by a fixed amount every batch, while a
-    # clean call reuses the same working set
+    # clean call reuses the same working set. measured deltas are zero
+    # here, so the threshold leaves room for allocator noise while every
+    # leaked turbojpeg instance (kilobytes per call) would trip it
     battery(warmup)
     previous = rss()
     for _ in range(3):
         battery(batch)
         current = rss()
-        assert current - previous < 1024 * 1024, (
+        assert current - previous < 256 * 1024, (
             f'the working set grew by {current - previous} bytes during '
             f'a batch of {batch} calls, something is leaking'
         )
