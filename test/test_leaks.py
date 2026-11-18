@@ -58,27 +58,22 @@ def fixture_rss():
     return _rss_bytes
 
 
-def _assert_batches(rss, battery, warmup=256, batch=2000):
+def _assert_no_growth(rss, battery, warmup=256, count=6000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
-    # importer caches), the following batches must plateau: some working
-    # set drift by other causes (allocator arena moves, caches, working
-    # set jitter) is expected and allowed, but if an operation leaks, it
-    # leaks every call: a leaking batch then grows by one page per call,
-    # 2000 pages (~8 MiB) per batch, while the allowance of 64 KiB is a
-    # fraction of that on both GIL and free-threaded builds. the growth
-    # is instead treated as the operation holding references, which the
-    # refcount check on the inputs catches
+    # importer caches); afterwards a single long battery run must leave
+    # the working set within the allowance: if an operation leaks, it
+    # leaks every call, so 6000 un-destroyed tjhandles (~4 KiB of heap
+    # each, measured with vendored libjpeg-turbo 3.2.1) would grow the
+    # working set by ~24 MB, while background drift by other causes is
+    # expected to stay in the 64 KiB noise range over the same run
     battery(warmup)
     previous = rss()
-    for _ in range(3):
-        battery(batch)
-        current = rss()
-        assert current - previous < 64 * 1024, (
-            f'the working set grew by {current - previous} bytes during '
-            f'a batch of {batch} calls, background drift is a few KiB '
-            f'while a leaked tjhandle costs 4096 bytes per call'
-        )
-        previous = current
+    battery(count)
+    growth = rss() - previous
+    assert growth < 64 * 1024, (
+        f'the working set grew by {growth} bytes over {count} calls; '
+        f'one leaked tjhandle per call grows it by ~24 MB'
+    )
 
 
 def test_decode_releases_tjhandles(rss):
@@ -88,7 +83,7 @@ def test_decode_releases_tjhandles(rss):
         for _ in range(count):
             simplejpeg.decode_jpeg(data)
 
-    _assert_batches(rss, battery)
+    _assert_no_growth(rss, battery)
 
 
 def test_decode_with_buffer_releases_tjhandles(rss):
@@ -100,7 +95,7 @@ def test_decode_with_buffer_releases_tjhandles(rss):
         for _ in range(count):
             simplejpeg.decode_jpeg(data, buffer=buffer)
 
-    _assert_batches(rss, battery)
+    _assert_no_growth(rss, battery)
 
 
 def test_decode_header_releases_tjhandles(rss):
@@ -110,7 +105,7 @@ def test_decode_header_releases_tjhandles(rss):
         for _ in range(count):
             simplejpeg.decode_jpeg_header(data)
 
-    _assert_batches(rss, battery)
+    _assert_no_growth(rss, battery)
 
 
 def test_encode_releases_tjhandles(rss):
@@ -120,7 +115,7 @@ def test_encode_releases_tjhandles(rss):
         for _ in range(count):
             simplejpeg.encode_jpeg(im, 98)
 
-    _assert_batches(rss, battery)
+    _assert_no_growth(rss, battery)
 
 
 def test_encode_yuv_releases_tjhandles(rss):
@@ -136,7 +131,7 @@ def test_encode_yuv_releases_tjhandles(rss):
             simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98)
             simplejpeg.encode_jpeg_yuv_planes(y, None, None, 98)
 
-    _assert_batches(rss, battery)
+    _assert_no_growth(rss, battery)
 
 
 def test_error_paths_release_tjhandles(rss):
@@ -163,4 +158,4 @@ def test_error_paths_release_tjhandles(rss):
             with contextlib.suppress(ValueError):
                 simplejpeg.encode_jpeg(strided, 98)
 
-    _assert_batches(rss, battery)
+    _assert_no_growth(rss, battery)
