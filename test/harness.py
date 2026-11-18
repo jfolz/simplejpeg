@@ -41,15 +41,20 @@ def _refcounts(supplied):
     return tuple(sys.getrefcount(buffer) for buffer in supplied)
 
 
+def _ensure_tuple(v):
+    return v if isinstance(v, tuple) else (v,)
+
+
 def _fresh_outputs(result, held_ids=frozenset()):
-    # the freshly created outputs worth checking: scalars and strings may
-    # be interned and are not fresh; outputs that are one of the inputs
-    # are caller-held by design and verified on the input side instead;
-    # outputs that appear more than once in the result carry extra
-    # caller-side holders (the returned structure references them per
-    # occurrence) and cannot be compared against the single-owner floor,
-    # so they are left out entirely
-    returned = result if isinstance(result, tuple) else (result,)
+    # freshly created outputs worth checking: scalars and strings may be
+    # interned and are not fresh; outputs that are one of the inputs are
+    # caller-held by design and verified on the input side instead, and
+    # outputs that appear more than once in the returned structure are
+    # skipped altogether: their refcount carries caller-side holders that
+    # do not scale predictably with the occurrence count, so a floor
+    # comparison has no stable meaning for them (verified: a duplicated
+    # fresh bytes measured one above the floor through its second slot)
+    returned = _ensure_tuple(result)
     occurrences = {}
     for value in returned:
         if isinstance(value, (bytes, bytearray, np.ndarray)):
