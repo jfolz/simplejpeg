@@ -41,19 +41,33 @@ def _refcounts(supplied):
     return tuple(sys.getrefcount(buffer) for buffer in supplied)
 
 
-def _fresh_outputs(result):
-    # the freshly created outputs worth checking: scalars and small
-    # integers may be interned and are not fresh themselves
-    return tuple(o for o in (result if isinstance(result, tuple)
-                             else (result,))
-                 if isinstance(o, (bytes, bytearray, np.ndarray)))
+def _fresh_outputs(result, held_ids=frozenset()):
+    # the freshly created outputs worth checking: scalars and strings may
+    # be interned and are not fresh; outputs that are one of the inputs
+    # are caller-held by design and verified on the input side instead;
+    # outputs that appear more than once in the result carry extra
+    # caller-side holders (the returned structure references them per
+    # occurrence) and cannot be compared against the single-owner floor,
+    # so they are left out entirely
+    returned = result if isinstance(result, tuple) else (result,)
+    occurrences = {}
+    for value in returned:
+        if isinstance(value, (bytes, bytearray, np.ndarray)):
+            occurrences[id(value)] = occurrences.get(id(value), 0) + 1
+    return tuple(
+        value for value in returned
+        if isinstance(value, (bytes, bytearray, np.ndarray))
+        and occurrences[id(value)] == 1
+        and id(value) not in held_ids
+    )
 
 
 def _fresh_refcount():
     # calibrate the refcount a freshly created output measures when only
-    # the caller holds it: the holder structure mirrors the release check
-    # exactly (result name, filtered tuple, measurement binding), and
-    # freshly created bytes and ndarray must measure the same
+    # the checker holds it: the holder structure mirrors the use in
+    # assert_released_after_call exactly (result name, filtered tuple,
+    # measurement binding), and freshly created bytes and ndarray must
+    # measure the same
     counts = []
     for fresh in (lambda: bytes(bytearray(b'fresh output')), lambda: np.zeros((2, 3), np.uint8)):
         result = fresh()
@@ -83,10 +97,14 @@ def assert_released_after_call(operation, *inputs):
         1. Refcount on inputs does not increase
         2. Refcount of result is identical to a freshly created object.
            A bytearray input must resize without BufferError.
+
+    An output that is one of the inputs itself, e.g. a returned view of an
+    output buffer, is not checked here: it is legitimately caller-held
+    beyond the harness and its release is verified on the input side.
     """
     before = _refcounts(inputs)
     result = operation(*inputs)
-    fresh = _fresh_outputs(result)
+    fresh = _fresh_outputs(result, {id(value) for value in inputs})
     if fresh:
         margins = _refcounts(fresh)
         assert margins == (_fresh_refcount(),) * len(fresh), f'the operation kept a reference to the returned output: {margins!r}'
