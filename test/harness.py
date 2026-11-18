@@ -52,7 +52,7 @@ def _ensure_tuple(v):
 def _deduplicate_values(
     values: Any | tuple[Any],
     ignore_objects: Collection[Any] = (),
-    keep_types: tuple[type,...] = (str, bytes, array.array, bytearray, np.ndarray),
+    keep_types: tuple[type,...] = (bytes, array.array, bytearray, np.ndarray),
 ):
     """
     Deduplicate the given value(s).
@@ -92,10 +92,9 @@ def assert_released_after_call(operation, *inputs):
     Run operation(*inputs) and verify that:
 
         1. Refcount on inputs does not increase
-        2. While the returned structure is still held by this checker,
-           each bytes or ndarray output measures a refcount of exactly
-           three, on GIL and free-threaded builds alike. A bytearray
-           input must resize without BufferError.
+        2. Each fresh bytes or ndarray output is held exactly once, by the
+           tuple of outputs this checker keeps.
+           A bytearray input must resize without BufferError.
 
     An output that is one of the inputs itself, e.g. a returned view of an
     output buffer, is not checked here: it is legitimately caller-held
