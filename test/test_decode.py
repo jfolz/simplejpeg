@@ -272,6 +272,18 @@ def test_decode_header_garbage_released():
     assert_released_after_error(decode_header, garbage, match='JPEG')
 
 
+def test_decode_header_released():
+    # the outputs are ints and module-cached strings, they have no
+    # refcount that could increase: only the release of the input is
+    # observable and verified here
+    data = bytearray(_rgb_jpeg())
+
+    def decode_header(data):
+        return simplejpeg.decode_jpeg_header(data)
+
+    assert_released_after_call(decode_header, data)
+
+
 def test_decode_readonly_released():
     # a read-only buffer must be refused to decode into and release its
     # export on the way out
