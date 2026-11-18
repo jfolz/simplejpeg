@@ -77,8 +77,8 @@ def _rss_bytes():
     return maxrss * 1024
 
 
-@pytest.fixture
-def rss():
+@pytest.fixture(name='rss')
+def fixture_rss():
     """
     Yield a callable that returns the current working set in bytes, so
     that tests can sample the working set between battery runs.
