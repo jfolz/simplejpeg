@@ -42,6 +42,9 @@ def rgb_to_yuv_planes(rgb, horizontal, vertical):
     return Y, U, V
 
 
+YUV = rgb_to_yuv_planes(RGB, 2, 2)
+
+
 def encode_decode_gray(padding_start, padding_end, delta):
     gray = RGB.mean(axis=2, dtype=np.uint8)
     left = padding_start
@@ -293,7 +296,7 @@ def test_encode_yuv_broadcast_row_V():
 def test_encode_yuv_planes_released():
     # the exported planes are only held for the duration of the call: a
     # reference kept after the call shows up in the refcount
-    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+    Y, U, V = YUV
 
     def encode(y, u, v):
         return simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98)
@@ -313,7 +316,7 @@ def test_encode_yuv_gray_released():
 def test_encode_yuv_missing_U_released():
     # the refusal happens with Y and V already exported and must release
     # both on the way out
-    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+    Y, U, V = YUV
 
     def encode(y, u, v):  # U is not passed on
         return simplejpeg.encode_jpeg_yuv_planes(y, None, v, 98)
@@ -323,7 +326,7 @@ def test_encode_yuv_missing_U_released():
 
 
 def test_encode_yuv_missing_V_released():
-    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+    Y, U, V = YUV
 
     def encode(y, u, v):  # V is not passed on
         return simplejpeg.encode_jpeg_yuv_planes(y, u, None, 98)
@@ -333,7 +336,7 @@ def test_encode_yuv_missing_V_released():
 
 
 def test_encode_yuv_1d_U_released():
-    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+    Y, U, V = YUV
 
     def encode(y, u, v):  # only the first U column is passed on
         return simplejpeg.encode_jpeg_yuv_planes(y, u[:, 0], v, 98)
@@ -343,7 +346,7 @@ def test_encode_yuv_1d_U_released():
 
 
 def test_encode_yuv_broadcast_U_released():
-    Y, U, V = rgb_to_yuv_planes(RGB, 2, 2)
+    Y, U, V = YUV
 
     def encode(y, u, v):  # U rows are broadcast, not passed on directly
         return simplejpeg.encode_jpeg_yuv_planes(
