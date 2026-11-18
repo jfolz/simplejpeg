@@ -203,3 +203,14 @@ def test_encode_broadcast_released():
 
     assert_released_after_error(
         encode, broadcast, match='broadcasting rows is not supported')
+
+
+def test_encode_2d_released():
+    # a 2-D image does not fit the 3-D buffer signature
+    flat = np.zeros((33, 47), dtype=np.uint8)
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98, colorspace='gray')
+
+    assert_released_after_error(
+        encode, flat, match='wrong number of dimensions')

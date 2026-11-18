@@ -264,6 +264,43 @@ def test_decode_too_small_released():
         decode, data, buffer, match='too small')
 
 
+def test_decode_header_garbage_released():
+    # the header does the same input buffer handling without output
+    garbage = bytearray(b'definitely not a jpeg')
+
+    def decode_header(data):
+        return simplejpeg.decode_jpeg_header(data)
+
+    assert_released_after_error(decode_header, garbage, match='JPEG')
+
+
+def test_decode_readonly_released():
+    # a read-only buffer must be refused to decode into and release its
+    # export on the way out
+    data = bytearray(_rgb_jpeg())
+    buffer = bytes(64 * 64 * 3)
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_error(
+        decode, data, buffer, error=(BufferError, ValueError),
+        match='writable')
+
+
+def test_decode_strided_buffer_released():
+    # a 3-D array with row strides that are not contiguous cannot be
+    # written into, the transpose gives it the right shape for that
+    data = bytearray(_rgb_jpeg())
+    buffer = np.zeros((3, 1024, 1024), dtype=np.uint8).transpose((1, 2, 0))
+
+    def decode(data, buffer):
+        return simplejpeg.decode_jpeg(data, buffer=buffer)
+
+    assert_released_after_error(
+        decode, data, buffer, match='contiguous')
+
+
 def test_decode_noncontiguous():
     b = np.zeros((3, 1024, 1024), dtype=np.uint8)
     for _, data, _ in yield_reference_images():
