@@ -202,15 +202,6 @@ def _rgb_jpeg():
         rng.integers(0, 255, size=(64, 64, 3), dtype=np.uint8))
 
 
-def _yuv_jpeg():
-    rng = np.random.default_rng(1337)
-    return simplejpeg.encode_jpeg_yuv_planes(
-        rng.integers(0, 255, size=(64, 64), dtype=np.uint8),
-        rng.integers(0, 255, size=(32, 32), dtype=np.uint8),
-        rng.integers(0, 255, size=(32, 32), dtype=np.uint8),
-    )
-
-
 def test_decode_rgb_released():
     # input and output buffers stay exported only for the duration of
     # the call: resizing after the call must stay clean, a BufferError
@@ -225,7 +216,11 @@ def test_decode_rgb_released():
 
 
 def test_decode_yuv_released():
-    data = bytearray(_yuv_jpeg())
+    rng = np.random.default_rng(1337)
+    data = bytearray(simplejpeg.encode_jpeg_yuv_planes(
+        rng.integers(0, 255, size=(64, 64), dtype=np.uint8),
+        rng.integers(0, 255, size=(32, 32), dtype=np.uint8),
+        rng.integers(0, 255, size=(32, 32), dtype=np.uint8)))
     buffer = bytearray(64 * 64 * 3)
 
     def decode(data, buffer):
