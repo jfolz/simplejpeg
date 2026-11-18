@@ -45,7 +45,7 @@ def _ensure_tuple(v):
     return v if isinstance(v, tuple) else (v,)
 
 
-def _fresh_outputs(result, ignore_objects=()):
+def _deduplicate_values(result, ignore_objects=()):
     # freshly created outputs worth checking: scalars and strings may be
     # interned and are not fresh; outputs that are one of the inputs are
     # caller-held by design and verified on the input side instead, and
@@ -72,7 +72,7 @@ def _fresh_refcount():
     counts = []
     for fresh in (lambda: bytes(bytearray(b'fresh output')), lambda: np.zeros((2, 3), np.uint8)):
         result = fresh()
-        fresh_tuple = _fresh_outputs(result)
+        fresh_tuple = _deduplicate_values(result)
         counts.append(_refcounts(fresh_tuple)[0])
     assert counts[0] == counts[1], counts
     return counts[0]
@@ -107,7 +107,7 @@ def assert_released_after_call(operation, *inputs):
     """
     before = _refcounts(inputs)
     result = operation(*inputs)
-    fresh = _fresh_outputs(result, inputs)
+    fresh = _deduplicate_values(result, inputs)
     if fresh:
         # this is the only moment such a claim is observable: the outputs
         # are held by the checker only (one reference on the result, one
