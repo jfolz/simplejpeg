@@ -58,14 +58,16 @@ def fixture_rss():
     return _rss_bytes
 
 
-def _assert_batches(rss, battery, warmup=64, batch=400):
+def _assert_batches(rss, battery, warmup=256, batch=2000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches), the following batches must plateau: a leaking
     # call grows the working set by exactly 4096 bytes, one page per
     # leaked tjhandle (4112 heap bytes land in one page, measured with
     # vendored libjpeg-turbo 3.2.1 on GIL and free-threaded builds
     # alike), so the assertion tolerates sub-page jitter and nothing
-    # else: a single leaking call in a batch fails the batch
+    # else: a single leaking call in a batch fails the batch. with 2000
+    # calls per batch the page-granular bound reduces to roughly two
+    # bytes per call, so even a redistribution-scale leak is caught
     battery(warmup)
     previous = rss()
     for _ in range(3):
