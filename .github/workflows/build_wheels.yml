@@ -55,8 +55,37 @@ jobs:
           name: sdist
           path: dist/*.tar.gz
           if-no-files-found: error
+  release_canary:
+    name: Canary wheels on ${{ matrix.os }}
+    needs: [build_wheels]
+    if: github.ref_type == 'tag'
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: wheels-ubuntu-latest-x86_64
+          - os: windows-latest
+            artifact: wheels-windows-latest-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14t'
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ matrix.artifact }}
+          path: wheelhouse
+      - name: Install wheel
+        # fresh interpreter: the wheel must import without re-enabling the
+        # GIL; numpy comes from the index (hard runtime dependency)
+        run: pip install wheelhouse/simplejpeg-*cp314t*.whl numpy
+        shell: bash
+      - name: Run wheel canary
+        run: python test/wheel_canary.py
+        shell: bash
   upload_all:
-    needs: [build_wheels, make_sdist]
+    needs: [build_wheels, make_sdist, release_canary]
     runs-on: ubuntu-latest
     environment:
       name: release

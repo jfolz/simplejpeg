@@ -1,0 +1,46 @@
+name: ASan error paths
+
+on: workflow_dispatch
+
+jobs:
+  asan:
+    name: ASan build and error-path runs
+    runs-on: ubuntu-latest
+    env:
+      CFLAGS: -fsanitize=address -g -O1 -fno-omit-frame-pointer
+      LDFLAGS: -fsanitize=address
+      ASAN_OPTIONS: detect_leaks=1:malloc_context_size=30
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14t'
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nasm
+          pip install --upgrade pip
+          pip install cython cmake numpy setuptools pytest
+      - name: Build instrumented
+        # libjpeg-turbo is vendored and statically linked: CFLAGS/LDFLAGS
+        # reach its cmake build, so the whole native stack is instrumented
+        run: pip install --no-build-isolation --verbose .
+      - name: Preload the ASan runtime
+        # the interpreter itself is not instrumented; loading the
+        # instrumented extension via dlopen aborts without the preload
+        run: echo "LD_PRELOAD=$(gcc -print-file-name=libasan.so)" >> "$GITHUB_ENV"
+      - name: Suppress third-party exit-time noise
+        # numpy registers ufuncs from native allocations that are only
+        # reported at interpreter shutdown; simplejpeg leaks must stand out
+        run: echo "leak:multiarray_umath" > "$RUNNER_TEMP/lsan.txt"
+        shell: bash
+      - name: Test suite
+        # never from the repo cwd: the source tree would shadow the
+        # freshly built site-packages extension
+        run: |
+          cd ~
+          python -m pytest "$GITHUB_WORKSPACE/test" -q
+      - name: Wheel canary storm
+        run: |
+          cd ~
+          CANARY_BUDGET=0.4 python "$GITHUB_WORKSPACE/test/wheel_canary.py"
