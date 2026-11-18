@@ -81,10 +81,10 @@ def assert_released_after_call(operation, *inputs):
     Run operation(*inputs) and verify that:
 
         1. Refcount on inputs does not increase
-        2. After the returned structure is dropped, each bytes or ndarray
-           output has a refcount of exactly two: one for the fresh tuple
-           and one for the getrefcount argument. A bytearray input must
-           resize without BufferError.
+        2. While the returned structure is still held by this checker,
+           each bytes or ndarray output measures a refcount of exactly
+           three, on GIL and free-threaded builds alike. A bytearray
+           input must resize without BufferError.
 
     An output that is one of the inputs itself, e.g. a returned view of an
     output buffer, is not checked here: it is legitimately caller-held
@@ -93,19 +93,18 @@ def assert_released_after_call(operation, *inputs):
     before = _refcounts(inputs)
     result = operation(*inputs)
     fresh = _deduplicate_values(result, inputs)
-    # drop the returned structure first: afterwards each output is
-    # referenced exactly once, by the fresh tuple, and sys.getrefcount
-    # counts its argument on top for exactly two, identical on GIL and
-    # free-threaded builds (verified on 3.13 and 3.14t); any reference
-    # the operation kept on its own output would measure a third
-    del result
-    for value in fresh:
-        refcount = sys.getrefcount(value)
-        assert refcount == 2, (
+    refcounts = [sys.getrefcount(value) for value in fresh]
+    # drop the returned structure and every holder before checking: a
+    # bytearray input must resize without BufferError afterwards, and
+    # while the checker still holds each output in this structure a
+    # clean output measures exactly three, on GIL and free-threaded
+    # builds alike, a reference the operation kept would measure four
+    del result, fresh
+    for refcount in refcounts:
+        assert refcount == 3, (
             f'the operation kept a reference to the returned output: '
             f'refcount {refcount}'
         )
-    del fresh
     _assert_released(inputs, before)
 
 
