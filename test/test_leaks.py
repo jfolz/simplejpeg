@@ -61,22 +61,20 @@ def fixture_rss():
 def _assert_batches(rss, battery, warmup=64, batch=400):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches), the following batches must plateau: a leaking
-    # call grows the working set by a fixed amount every batch, while a
-    # clean call reuses the same working set. measured deltas are zero
-    # here, so the threshold leaves room for allocator noise; for scale:
-    # an un-destroyed tjhandle leaves exactly 4096 bytes of heap behind
-    # for decompress and 3936 for compress (the 1952-byte tjinstance
-    # malloc plus jpeg memory manager records, mallinfo2-tracked against
-    # vendored libjpeg-turbo 3.2.1), so the threshold trips after the
-    # 64th leaking call in a batch
+    # call grows the working set by exactly 4096 bytes, one page per
+    # leaked tjhandle (4112 heap bytes land in one page, measured with
+    # vendored libjpeg-turbo 3.2.1 on GIL and free-threaded builds
+    # alike), so the assertion tolerates sub-page jitter and nothing
+    # else: a single leaking call in a batch fails the batch
     battery(warmup)
     previous = rss()
     for _ in range(3):
         battery(batch)
         current = rss()
-        assert current - previous < 256 * 1024, (
+        assert current - previous < 4 * 1024, (
             f'the working set grew by {current - previous} bytes during '
-            f'a batch of {batch} calls, something is leaking'
+            f'a batch of {batch} calls, one leaked tjhandle per call '
+            f'grows it by 4096'
         )
         previous = current
 
