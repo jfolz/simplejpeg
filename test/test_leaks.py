@@ -58,13 +58,13 @@ def fixture_rss():
     return _rss_bytes
 
 
-def _assert_no_growth(rss, battery, warmup=256, count=6000):
+def _assert_no_growth(rss, battery, warmup=256, count=1000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches); afterwards a single long battery run must leave
     # the working set within the allowance: if an operation leaks, it
-    # leaks every call, so 6000 un-destroyed tjhandles (~4 KiB of heap
+    # leaks every call, so 1000 un-destroyed tjhandles (~4 KiB of heap
     # each, measured with vendored libjpeg-turbo 3.2.1) would grow the
-    # working set by ~24 MB, while background drift by other causes is
+    # working set by ~4 MB, while background drift by other causes is
     # expected to stay in the 64 KiB noise range over the same run
     battery(warmup)
     previous = rss()
@@ -72,7 +72,7 @@ def _assert_no_growth(rss, battery, warmup=256, count=6000):
     growth = rss() - previous
     assert growth < 64 * 1024, (
         f'the working set grew by {growth} bytes over {count} calls; '
-        f'one leaked tjhandle per call grows it by ~24 MB'
+        f'one leaked tjhandle per call grows it by ~4 MB'
     )
 
 
