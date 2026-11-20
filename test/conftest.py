@@ -10,7 +10,6 @@ import sys
 import sysconfig
 
 import pytest
-import rssize
 
 
 def _is_free_threaded_build():
@@ -25,14 +24,6 @@ def _is_free_threaded_build():
     return 'free-threading build' in sys.version \
         or sysconfig.get_config_var('Py_GIL_DISABLED') == 1 \
         or re.search(r'(?:cpython|cp)[3-9]\d+t', suffix) is not None
-
-
-@pytest.fixture
-def rss():
-    """
-    Yield a callable that returns the current working set in bytes.
-    """
-    return rssize.rss
 
 
 def pytest_configure(config):

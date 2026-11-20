@@ -13,11 +13,12 @@ import contextlib
 
 import numpy as np
 from harness import generate_image
+from rssize import rss
 
 import simplejpeg
 
 
-def _assert_no_growth(rss, battery, warmup=256, count=1000):
+def _assert_no_growth(battery, warmup=256, count=1000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches); afterwards a single long battery run must leave
     # the working set within the allowance: if an operation leaks, it
@@ -35,17 +36,17 @@ def _assert_no_growth(rss, battery, warmup=256, count=1000):
     )
 
 
-def test_decode_releases_tjhandles(rss):
+def test_decode_releases_tjhandles():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
 
     def battery(count):
         for _ in range(count):
             simplejpeg.decode_jpeg(data)
 
-    _assert_no_growth(rss, battery)
+    _assert_no_growth(battery)
 
 
-def test_decode_with_buffer_releases_tjhandles(rss):
+def test_decode_with_buffer_releases_tjhandles():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
     height, width, _, _ = simplejpeg.decode_jpeg_header(data)
     buffer = bytearray(height * width * 3)
@@ -54,30 +55,30 @@ def test_decode_with_buffer_releases_tjhandles(rss):
         for _ in range(count):
             simplejpeg.decode_jpeg(data, buffer=buffer)
 
-    _assert_no_growth(rss, battery)
+    _assert_no_growth(battery)
 
 
-def test_decode_header_releases_tjhandles(rss):
+def test_decode_header_releases_tjhandles():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
 
     def battery(count):
         for _ in range(count):
             simplejpeg.decode_jpeg_header(data)
 
-    _assert_no_growth(rss, battery)
+    _assert_no_growth(battery)
 
 
-def test_encode_releases_tjhandles(rss):
+def test_encode_releases_tjhandles():
     im = generate_image(33, 47, 3)
 
     def battery(count):
         for _ in range(count):
             simplejpeg.encode_jpeg(im, 98)
 
-    _assert_no_growth(rss, battery)
+    _assert_no_growth(battery)
 
 
-def test_encode_yuv_releases_tjhandles(rss):
+def test_encode_yuv_releases_tjhandles():
     # even dimensions: turbojpeg walks padded plane rows, odd widths give
     # strides below the padding and raise inside the compressor
     im = generate_image(32, 48, 3)
@@ -90,10 +91,10 @@ def test_encode_yuv_releases_tjhandles(rss):
             simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98)
             simplejpeg.encode_jpeg_yuv_planes(y, None, None, 98)
 
-    _assert_no_growth(rss, battery)
+    _assert_no_growth(battery)
 
 
-def test_error_paths_release_tjhandles(rss):
+def test_error_paths_release_tjhandles():
     im = generate_image(33, 47, 3)
     data = simplejpeg.encode_jpeg(im, 98)
     garbage = bytes(bytearray(b'definitely not a jpeg'))
@@ -117,4 +118,4 @@ def test_error_paths_release_tjhandles(rss):
             with contextlib.suppress(ValueError):
                 simplejpeg.encode_jpeg(strided, 98)
 
-    _assert_no_growth(rss, battery)
+    _assert_no_growth(battery)
