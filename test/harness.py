@@ -4,7 +4,6 @@ Shared fixtures and helpers for the test modules.
 
 import array
 import sys
-import weakref
 from collections.abc import Collection
 from typing import Any
 
@@ -41,15 +40,27 @@ def generate_image(height=800, width=600, channels=3):
     return np.ascontiguousarray(np.rint(arr).astype(np.uint8))
 
 
-def _weakref(output):
+def _mimics(outputs):
     """
-    A weak reference to output, or a dummy that reports it as released
-    for types without weakref support outside the mimic comparison.
+    Build a fresh mimic for every output: same type and shape, exactly
+    one holder. The refcount difference between an output and its mimic
+    is then exactly the leak, since the interpreter's measurement
+    temporary conventions cancel between the identical shapes.
     """
-    try:
-        return weakref.ref(output)
-    except TypeError:
-        return lambda: None
+    mimics = []
+    for output in outputs:
+        if isinstance(output, bytes):
+            # bytes(0) is a global singleton, hence the minimum 1 byte
+            mimics.append(bytes(max(1, len(output))))
+        elif isinstance(output, np.ndarray):
+            mimics.append(np.empty_like(output))
+        elif isinstance(output, bytearray):
+            mimics.append(bytearray(len(output)))
+        elif isinstance(output, array.array):
+            mimics.append(array.array(output.typecode))
+        else:
+            raise TypeError(f'no mimic for output type {type(output)!r}')
+    return tuple(mimics)
 
 
 def _refcounts(supplied):
@@ -112,36 +123,19 @@ def assert_released_after_call(operation, *inputs):
     outputs = operation(*inputs)
     # verify we did not hold onto references of created outputs
     outputs = _deduplicate_values(outputs, inputs)
-    # a weak reference outlives the object only if someone else kept it:
-    # when this tuple is the sole holder, deleting it must kill the
-    # output: every interpreter, every getrefcount convention
-    output = None
-    bytes_outputs = []
-    mimics = []
-    survivors = []
-    for output in outputs:
-        if isinstance(output, bytes):
-            # bytes and str carry no weak references: compare the output
-            # against a freshly made mimic of the same type and size.
-            # the mimic has exactly one holder (its own list), so the
-            # refcount difference between the two is exactly the leak;
-            # bytes(0) is a global singleton, hence the min 1 byte
-            mimics.append(bytes(max(1, len(output))))
-            bytes_outputs.append(output)
-        else:
-            survivors.append(_weakref(output))
-    # the loop variable still holds the last iterated output: drop it
-    # before the assertion, it would keep the last output alive
-    del output
-    # drop our only strong reference to the outputs: the weakrefable
-    # ones must die now, the bytes stay held by bytes_outputs for the
-    # comparison against their mimics
-    del outputs
-    assert all(s() is None for s in survivors), 'an output outlived the call'
-    for index in range(len(bytes_outputs)):
-        extra = (sys.getrefcount(bytes_outputs[index])
-                 - sys.getrefcount(mimics[index]))
-        assert extra == 0, f'an output kept {extra} extra reference(s)'
+    mimics = _mimics(outputs)
+    # one strong holder for outputs and mimics alike: the witness tuple,
+    # which also neutralizes the measurement temporary between the
+    # indexed getrefcount reads of an output and its mimic
+    witness = outputs + mimics
+    count = len(outputs)
+    outputs = mimics = None
+    for index in range(count):
+        extra = (sys.getrefcount(witness[index])
+                 - sys.getrefcount(witness[count + index]))
+        assert extra == 0, f'output {index} kept {extra} extra reference(s)'
+    # the copies die here, releasing exports the input checks depend on
+    del witness
     _assert_released(inputs, before)
 
 
