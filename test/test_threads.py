@@ -291,10 +291,9 @@ def _header_check(fixtures):
     return check
 
 
-def _error_check(fixtures):
+def _error_cases(fixtures):
     """
-    A check that every documented error path keeps raising, and raises
-    exactly, while the rest of the API races.
+    Map one storm case per documented error path.
     """
     simplejpeg = fixtures['simplejpeg']
     enc = fixtures['enc']
@@ -306,41 +305,73 @@ def _error_check(fixtures):
     flipped = np.flipud(image)
     channels_wrong = np.resize(image, (HEIGHT, WIDTH, 2))
     oversized_u = np.resize(u, (HEIGHT, WIDTH))
-    error_battery = [
-        (lambda: simplejpeg.decode_jpeg(garbage), 'JPEG'),
+    return {
+        'decode garbage': (lambda: simplejpeg.decode_jpeg(garbage), 'JPEG'),
         # a trimmed file can fail with different libjpeg messages,
         # only the ValueError type assertion applies
-        (lambda: simplejpeg.decode_jpeg(truncated), None),
-        (
+        'decode truncated': (lambda: simplejpeg.decode_jpeg(truncated), None),
+        'decode too small output': (
             lambda: simplejpeg.decode_jpeg(enc['main'], buffer=too_small),
             'too small',
         ),
-        (lambda: simplejpeg.encode_jpeg(channels_wrong, 98), 'channels does not match'),
-        (lambda: simplejpeg.encode_jpeg(flipped, 98), None),
-        (lambda: simplejpeg.encode_jpeg_yuv_planes(y, u, None, 98), 'V (missing)'),
-        (lambda: simplejpeg.encode_jpeg_yuv_planes(y, None, v, 98), 'U (missing)'),
-        (
+        'encode wrong channels': (
+            lambda: simplejpeg.encode_jpeg(channels_wrong, 98),
+            'channels does not match',
+        ),
+        # the flipped view fails inside the compressor, its message
+        # comes from libjpeg, not worth pinning
+        'encode flipped rows': (
+            lambda: simplejpeg.encode_jpeg(flipped, 98), None),
+        'encode yuv missing V': (
+            lambda: simplejpeg.encode_jpeg_yuv_planes(y, u, None, 98),
+            'V (missing)',
+        ),
+        'encode yuv missing U': (
+            lambda: simplejpeg.encode_jpeg_yuv_planes(y, None, v, 98),
+            'U (missing)',
+        ),
+        'encode yuv shape mismatch': (
             lambda: simplejpeg.encode_jpeg_yuv_planes(y, oversized_u, v, 98),
             'U and V planes must have matching shape',
         ),
-    ]
+    }
 
+
+def _error_check(function, message):
+    """
+    A check that the documented error path keeps raising what it raises
+    today while the other storms race.
+    """
     def check():
-        for function, message in error_battery:
-            try:
-                function()
-            except ValueError as e:
-                if message is not None and message not in str(e):
-                    raise AssertionError(
-                        f'unexpected error message: {str(e)!r}') from e
-            except BaseException as e:
+        try:
+            function()
+        except ValueError as e:
+            if message is not None and message not in str(e):
                 raise AssertionError(
-                    f'unexpected {type(e)!r} raised: {str(e)!r}') from e
-            else:
-                expected = message if message is not None else 'ValueError'
-                raise AssertionError(
-                    f'expected error {expected!r} was not raised')
+                    f'unexpected error message: {str(e)!r}') from e
+        except BaseException as e:
+            raise AssertionError(
+                f'unexpected {type(e)!r} raised: {str(e)!r}') from e
+        else:
+            expected = message if message is not None else 'ValueError'
+            raise AssertionError(
+                f'expected error {expected!r} was not raised')
     return check
+
+
+_ERROR_CASE_NAMES = (
+    'decode garbage', 'decode truncated', 'decode too small output',
+    'encode wrong channels', 'encode flipped rows', 'encode yuv missing V',
+    'encode yuv missing U', 'encode yuv shape mismatch',
+)
+
+
+@pytest.mark.free_threaded
+@pytest.mark.parametrize('case_name', _ERROR_CASE_NAMES)
+def test_error_path_keeps_raising_under_thread_races(fixtures, case_name):
+    function, message = _error_cases(fixtures)[case_name]
+    _storm_groups(
+        [(f'error {case_name}', _error_check(function, message))], fixtures)
 
 
 @pytest.mark.free_threaded
@@ -395,11 +426,6 @@ def test_encode_yuv_stays_byte_exact_under_thread_races(fixtures):
 @pytest.mark.free_threaded
 def test_header_stays_byte_exact_under_thread_races(fixtures):
     _storm_groups([('header', _header_check(fixtures))], fixtures)
-
-
-@pytest.mark.free_threaded
-def test_error_paths_keep_raising_under_thread_races(fixtures):
-    _storm_groups([('error paths', _error_check(fixtures))], fixtures)
 
 
 @pytest.mark.free_threaded
