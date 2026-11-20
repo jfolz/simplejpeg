@@ -7,9 +7,8 @@ jobs:
     name: Build wheels on ${{ matrix.os }} ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
     strategy:
-      # every leg runs to completion even when another leg fails:
-      # cancelled legs in the earlier runs hid which platforms were
-      # affected (only the first failure's log was informative)
+      # let every leg finish even when one fails, the surviving logs
+      # show which platforms are affected
       fail-fast: false
       matrix:
         include:
@@ -109,8 +108,8 @@ jobs:
           cd ~
           python -m pytest "$GITHUB_WORKSPACE/test" -q 2>&1 | tee test.log
       - name: Zip the logs
-        # upload regardless of where the gate failed; touch keeps the zip
-        # working when the test step never ran because the build failed
+        # runs after failures; test.log is touched in case the build
+        # failed before the tests could start
         if: always()
         run: |
           touch "$GITHUB_WORKSPACE/test.log"

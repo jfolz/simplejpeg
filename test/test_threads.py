@@ -52,8 +52,8 @@ class _Storm:
     members run a finite loop and leave on their own, race members
     loop until the stop fires. Every unexpected exception is collected
     as ``(name, traceback)`` and releases the other members instead of
-    vanishing with the thread, the pool epilogue asserts assert that
-    everyone wound down and nothing failed.
+    vanishing with the thread, the pool epilogue asserts that everyone
+    wound down and nothing failed.
     """
 
     def __init__(self):
