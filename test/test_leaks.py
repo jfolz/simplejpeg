@@ -20,14 +20,11 @@ import simplejpeg
 
 
 def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=400):
-    # warmup first: the first calls pay one-time allocations (jpeg
-    # tables, error buffers, importer caches). the allowance is per
-    # battery iteration in bytes: a leaked tjhandle costs around
-    # 4.1 KiB per call, 400 bytes per call is a 10th of that, while
-    # working set jitter from the runners stayed below half of it in
-    # CI (worst observed: ~200 bytes per call on windows arm64).
-    # growing past half the allowance warns, so the bound can be
-    # retuned before it fails a run
+    # assert that RSS does not grow for test battery
+    # warmup first to account for one-time allocations,
+    # followed by the longer test run
+    # RSS is a multiple of the page size
+    # there may be minor jitter between readings
     battery(warmup)
     previous = rss()
     battery(count)
