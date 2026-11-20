@@ -23,7 +23,7 @@ def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=400):
     # assert that RSS does not grow for test battery
     # warmup first to account for one-time allocations,
     # followed by the longer test run
-    # RSS is a multiple of the page size
+    # the allowance is per iteration in bytes
     # there may be minor jitter between readings
     battery(warmup)
     previous = rss()
