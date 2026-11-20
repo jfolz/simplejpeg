@@ -1,6 +1,6 @@
 from ._jpeg import decode_jpeg, decode_jpeg_header, encode_jpeg, encode_jpeg_yuv_planes
 
-__version__ = '1.10.0'
+__version__ = '1.10.1'
 __version_info__ = __version__.split('.')
 
 

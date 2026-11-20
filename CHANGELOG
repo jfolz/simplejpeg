@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [1.10.1] - 2026-11-20
+### Fixed
+- Publishing to PyPI
+
+
 ## [1.10.0] - 2026-11-20
 ### Fixed
 - Fix building against libjpeg-turbo 2.x
