@@ -10,13 +10,21 @@ hardest.
 """
 
 import contextlib
+import os
 import warnings
 
 import numpy as np
+import pytest
 from harness import generate_image
 from rssize import rss
 
 import simplejpeg
+
+pytestmark = pytest.mark.skipif(
+    'sanitize' in (os.environ.get('CFLAGS', '') + os.environ.get('LDFLAGS', '')),
+    reason='working set batteries are meaningless under sanitizer builds '
+           '(quarantine and redzones inflate the working set); real leaks '
+           'are still caught by LeakSanitizer at process exit')
 
 
 def _assert_no_growth(battery, warmup=256, count=1000, bytes_per_iteration=400):
