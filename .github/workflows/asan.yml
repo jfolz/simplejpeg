@@ -1,0 +1,67 @@
+name: ASan suite
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  asan:
+    name: ASan suite
+    runs-on: ubuntu-latest
+    env:
+      CFLAGS: -fsanitize=address -g -O1 -fno-omit-frame-pointer
+      LDFLAGS: -fsanitize=address
+      # test_threads.py reads it: shrink the storm's windows under the
+      # slowed-down sanitizer build
+      STORM_BUDGET: 0.4
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14t'
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nasm
+          pip install --upgrade pip
+          pip install cython cmake numpy setuptools pytest rssize
+      - name: Build instrumented
+        # libjpeg-turbo is vendored and statically linked: CFLAGS/LDFLAGS
+        # reach its cmake build, so the whole native stack is instrumented;
+        # the built wheels cannot be checked this way, instrumentation is
+        # a compile-time property, this one runs from the tagged source
+        run: |
+          set -o pipefail
+          pip install --no-build-isolation --verbose . 2>&1 | tee build.log
+      - name: Preload the ASan runtime, suppress numpy exit-time noise
+        # the interpreter itself is not instrumented; loading the
+        # instrumented extension via dlopen aborts without the preload.
+        # numpy registers ufuncs from native allocations that are only
+        # reported at interpreter shutdown, the suppression keeps those
+        # out of the way so simplejpeg leaks stand out
+        run: |
+          echo "LD_PRELOAD=$(gcc -print-file-name=libasan.so)" >> "$GITHUB_ENV"
+          echo "leak:multiarray_umath" > "$RUNNER_TEMP/lsan.txt"
+          echo "LSAN_OPTIONS=suppressions=$RUNNER_TEMP/lsan.txt" >> "$GITHUB_ENV"
+      - name: Test suite
+        # never from the repo cwd: the source tree would shadow the
+        # freshly built site-packages extension
+        run: |
+          set -o pipefail
+          cd ~
+          python -m pytest "$GITHUB_WORKSPACE/test" -q 2>&1 | tee test.log
+      - name: Zip the logs
+        # runs after failures; test.log is touched in case the build
+        # failed before the tests could start
+        if: always()
+        run: |
+          touch "$GITHUB_WORKSPACE/test.log"
+          cd "$GITHUB_WORKSPACE"
+          zip -j logs-asan.zip build.log test.log
+      - name: Upload the logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: logs-asan
+          path: logs-asan.zip
+          if-no-files-found: error
