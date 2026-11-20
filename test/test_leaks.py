@@ -22,18 +22,18 @@ def _assert_no_growth(battery, warmup=256, count=1000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches); afterwards a single long battery run must leave
     # the working set within the allowance. The working set only ever
-    # moves in whole pages, so the allowance is expressed in pages and
-    # scales with the platform page size instead of assuming 4 KiB:
-    # 32 KiB on 4 KiB pages, 128 KiB on 16 KiB Apple pages, 512 KiB on
-    # 64 KiB pages. Measured clean batteries are flat at zero growth,
-    # one leaked tjhandle per call would add ~1 page per call
-    # (~4 KiB of heap) and a full battery would grow by ~1000 pages
+    # moves in whole pages, so the allowance is expressed in page steps
+    # and scales with the platform page size instead of assuming 4 KiB:
+    # 16 KiB on 4 KiB pages, 64 KiB on 16 KiB Apple pages (the byte band
+    # this suite was tuned with), 256 KiB on 64 KiB pages. Measured clean
+    # batteries are flat at zero growth; one leaked tjhandle per call
+    # adds ~1 page per call (~4 KiB of heap), a full battery ~1000 pages
     battery(warmup)
     previous = rss()
     battery(count)
     growth = rss() - previous
     page = page_size()
-    assert growth < 8 * page, (
+    assert growth < 4 * page, (
         f'the working set grew by {growth} bytes '
         f'({growth // page} pages of {page} bytes) over {count} calls; '
         'one leaked tjhandle per call grows it by megabytes over the battery'
