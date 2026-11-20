@@ -4,6 +4,7 @@ Shared fixtures and helpers for the test modules.
 
 import array
 import sys
+import weakref
 from collections.abc import Collection
 from typing import Any
 
@@ -41,11 +42,9 @@ def generate_image(height=800, width=600, channels=3):
 
 
 def _refcounts(supplied):
-    # -1 because the generator's loop variable holds a reference while
-    # counting, and -1 because sys.getrefcount itself counts the
-    # temporary argument it receives: an object held exactly once
-    # therefore measures 1 here, identically on every platform and
-    # interpreter
+    # used only for before/after differentials on inputs, where the
+    # per-interpreter offsets of sys.getrefcount (the temporary argument
+    # it counts, the loop bindings that may or may not hold) cancel out
     return tuple(sys.getrefcount(buffer) - 2 for buffer in supplied)
 
 
@@ -90,21 +89,49 @@ def assert_released_after_call(operation, *inputs):
     Run operation(*inputs) and verify that:
 
         1. Refcount on inputs does not increase
-        2. Each newly-created output is held exactly once (by the tuple of outputs).
+        2. Each newly-created output dies with our reference to it:
+           nothing else kept it alive
         3. Input array.array and bytearray must resize without BufferError.
 
-    Excluded are outputs that are also inputs, e.g. a view of an output buffer,
-    since these naturally have higher (and unpredictable) refcounts.
+    Excluded are outputs that are also inputs, e.g. a view of an output
+    buffer, since these naturally have higher (and unpredictable) refcounts.
     """
     # store refcounts before the operation
     before = _refcounts(inputs)
     outputs = operation(*inputs)
     # verify we did not hold onto references of created outputs
     outputs = _deduplicate_values(outputs, inputs)
-    refcounts = _refcounts(outputs)
-    assert all(c == 1 for c in refcounts), f'an output has refcount != 1: {refcounts}'
-    # delete outputs in case a returned value references one of the inputs.
+    # a weak reference outlives the object only if someone else kept it:
+    # when this tuple is the sole holder, deleting it must kill the
+    # output, on every interpreter, whatever its getrefcount
+    # conventions and deferred refcounting do with absolute counts
+    output = None
+    survivors = []
+    counted = []
+    for output in outputs:
+        try:
+            survivors.append(weakref.ref(output))
+        except TypeError:
+            # bytes and str carry no weak references: they go to counted,
+            # which becomes their only strong holder below
+            counted.append(output)
+    # the loop variable still holds the last iterated output: drop it
+    # before any counting, it would bias every measurement by one
+    del output
+    # drop our only strong reference to the outputs: the weakrefable
+    # ones must die now, bytes and str stay in counted for the count
     del outputs
+    assert all(s() is None for s in survivors), 'an output outlived the call'
+    if counted:
+        # bytes and str: compare their holder counts against a fresh
+        # probe with exactly one holder, measured through the same
+        # indexed getrefcount call, so that the interpreter's
+        # temporary-argument conventions cancel out
+        probe_tuple = (bytearray(),)
+        probe_raw = sys.getrefcount(probe_tuple[0])
+        for index in range(len(counted)):
+            extra = sys.getrefcount(counted[index]) - probe_raw
+            assert extra == 0, f'an output kept {extra} extra reference(s)'
     _assert_released(inputs, before)
 
 
