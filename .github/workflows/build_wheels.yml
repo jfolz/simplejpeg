@@ -81,6 +81,8 @@ jobs:
         with:
           path: dist
           merge-multiple: true
+          # only fetch artifacts that go to PyPI
+          pattern: '{sdist,wheels-*}'
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@v1.14.3
       - name: Create Github release
