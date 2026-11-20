@@ -141,7 +141,7 @@ def test_encode_cmyk():
     assert 0 < mad < 2, mad
 
 
-def test_encode_rgb_released():
+def test_encode_buffers_released_rgb():
     # the exported input is only held for the duration of the call: a
     # reference kept after the call shows up in the refcount
     im = generate_image(33, 47, 3)
@@ -152,7 +152,7 @@ def test_encode_rgb_released():
     assert_released_after_call(encode, im)
 
 
-def test_encode_gray_released():
+def test_encode_buffers_released_gray():
     im = generate_image(33, 47, 1)
 
     def encode(image):
@@ -161,7 +161,7 @@ def test_encode_gray_released():
     assert_released_after_call(encode, im)
 
 
-def test_encode_flipud_released():
+def test_encode_buffers_released_flipud():
     # the flipud view fails inside the compressor and its message comes
     # from libjpeg, not worth pinning
     im = generate_image(33, 47, 3)
@@ -173,7 +173,7 @@ def test_encode_flipud_released():
     assert_released_after_error(encode, flipped)
 
 
-def test_encode_channels_released():
+def test_encode_buffers_released_channels():
     im = generate_image(33, 47, 3)
     channels = np.resize(im, (im.shape[0], im.shape[1], 2))
 
@@ -183,7 +183,7 @@ def test_encode_channels_released():
     assert_released_after_error(encode, channels, match='channels does not match')
 
 
-def test_encode_strided_released():
+def test_encode_buffers_released_strided():
     strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
 
     def encode(image):
@@ -192,7 +192,7 @@ def test_encode_strided_released():
     assert_released_after_error(encode, strided, match='contiguous rows')
 
 
-def test_encode_broadcast_released():
+def test_encode_buffers_released_broadcast():
     im = generate_image(33, 47, 3)
     broadcast = np.broadcast_to(im[0], im.shape)
 
@@ -202,7 +202,7 @@ def test_encode_broadcast_released():
     assert_released_after_error(encode, broadcast, match='broadcasting rows is not supported')
 
 
-def test_encode_2d_released():
+def test_encode_buffers_released_2d():
     # a 2-D image does not fit the 3-D buffer signature
     flat = np.zeros((33, 47), dtype=np.uint8)
 

@@ -302,7 +302,7 @@ def test_encode_yuv_planes_released():
     assert_released_after_call(encode, Y_PLANE, U_PLANE, V_PLANE)
 
 
-def test_encode_yuv_gray_released():
+def test_encode_yuv_planes_released_gray():
     gray = RGB.mean(axis=2, dtype=np.uint8)
 
     def encode(y):  # U and V are not passed on
@@ -311,7 +311,7 @@ def test_encode_yuv_gray_released():
     assert_released_after_call(encode, gray)
 
 
-def test_encode_yuv_missing_U_released():
+def test_encode_yuv_planes_released_missing_U():
     # the refusal happens with Y and V already exported and must release
     # both on the way out
     def encode(y, u, v):  # U is not passed on
@@ -320,35 +320,35 @@ def test_encode_yuv_missing_U_released():
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match=r'U \(missing\) and V \(present\)')
 
 
-def test_encode_yuv_missing_V_released():
+def test_encode_yuv_planes_released_missing_V():
     def encode(y, u, v):  # V is not passed on
         return simplejpeg.encode_jpeg_yuv_planes(y, u, None, 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match=r'U \(present\) and V \(missing\)')
 
 
-def test_encode_yuv_1d_U_released():
+def test_encode_yuv_planes_released_1d_U():
     def encode(y, u, v):  # only the first U column is passed on
         return simplejpeg.encode_jpeg_yuv_planes(y, u[:, 0], v, 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match='wrong number of dimensions')
 
 
-def test_encode_yuv_broadcast_U_released():
+def test_encode_yuv_planes_released_broadcast_U():
     def encode(y, u, v):  # U rows are broadcast, not passed on directly
         return simplejpeg.encode_jpeg_yuv_planes(y, _broadcast_rows(u), v, 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match='broadcasting U plane rows is not supported')
 
 
-def test_encode_yuv_broadcast_Y_released():
+def test_encode_yuv_planes_released_broadcast_Y():
     def encode(y, u, v):  # Y rows are broadcast
         return simplejpeg.encode_jpeg_yuv_planes(_broadcast_rows(y), u, v, 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match='broadcasting Y plane rows is not supported')
 
 
-def test_encode_yuv_broadcast_V_released():
+def test_encode_yuv_planes_released_broadcast_V():
     def encode(y, u, v):  # V rows are broadcast
         return simplejpeg.encode_jpeg_yuv_planes(y, u, _broadcast_rows(v), 98)
 
@@ -361,49 +361,49 @@ def _strided(plane):
     return src[:, 0, ::2]
 
 
-def test_encode_yuv_strided_Y_released():
+def test_encode_yuv_planes_released_strided_Y():
     def encode(y):  # encoded as grayscale, U and V are not passed on
         return simplejpeg.encode_jpeg_yuv_planes(y, None, None, 98)
 
     assert_released_after_error(encode, _strided(Y_PLANE), match='Y plane must have C contiguous rows')
 
 
-def test_encode_yuv_strided_U_released():
+def test_encode_yuv_planes_released_strided_U():
     def encode(y, u, v):
         return simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98)
 
     assert_released_after_error(encode, Y_PLANE, _strided(U_PLANE), V_PLANE, match='U plane must have C contiguous rows')
 
 
-def test_encode_yuv_strided_V_released():
+def test_encode_yuv_planes_released_strided_V():
     def encode(y, u, v):
         return simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, _strided(V_PLANE), match='V plane must have C contiguous rows')
 
 
-def test_encode_yuv_1d_Y_released():
+def test_encode_yuv_planes_released_1d_Y():
     def encode(y, u, v):  # only the first Y column is passed on
         return simplejpeg.encode_jpeg_yuv_planes(y[:, 0], u, v, 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match='wrong number of dimensions')
 
 
-def test_encode_yuv_1d_V_released():
+def test_encode_yuv_planes_released_1d_V():
     def encode(y, u, v):  # only the first V column is passed on
         return simplejpeg.encode_jpeg_yuv_planes(y, u, v[:, 0], 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match='wrong number of dimensions')
 
 
-def test_encode_yuv_shape_mismatch_released():
+def test_encode_yuv_planes_released_shape_mismatch():
     def encode(y, u, v):
         return simplejpeg.encode_jpeg_yuv_planes(y, u, v[:, :-1], 98)
 
     assert_released_after_error(encode, Y_PLANE, U_PLANE, V_PLANE, match='U and V planes must have matching shape')
 
 
-def test_encode_yuv_unknown_subsampling_released():
+def test_encode_yuv_planes_released_unknown_subsampling():
     # two equal-sized chroma planes whose width fits no standard
     # subsampling leave the colorsubsampling undetermined
     def encode(y, u, v):

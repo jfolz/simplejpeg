@@ -203,7 +203,7 @@ def _rgb_jpeg():
         rng.integers(0, 255, size=(64, 64, 3), dtype=np.uint8))
 
 
-def test_decode_rgb_released():
+def test_decode_buffers_released_rgb():
     # input and output buffers stay exported only for the duration of
     # the call: resizing after the call must stay clean, a BufferError
     # would mean a leaked export
@@ -216,7 +216,7 @@ def test_decode_rgb_released():
     assert_released_after_call(decode, data, buffer)
 
 
-def test_decode_yuv_released():
+def test_decode_buffers_released_yuv():
     rng = np.random.default_rng(1337)
     data = bytearray(simplejpeg.encode_jpeg_yuv_planes(
         rng.integers(0, 255, size=(64, 64), dtype=np.uint8),
@@ -230,7 +230,7 @@ def test_decode_yuv_released():
     assert_released_after_call(decode, data, buffer)
 
 
-def test_decode_garbage_released():
+def test_decode_buffers_released_garbage():
     garbage = bytearray(b'definitely not a jpeg')
     buffer = bytearray(64 * 64 * 3)
 
@@ -240,7 +240,7 @@ def test_decode_garbage_released():
     assert_released_after_error(decode, garbage, buffer, match='JPEG')
 
 
-def test_decode_truncated_released():
+def test_decode_buffers_released_truncated():
     # the truncated failure happens mid-decode, with a decoder and both
     # buffers exported along the way
     data = bytearray(_rgb_jpeg()[:-8])
@@ -252,7 +252,7 @@ def test_decode_truncated_released():
     assert_released_after_error(decode, data, buffer, match='Premature end of JPEG file')
 
 
-def test_decode_too_small_released():
+def test_decode_buffers_released_too_small():
     data = bytearray(_rgb_jpeg())
     buffer = bytearray(64 * 64 * 3 - 1)
 
@@ -262,7 +262,7 @@ def test_decode_too_small_released():
     assert_released_after_error(decode, data, buffer, match='too small')
 
 
-def test_decode_header_garbage_released():
+def test_decode_header_buffers_released_garbage():
     # the header does the same input buffer handling without output
     garbage = bytearray(b'definitely not a jpeg')
 
@@ -272,7 +272,7 @@ def test_decode_header_garbage_released():
     assert_released_after_error(decode_header, garbage, match='JPEG')
 
 
-def test_decode_header_released():
+def test_decode_header_buffers_released():
     # the outputs are ints and module-cached strings, they have no
     # refcount that could increase: only the release of the input is
     # observable and verified here
@@ -284,7 +284,7 @@ def test_decode_header_released():
     assert_released_after_call(decode_header, data)
 
 
-def test_decode_readonly_released():
+def test_decode_buffers_released_readonly():
     # a read-only buffer must be refused to decode into and release its
     # export on the way out
     data = bytearray(_rgb_jpeg())
@@ -296,7 +296,7 @@ def test_decode_readonly_released():
     assert_released_after_error(decode, data, buffer, error=(BufferError, ValueError), match='writable')
 
 
-def test_decode_strided_buffer_released():
+def test_decode_buffers_released_strided():
     # a 3-D array with row strides that are not contiguous cannot be
     # written into, the transpose gives it the right shape for that
     data = bytearray(_rgb_jpeg())
@@ -308,7 +308,7 @@ def test_decode_strided_buffer_released():
     assert_released_after_error(decode, data, buffer, match='contiguous')
 
 
-def test_decode_array_input_released():
+def test_decode_buffers_released_array_input():
     # array.array has the same export-refusing resize semantics as
     # bytearray and must release its export after the call as well
     data = array('B', _rgb_jpeg())
