@@ -24,16 +24,18 @@ def _assert_no_growth(battery, warmup=256, count=1000):
     # the working set within the allowance. The working set only ever
     # moves in whole pages, so the allowance is expressed in page steps
     # and scales with the platform page size instead of assuming 4 KiB:
-    # 16 KiB on 4 KiB pages, 64 KiB on 16 KiB Apple pages (the byte band
-    # this suite was tuned with), 256 KiB on 64 KiB pages. Measured clean
-    # batteries are flat at zero growth; one leaked tjhandle per call
-    # adds ~1 page per call (~4 KiB of heap), a full battery ~1000 pages
+    # 64 KiB on 4 KiB pages, 256 KiB on 16 KiB Apple pages, 1 MiB on
+    # 64 KiB pages. Linux and macOS runners measure flat at zero
+    # growth; the windows-11-arm runners jitter between 4 and 8 page
+    # steps per battery (first CI runs of 2026-11-20), so 16 pages
+    # gives 2x the measured jitter while a leaked tjhandle adds one
+    # page per call (~4 KiB of heap), around 1000 pages per battery
     battery(warmup)
     previous = rss()
     battery(count)
     growth = rss() - previous
     page = page_size()
-    assert growth < 4 * page, (
+    assert growth < 16 * page, (
         f'the working set grew by {growth} bytes '
         f'({growth // page} pages of {page} bytes) over {count} calls; '
         'one leaked tjhandle per call grows it by megabytes over the battery'

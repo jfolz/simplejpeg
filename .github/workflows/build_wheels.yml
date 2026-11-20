@@ -7,6 +7,10 @@ jobs:
     name: Build wheels on ${{ matrix.os }} ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
     strategy:
+      # every leg runs to completion even when another leg fails:
+      # cancelled legs in the earlier runs hid which platforms were
+      # affected (only the first failure's log was informative)
+      fail-fast: false
       matrix:
         include:
           - os: ubuntu-latest
