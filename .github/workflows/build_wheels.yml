@@ -84,9 +84,7 @@ jobs:
         # reach its cmake build, so the whole native stack is instrumented;
         # the built wheels cannot be checked this way, instrumentation is
         # a compile-time property, this one runs from the tagged source
-        run: |
-          set -o pipefail
-          pip install --no-build-isolation --verbose . 2>&1 | tee build.log
+        run: pip install --no-build-isolation --verbose .
       - name: Preload the ASan runtime, suppress numpy exit-time noise
         # the interpreter itself is not instrumented; loading the
         # instrumented extension via dlopen aborts without the preload.
@@ -101,24 +99,8 @@ jobs:
         # never from the repo cwd: the source tree would shadow the
         # freshly built site-packages extension
         run: |
-          set -o pipefail
           cd ~
-          python -m pytest "$GITHUB_WORKSPACE/test" -q 2>&1 | tee test.log
-      - name: Zip the logs
-        # upload regardless of where the gate failed; touch keeps the zip
-        # working when the test step never ran because the build failed
-        if: always()
-        run: |
-          touch "$GITHUB_WORKSPACE/test.log"
-          cd "$GITHUB_WORKSPACE"
-          zip -j logs-asan.zip build.log test.log
-      - name: Upload the logs
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: logs-asan
-          path: logs-asan.zip
-          if-no-files-found: error
+          python -m pytest "$GITHUB_WORKSPACE/test" -q
 
   upload_all:
     needs: [build_wheels, make_sdist, asan]
