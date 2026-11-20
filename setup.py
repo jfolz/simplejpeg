@@ -151,6 +151,16 @@ class cmake_build_ext(build_ext):
                 '--exclude-libs,ALL,'  # Do not export symbols
                 '--gc-sections '  # Remove unused sections'
             ) + ldflags
+        elif OS == 'darwin':
+            # LTO and hidden symbols on the vendored library; a static
+            # library with hidden symbols still links, it just stops
+            # exporting them through the extension
+            cflags = '-flto -fvisibility=hidden ' + cflags
+            ldflags = '-flto -Wl,-dead_strip -Wl,-x ' + ldflags
+        elif OS == 'windows':
+            # whole program optimization: /GL per object, /LTCG at link
+            cflags = '/GL ' + cflags
+            ldflags = '/LTCG ' + ldflags
         env = {
             # custom CFLAGS - depends on platform
             'CFLAGS': cflags,
@@ -241,7 +251,23 @@ def make_jpeg_module():
         )
         extra_compile_args.extend([
             '-flto',  # enable LTO
+            # like CPython --enable-optimizations builds: internal calls
+            # skip interposition, only PyInit stays exported
+            '-fno-semantic-interposition',
+            '-fvisibility=hidden',
         ])
+    elif OS == 'darwin':
+        extra_compile_args.extend([
+            '-flto',  # enable LTO
+            '-fvisibility=hidden',  # PyMODINIT_FUNC stays exported
+        ])
+        extra_link_args.extend([
+            '-flto',
+            '-Wl,-dead_strip',  # same pruning as --gc-sections on linux
+        ])
+    elif OS == 'windows':
+        extra_compile_args.extend(['/GL'])  # whole program optimization
+        extra_link_args.extend(['/LTCG'])
     return Extension(
         'simplejpeg._jpeg',
         sources,
