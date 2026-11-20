@@ -14,14 +14,14 @@ import simplejpeg
 ROOT = pt.abspath(pt.dirname(__file__))
 
 
-def test_encode_decode():
+def test_decode():
     im = generate_image(173, 251)
     encoded = simplejpeg.encode_jpeg(im, 98)
     decoded = simplejpeg.decode_jpeg(encoded)
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
-def test_encode_decode_subsampling():
+def test_decode_subsampling():
     im = generate_image(197, 227)
     for subsampling, delta in (('422', 2), ('420', 3), ('440', 3), ('411', 9)):
         encoded = simplejpeg.encode_jpeg(im, 98, colorsubsampling=subsampling)
@@ -29,21 +29,21 @@ def test_encode_decode_subsampling():
         assert 0 < mean_absolute_difference(im, decoded) < delta, subsampling
 
 
-def test_encode_fastdct():
+def test_fastdct():
     im = generate_image(127, 131)
     encoded_fast = simplejpeg.encode_jpeg(im, 98, fastdct=True)
     decoded_fast = simplejpeg.decode_jpeg(encoded_fast)
     assert 0 < mean_absolute_difference(im, decoded_fast) < 2
 
 
-def test_encode_grayscale():
+def test_grayscale():
     im = generate_image(89, 83, 1)
     encoded = simplejpeg.encode_jpeg(im, 98, colorspace='gray')
     decoded = simplejpeg.decode_jpeg(encoded, 'gray')
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
-def test_encode_grayscale_newaxis():
+def test_grayscale_newaxis():
     im = generate_image(589, 486, 1)
     # make array 2D
     im = im[:, :, 0]
@@ -54,7 +54,7 @@ def test_encode_grayscale_newaxis():
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
-def test_encode_colorspace():
+def test_colorspace():
     im = generate_image(89, 83, 4)
     for colorspace in ('RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR',
                        'XRGB', 'RGBA', 'BGRA', 'ABGR', 'ARGB'):
@@ -67,13 +67,13 @@ def test_encode_colorspace():
             assert np.all(decoded[..., colorspace.index('A')] == 255), colorspace
 
 
-def test_encode_noncontiguous():
+def test_noncontiguous():
     im = np.zeros((3, 123, 235), dtype=np.uint8)
     with pytest.raises(ValueError, match='contiguous rows'):
         simplejpeg.encode_jpeg(im.transpose((1, 2, 0)))
 
 
-def test_encode_decode_padding_start():
+def test_decode_padding_start():
     im = generate_image(233, 307)
     # make an image that has padding bytes at the start of each row
     im = im[:, 116:, :]
@@ -83,7 +83,7 @@ def test_encode_decode_padding_start():
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
-def test_encode_decode_padding_end():
+def test_decode_padding_end():
     im = generate_image(233, 307)
     # make an image that has padding bytes at the end of each row
     im = im[:, :191, :]
@@ -93,7 +93,7 @@ def test_encode_decode_padding_end():
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
-def test_encode_decode_padding_both():
+def test_decode_padding_both():
     im = generate_image(233, 307)
     # make an image that has padding bytes at the start and end of each row
     im = im[:, 89:192, :]
@@ -103,7 +103,7 @@ def test_encode_decode_padding_both():
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
-def test_encode_decode_tiny():
+def test_decode_tiny():
     # smol image less than one MCU (8x8 for gray, 16x16 for subsampled color)
     im = generate_image(7, 13)
     encoded = simplejpeg.encode_jpeg(im, 98)
@@ -112,13 +112,13 @@ def test_encode_decode_tiny():
     assert 0 < mean_absolute_difference(im, decoded) < 2
 
 
-def test_encode_2d():
+def test_2d():
     im = np.zeros((589, 486), dtype=np.uint8)
     with pytest.raises(ValueError, match='wrong number of dimensions'):
         simplejpeg.encode_jpeg(im, 98, colorspace='gray')
 
 
-def test_encode_broadcast_row():
+def test_broadcast_row():
     width, height, channels = 593, 132, 3
     im = np.zeros((width, channels), dtype=np.uint8)
     im = im[np.newaxis, :, :]
@@ -127,7 +127,7 @@ def test_encode_broadcast_row():
         simplejpeg.encode_jpeg(im, 98, colorspace='rgb')
 
 
-def test_encode_cmyk():
+def test_cmyk():
     with open(pt.join(ROOT, 'images', 'peppers_cmyk.jpg'), 'rb') as fp:
         data = fp.read()
     cmyk_input = simplejpeg.decode_jpeg(data, 'cmyk')
@@ -141,7 +141,7 @@ def test_encode_cmyk():
     assert 0 < mad < 2, mad
 
 
-def test_encode_buffers_released_rgb():
+def test_buffers_released_rgb():
     # the exported input is only held for the duration of the call: a
     # reference kept after the call shows up in the refcount
     im = generate_image(33, 47, 3)
@@ -152,7 +152,7 @@ def test_encode_buffers_released_rgb():
     assert_released_after_call(encode, im)
 
 
-def test_encode_buffers_released_gray():
+def test_buffers_released_gray():
     im = generate_image(33, 47, 1)
 
     def encode(image):
@@ -161,7 +161,7 @@ def test_encode_buffers_released_gray():
     assert_released_after_call(encode, im)
 
 
-def test_encode_buffers_released_flipud():
+def test_buffers_released_flipud():
     # the flipud view fails inside the compressor and its message comes
     # from libjpeg, not worth pinning
     im = generate_image(33, 47, 3)
@@ -173,7 +173,7 @@ def test_encode_buffers_released_flipud():
     assert_released_after_error(encode, flipped)
 
 
-def test_encode_buffers_released_channels():
+def test_buffers_released_channels():
     im = generate_image(33, 47, 3)
     channels = np.resize(im, (im.shape[0], im.shape[1], 2))
 
@@ -183,7 +183,7 @@ def test_encode_buffers_released_channels():
     assert_released_after_error(encode, channels, match='channels does not match')
 
 
-def test_encode_buffers_released_strided():
+def test_buffers_released_strided():
     strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
 
     def encode(image):
@@ -192,7 +192,7 @@ def test_encode_buffers_released_strided():
     assert_released_after_error(encode, strided, match='contiguous rows')
 
 
-def test_encode_buffers_released_broadcast():
+def test_buffers_released_broadcast():
     im = generate_image(33, 47, 3)
     broadcast = np.broadcast_to(im[0], im.shape)
 
@@ -202,7 +202,7 @@ def test_encode_buffers_released_broadcast():
     assert_released_after_error(encode, broadcast, match='broadcasting rows is not supported')
 
 
-def test_encode_buffers_released_2d():
+def test_buffers_released_2d():
     # a 2-D image does not fit the 3-D buffer signature
     flat = np.zeros((33, 47), dtype=np.uint8)
 
