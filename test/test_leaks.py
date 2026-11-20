@@ -13,7 +13,7 @@ import contextlib
 
 import numpy as np
 from harness import generate_image
-from rssize import rss
+from rssize import page_size, rss
 
 import simplejpeg
 
@@ -21,18 +21,22 @@ import simplejpeg
 def _assert_no_growth(battery, warmup=256, count=1000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches); afterwards a single long battery run must leave
-    # the working set within the allowance: if an operation leaks, it
-    # leaks every call, so 1000 un-destroyed tjhandles (~4 KiB of heap
-    # each, measured with vendored libjpeg-turbo 3.2.1) would grow the
-    # working set by ~4 MB, while background drift by other causes is
-    # expected to stay in the 64 KiB noise range over the same run
+    # the working set within the allowance. The working set only ever
+    # moves in whole pages, so the allowance is expressed in pages and
+    # scales with the platform page size instead of assuming 4 KiB:
+    # 32 KiB on 4 KiB pages, 128 KiB on 16 KiB Apple pages, 512 KiB on
+    # 64 KiB pages. Measured clean batteries are flat at zero growth,
+    # one leaked tjhandle per call would add ~1 page per call
+    # (~4 KiB of heap) and a full battery would grow by ~1000 pages
     battery(warmup)
     previous = rss()
     battery(count)
     growth = rss() - previous
-    assert growth < 64 * 1024, (
-        f'the working set grew by {growth} bytes over {count} calls; '
-        f'one leaked tjhandle per call grows it by ~4 MB'
+    page = page_size()
+    assert growth < 8 * page, (
+        f'the working set grew by {growth} bytes '
+        f'({growth // page} pages of {page} bytes) over {count} calls; '
+        'one leaked tjhandle per call grows it by megabytes over the battery'
     )
 
 
