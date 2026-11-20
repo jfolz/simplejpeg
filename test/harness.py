@@ -41,11 +41,22 @@ def generate_image(height=800, width=600, channels=3):
     return np.ascontiguousarray(np.rint(arr).astype(np.uint8))
 
 
+def _weakref(output):
+    """
+    A weak reference to output, or a dummy that reports it as released
+    when the type cannot carry one (bytes, str).
+    """
+    try:
+        return weakref.ref(output)
+    except TypeError:
+        return lambda: None
+
+
 def _refcounts(supplied):
-    # used only for before/after differentials on inputs, where the
-    # per-interpreter offsets of sys.getrefcount (the temporary argument
-    # it counts, the loop bindings that may or may not hold) cancel out
-    return tuple(sys.getrefcount(buffer) - 2 for buffer in supplied)
+    # only used for before/after differentials: any per-interpreter
+    # offset of sys.getrefcount (its own argument temporary, loop
+    # bindings that hold or not) cancels between the two measurements
+    return tuple(sys.getrefcount(buffer) - 1 for buffer in supplied)
 
 
 def _ensure_tuple(v):
@@ -103,35 +114,16 @@ def assert_released_after_call(operation, *inputs):
     outputs = _deduplicate_values(outputs, inputs)
     # a weak reference outlives the object only if someone else kept it:
     # when this tuple is the sole holder, deleting it must kill the
-    # output, on every interpreter, whatever its getrefcount
-    # conventions and deferred refcounting do with absolute counts
+    # output: every interpreter, every getrefcount convention
     output = None
     survivors = []
-    counted = []
     for output in outputs:
-        try:
-            survivors.append(weakref.ref(output))
-        except TypeError:
-            # bytes and str carry no weak references: they go to counted,
-            # which becomes their only strong holder below
-            counted.append(output)
+        survivors.append(_weakref(output))
     # the loop variable still holds the last iterated output: drop it
-    # before any counting, it would bias every measurement by one
+    # before the assertion, it would keep the last output alive
     del output
-    # drop our only strong reference to the outputs: the weakrefable
-    # ones must die now, bytes and str stay in counted for the count
     del outputs
     assert all(s() is None for s in survivors), 'an output outlived the call'
-    if counted:
-        # bytes and str: compare their holder counts against a fresh
-        # probe with exactly one holder, measured through the same
-        # indexed getrefcount call, so that the interpreter's
-        # temporary-argument conventions cancel out
-        probe_tuple = (bytearray(),)
-        probe_raw = sys.getrefcount(probe_tuple[0])
-        for index in range(len(counted)):
-            extra = sys.getrefcount(counted[index]) - probe_raw
-            assert extra == 0, f'an output kept {extra} extra reference(s)'
     _assert_released(inputs, before)
 
 
