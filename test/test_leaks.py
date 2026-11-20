@@ -37,7 +37,7 @@ def _assert_no_growth(battery, warmup=256, count=1000, bytes_per_iteration=400):
     )
 
 
-def test_decode_releases_tjhandles():
+def test_decode_tjhandle_released():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
 
     def battery(count):
@@ -47,7 +47,7 @@ def test_decode_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_decode_with_buffer_releases_tjhandles():
+def test_decode_tjhandle_released_with_buffer():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
     height, width, _, _ = simplejpeg.decode_jpeg_header(data)
     buffer = bytearray(height * width * 3)
@@ -59,7 +59,7 @@ def test_decode_with_buffer_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_decode_header_releases_tjhandles():
+def test_decode_header_tjhandle_released():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
 
     def battery(count):
@@ -69,7 +69,7 @@ def test_decode_header_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_encode_releases_tjhandles():
+def test_encode_tjhandle_released():
     im = generate_image(33, 47, 3)
 
     def battery(count):
@@ -79,7 +79,7 @@ def test_encode_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_encode_yuv_releases_tjhandles():
+def test_encode_yuv_tjhandle_released():
     # even dimensions: turbojpeg walks padded plane rows, odd widths give
     # strides below the padding and raise inside the compressor
     im = generate_image(32, 48, 3)
@@ -95,7 +95,7 @@ def test_encode_yuv_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_decode_garbage_releases_tjhandles():
+def test_decode_tjhandle_released_garbage():
     garbage = bytes(bytearray(b'definitely not a jpeg'))
 
     def battery(count):
@@ -106,7 +106,7 @@ def test_decode_garbage_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_decode_truncated_releases_tjhandles():
+def test_decode_tjhandle_released_truncated():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
     truncated = data[:-8]
 
@@ -118,7 +118,7 @@ def test_decode_truncated_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_decode_too_small_buffer_releases_tjhandles():
+def test_decode_tjhandle_released_too_small_buffer():
     data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
 
     def battery(count):
@@ -129,7 +129,7 @@ def test_decode_too_small_buffer_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_encode_channels_releases_tjhandles():
+def test_encode_tjhandle_released_channels():
     im = generate_image(33, 47, 3)
     channels = np.resize(im, (33, 47, 2))
 
@@ -141,7 +141,7 @@ def test_encode_channels_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_encode_strided_releases_tjhandles():
+def test_encode_tjhandle_released_strided():
     strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
 
     def battery(count):
