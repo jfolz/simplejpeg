@@ -10,6 +10,7 @@ hardest.
 """
 
 import contextlib
+import warnings
 
 import numpy as np
 from harness import generate_image
@@ -18,22 +19,30 @@ from rssize import rss
 import simplejpeg
 
 
-def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=512):
+def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=400):
     # warmup first: the first calls pay one-time allocations (jpeg
     # tables, error buffers, importer caches). the allowance is per
-    # battery iteration: a leaked tjhandle costs around 4.1 KiB per
-    # call, 512 bytes per call is a small fraction of that, while
-    # working set jitter from the runners stayed far below it in CI
-    # (worst observed so far around 200 bytes per call on windows)
+    # battery iteration in bytes: a leaked tjhandle costs around
+    # 4.1 KiB per call, 400 bytes per call is a 10th of that, while
+    # working set jitter from the runners stayed below half of it in
+    # CI (worst observed: ~200 bytes per call on windows arm64).
+    # growing past half the allowance warns, so the bound can be
+    # retuned before it fails a run
     battery(warmup)
     previous = rss()
     battery(count)
     growth = rss() - previous
-    assert growth <= leak_bytes * count, (
+    allowance = leak_bytes * count
+    if growth > allowance // 2:
+        warnings.warn(
+            f'the leak battery measured {growth} bytes of working set '
+            f'growth, {growth / allowance:.0%} of the {allowance} byte '
+            'allowance: consider retuning the leak test bounds')
+    assert growth <= allowance, (
         f'the working set grew by {growth} bytes over {count} calls, '
         f'around {growth // count} bytes per call; '
-        f'the allowance is {leak_bytes} bytes per call, a small '
-        'fraction of a leaked tjhandle (~4.1 KiB)'
+        f'the allowance is {leak_bytes} bytes per call, a 10th of a '
+        'leaked tjhandle (~4.1 KiB)'
     )
 
 
