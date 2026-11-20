@@ -24,7 +24,7 @@ def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=512):
     # battery iteration: a leaked tjhandle costs around 4.1 KiB per
     # call, 512 bytes per call is a small fraction of that, while
     # working set jitter from the runners stayed far below it in CI
-    # (worst observed so far around 150 bytes per call on windows)
+    # (worst observed so far around 200 bytes per call on windows)
     battery(warmup)
     previous = rss()
     battery(count)
