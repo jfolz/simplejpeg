@@ -41,8 +41,12 @@ def generate_image(height=800, width=600, channels=3):
 
 
 def _refcounts(supplied):
-    # -1 because we hold a reference in our for loop
-    return tuple(sys.getrefcount(buffer) - 1 for buffer in supplied)
+    # -1 because the generator's loop variable holds a reference while
+    # counting, and -1 because sys.getrefcount itself counts the
+    # temporary argument it receives: an object held exactly once
+    # therefore measures 1 here, identically on every platform and
+    # interpreter
+    return tuple(sys.getrefcount(buffer) - 2 for buffer in supplied)
 
 
 def _ensure_tuple(v):
