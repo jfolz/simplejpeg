@@ -40,29 +40,6 @@ def generate_image(height=800, width=600, channels=3):
     return np.ascontiguousarray(np.rint(arr).astype(np.uint8))
 
 
-def _mimics(outputs):
-    """
-    Build a fresh mimic for every output: same type and shape, exactly
-    one holder. The refcount difference between an output and its mimic
-    is then exactly the leak, since the interpreter's measurement
-    temporary conventions cancel between the identical shapes.
-    """
-    mimics = []
-    for output in outputs:
-        if isinstance(output, bytes):
-            # bytes(0) is a global singleton, hence the minimum 1 byte
-            mimics.append(bytes(max(1, len(output))))
-        elif isinstance(output, np.ndarray):
-            mimics.append(np.empty_like(output))
-        elif isinstance(output, bytearray):
-            mimics.append(bytearray(len(output)))
-        elif isinstance(output, array.array):
-            mimics.append(array.array(output.typecode))
-        else:
-            raise TypeError(f'no mimic for output type {type(output)!r}')
-    return tuple(mimics)
-
-
 def _refcounts(supplied):
     # only used for before/after differentials: any per-interpreter
     # offset of sys.getrefcount (its own argument temporary, loop
@@ -123,16 +100,19 @@ def assert_released_after_call(operation, *inputs):
     outputs = operation(*inputs)
     # verify we did not hold onto references of created outputs
     outputs = _deduplicate_values(outputs, inputs)
-    mimics = _mimics(outputs)
-    # one strong holder for outputs and mimics alike: the witness tuple,
-    # which also neutralizes the measurement temporary between the
-    # indexed getrefcount reads of an output and its mimic
-    witness = outputs + mimics
-    count = len(outputs)
-    outputs = mimics = None
+    # one witness per object in the same holder shape: outputs first,
+    # one fresh mortal object last (an inline object(), not `()` — the
+    # empty tuple is an immortal singleton with a fixed refcount).
+    # getrefcount counts holders plus its own temporary argument,
+    # identically for all objects under the same holder shape, so the
+    # measured difference between an output and the witness is exactly
+    # the leak
+    witness = tuple(outputs) + (object(),)
+    count = len(witness) - 1
+    outputs = None
     for index in range(count):
         extra = (sys.getrefcount(witness[index])
-                 - sys.getrefcount(witness[count + index]))
+                 - sys.getrefcount(witness[-1]))
         assert extra == 0, f'output {index} kept {extra} extra reference(s)'
     # the copies die here, releasing exports the input checks depend on
     del witness
