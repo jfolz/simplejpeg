@@ -13,26 +13,27 @@ import contextlib
 
 import numpy as np
 from harness import generate_image
-from rssize import page_size, rss
+from rssize import rss
 
 import simplejpeg
 
 
-def _assert_no_growth(battery, warmup=256, count=1000, allowed_growth=16):
-    # assert that RSS does not grow for test battery
-    # warmup first to account for one-time allocations,
-    # followed by the longer test run
-    # RSS is a multiple of the page size
-    # there may be minor jitter between readings
+def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=512):
+    # warmup first: the first calls pay one-time allocations (jpeg
+    # tables, error buffers, importer caches). the allowance is per
+    # battery iteration: a leaked tjhandle costs around 4.1 KiB per
+    # call, 512 bytes per call is a small fraction of that, while
+    # working set jitter from the runners stayed far below it in CI
+    # (worst observed so far around 150 bytes per call on windows)
     battery(warmup)
     previous = rss()
     battery(count)
     growth = rss() - previous
-    page = page_size()
-    assert growth <= allowed_growth * page, (
-        f'the working set grew by {growth} bytes '
-        f'({growth // page} pages of {page} bytes) over {count} calls; '
-        'one leaked tjhandle per call grows it by megabytes over the battery'
+    assert growth <= leak_bytes * count, (
+        f'the working set grew by {growth} bytes over {count} calls, '
+        f'around {growth // count} bytes per call; '
+        f'the allowance is {leak_bytes} bytes per call, a small '
+        'fraction of a leaked tjhandle (~4.1 KiB)'
     )
 
 
