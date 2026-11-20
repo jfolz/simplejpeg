@@ -1,21 +1,13 @@
 """
 Generate the reference data used by the test suite.
 
-The decoding tests compare simplejpeg's output against reference pixel
-arrays that were produced by libjpeg-turbo's own djpeg utility from the
-JPEG images in test/images.  Both use the same libjpeg-turbo version, so
-the references pin the codec version precisely; they must be regenerated
-with this script whenever SIMPLEJPEG_JPEG_VERSION changes.  The encoding
-tests generate their content on the fly and validate round trips; they
-do not use reference data.
+By default libjpeg-turbo's djpeg utility built from source is used.
+Alternatively make sure a djpeg binary is on the PATH or set the
+SIMPLEJPEG_DJPEG env var to use a specific binary.
 
-References are stored as a single compressed numpy archive, with one
-delta-encoded (a PNG-style 'Up' filter) 'rgb' (h, w, 3) array per JPEG
-keyed by the image name.
-
-The script needs numpy and the built libjpeg-turbo tools (djpeg); it does
-not import simplejpeg or Pillow.
-Run:  python3 test/update_references.py
+Decoded references are stored in a numpy archive, with one delta-encoded
+(a PNG-style 'Up' filter) 'rgb' (h, w, 3) array per JPEG keyed by the
+image name.
 """
 import glob
 import os
@@ -34,18 +26,17 @@ def find_djpeg():
     override = os.environ.get('SIMPLEJPEG_DJPEG')
     if override:
         return override
-    for candidate in sorted(glob.glob(pt.join(ROOT, '..', 'lib',
-                                              'libjpeg-turbo-*',
-                                              'build*', 'djpeg-static'))):
-        if os.access(candidate, os.X_OK):
-            return candidate
-    djpeg = shutil.which('djpeg')
-    if djpeg:
-        return djpeg
-    raise RuntimeError(
-        'djpeg not found: build the vendored libjpeg-turbo first or set '
-        'SIMPLEJPEG_DJPEG'
-    )
+    for build_dir in sorted(glob.glob(
+            pt.join(ROOT, '..', 'lib', 'libjpeg-turbo-*', 'build*'))):
+        path = os.environ.get('PATH', os.defpath)
+        os.environ['PATH'] = build_dir + os.pathsep + path
+    djpeg = shutil.which('djpeg-static') or shutil.which('djpeg')
+    if not djpeg:
+        raise RuntimeError(
+            'djpeg not found: build the vendored libjpeg-turbo first or set '
+            'SIMPLEJPEG_DJPEG'
+        )
+    return djpeg
 
 
 def parse_pnm(data):
@@ -73,7 +64,7 @@ def parse_pnm(data):
     return array.reshape(height, width, channels)
 
 
-def run_djpeg(djpeg, arguments):
+def run_djpeg(djpeg, *arguments):
     completed = subprocess.run([djpeg, *arguments], capture_output=True, check=True)
     return parse_pnm(completed.stdout)
 
@@ -92,7 +83,7 @@ def main():
     for image_path in sorted(glob.glob(pt.join(IMAGES_DIR, '*.jpg'))):
         name = pt.splitext(pt.basename(image_path))[0]
         try:
-            rgb = run_djpeg(djpeg, [image_path])
+            rgb = run_djpeg(djpeg, image_path)
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f'djpeg failed on {image_path}') from e
         arrays[name] = delta_encode(rgb)
