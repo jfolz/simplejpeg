@@ -19,27 +19,21 @@ from rssize import rss
 import simplejpeg
 
 
-def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=400):
-    # assert that RSS does not grow for test battery
-    # warmup first to account for one-time allocations,
-    # followed by the longer test run
-    # the allowance is per iteration in bytes
-    # there may be minor jitter between readings
+def _assert_no_growth(battery, warmup=256, count=1000, bytes_per_iteration=400):
+    # Assert that RSS does not grow for test battery.
+    # Warmup first to account for one-time allocations,
+    # followed by the longer test run.
+    # There may be minor jitter and memory fragmentation between readings,
+    # accounted for by an allowance given as bytes per iteration.
     battery(warmup)
     previous = rss()
     battery(count)
     growth = rss() - previous
-    allowance = leak_bytes * count
+    allowance = bytes_per_iteration * count
     if growth > allowance // 2:
-        warnings.warn(
-            f'the leak battery measured {growth} bytes of working set '
-            f'growth, {growth / allowance:.0%} of the {allowance} byte '
-            'allowance: consider retuning the leak test bounds')
+        warnings.warn(f'RSS grew by {growth} bytes, {growth / allowance:.0%} of the allowance')
     assert growth <= allowance, (
-        f'the working set grew by {growth} bytes over {count} calls, '
-        f'around {growth // count} bytes per call; '
-        f'the allowance is {leak_bytes} bytes per call, a 10th of a '
-        'leaked tjhandle (~4.1 KiB)'
+        f'RSS grew {growth / count:.1f} per iteration, exceeding allowed {bytes_per_iteration} bytes'
     )
 
 
