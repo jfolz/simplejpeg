@@ -107,8 +107,8 @@ def assert_released_after_call(operation, *inputs, message='refcount to {type} i
     # verify we did not hold onto references of created outputs
     outputs = operation(*inputs)
     outputs = _deduplicate_values(outputs, inputs)
-    # obtain a plantform and Python version specific referene values for
-    # output refcount by applying exactly the same measurment to a identically
+    # obtain a platform and Python version specific reference values for
+    # output refcount by applying exactly the same measurement to an identically
     # structured reference object
     reference = _refcounts((object(),))[0]
     for i, refcount in enumerate(_refcounts(outputs)):
