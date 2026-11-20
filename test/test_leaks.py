@@ -95,27 +95,57 @@ def test_encode_yuv_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_error_paths_release_tjhandles():
-    im = generate_image(33, 47, 3)
-    data = simplejpeg.encode_jpeg(im, 98)
+def test_decode_garbage_releases_tjhandles():
     garbage = bytes(bytearray(b'definitely not a jpeg'))
-    truncated = data[:-8]
-    strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
-    channels = np.resize(im, (33, 47, 2))
 
     def battery(count):
-        # every iteration raises on one of the documented error paths:
-        # the decoder and encoder handles created for each call must be
-        # destroyed on the way out regardless
         for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.decode_jpeg(garbage)
+
+    _assert_no_growth(battery)
+
+
+def test_decode_truncated_releases_tjhandles():
+    data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
+    truncated = data[:-8]
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.decode_jpeg(truncated)
+
+    _assert_no_growth(battery)
+
+
+def test_decode_too_small_buffer_releases_tjhandles():
+    data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.decode_jpeg(data, buffer=bytearray(12))
+
+    _assert_no_growth(battery)
+
+
+def test_encode_channels_releases_tjhandles():
+    im = generate_image(33, 47, 3)
+    channels = np.resize(im, (33, 47, 2))
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.encode_jpeg(channels, 98)
+
+    _assert_no_growth(battery)
+
+
+def test_encode_strided_releases_tjhandles():
+    strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.encode_jpeg(strided, 98)
 
