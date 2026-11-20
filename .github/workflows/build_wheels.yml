@@ -43,6 +43,7 @@ jobs:
           name: wheels-${{ matrix.os }}-${{ matrix.arch }}
           path: ./wheelhouse/*.whl
           if-no-files-found: error
+
   make_sdist:
     name: Make SDist
     runs-on: ubuntu-latest
@@ -55,8 +56,54 @@ jobs:
           name: sdist
           path: dist/*.tar.gz
           if-no-files-found: error
+
+  asan:
+    name: ASan suite
+    needs: [build_wheels]
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    env:
+      CFLAGS: -fsanitize=address -g -O1 -fno-omit-frame-pointer
+      LDFLAGS: -fsanitize=address
+      # test_threads.py reads it: shrink the storm's windows under the
+      # slowed-down sanitizer build
+      STORM_BUDGET: 0.4
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14t'
+      - name: Install toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y nasm
+          pip install --upgrade pip
+          pip install cython cmake numpy setuptools pytest rssize
+      - name: Build instrumented
+        # libjpeg-turbo is vendored and statically linked: CFLAGS/LDFLAGS
+        # reach its cmake build, so the whole native stack is instrumented;
+        # the built wheels cannot be checked this way, instrumentation is
+        # a compile-time property, this one runs from the tagged source
+        run: pip install --no-build-isolation --verbose .
+      - name: Preload the ASan runtime, suppress numpy exit-time noise
+        # the interpreter itself is not instrumented; loading the
+        # instrumented extension via dlopen aborts without the preload.
+        # numpy registers ufuncs from native allocations that are only
+        # reported at interpreter shutdown, the suppression keeps those
+        # out of the way so simplejpeg leaks stand out
+        run: |
+          echo "LD_PRELOAD=$(gcc -print-file-name=libasan.so)" >> "$GITHUB_ENV"
+          echo "leak:multiarray_umath" > "$RUNNER_TEMP/lsan.txt"
+          echo "LSAN_OPTIONS=suppressions=$RUNNER_TEMP/lsan.txt" >> "$GITHUB_ENV"
+      - name: Test suite
+        # never from the repo cwd: the source tree would shadow the
+        # freshly built site-packages extension
+        run: |
+          cd ~
+          python -m pytest "$GITHUB_WORKSPACE/test" -q
+
   upload_all:
-    needs: [build_wheels, make_sdist]
+    needs: [build_wheels, make_sdist, asan]
     runs-on: ubuntu-latest
     environment:
       name: release
