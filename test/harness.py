@@ -44,7 +44,7 @@ def generate_image(height=800, width=600, channels=3):
 def _weakref(output):
     """
     A weak reference to output, or a dummy that reports it as released
-    when the type cannot carry one (bytes, str).
+    for types without weakref support outside the mimic comparison.
     """
     try:
         return weakref.ref(output)
@@ -116,14 +116,32 @@ def assert_released_after_call(operation, *inputs):
     # when this tuple is the sole holder, deleting it must kill the
     # output: every interpreter, every getrefcount convention
     output = None
+    bytes_outputs = []
+    mimics = []
     survivors = []
     for output in outputs:
-        survivors.append(_weakref(output))
+        if isinstance(output, bytes):
+            # bytes and str carry no weak references: compare the output
+            # against a freshly made mimic of the same type and size.
+            # the mimic has exactly one holder (its own list), so the
+            # refcount difference between the two is exactly the leak;
+            # bytes(0) is a global singleton, hence the min 1 byte
+            mimics.append(bytes(max(1, len(output))))
+            bytes_outputs.append(output)
+        else:
+            survivors.append(_weakref(output))
     # the loop variable still holds the last iterated output: drop it
     # before the assertion, it would keep the last output alive
     del output
+    # drop our only strong reference to the outputs: the weakrefable
+    # ones must die now, the bytes stay held by bytes_outputs for the
+    # comparison against their mimics
     del outputs
     assert all(s() is None for s in survivors), 'an output outlived the call'
+    for index in range(len(bytes_outputs)):
+        extra = (sys.getrefcount(bytes_outputs[index])
+                 - sys.getrefcount(mimics[index]))
+        assert extra == 0, f'an output kept {extra} extra reference(s)'
     _assert_released(inputs, before)
 
 
