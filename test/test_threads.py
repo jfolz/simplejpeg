@@ -209,19 +209,102 @@ def gil_off():
     assert not sys._is_gil_enabled(), 'the GIL is enabled'
 
 
-@pytest.mark.free_threaded
-def test_pipeline_groups_stay_byte_exact_under_thread_races(fixtures):
+def _storm_groups(groups, fixtures):
+    """
+    Race the given check groups against each other under one wall budget.
+    """
+    threads = _thread_count()
+    storm = _Storm()
+    for name, check in groups:
+        # warmup call: the first call carries one-time init cost
+        check()
+        start = time.perf_counter()
+        check()
+        duration = time.perf_counter() - start
+        # the budget is the group's wall window: the iterations are
+        # sized for the whole group, not per thread, so the wall stays
+        # at BUDGET/cores no matter how many cores the leg has
+        iters = max(4, min(int(BUDGET / max(duration, 1e-6) / threads), 5000))
+        batch = _batch(check, iters)
+        for index in range(threads):
+            storm.spawn_batch(batch, f'{name}-{index}')
+    storm.spawn_racer(_gc_rider(storm), 'gc')
+    storm.join_batches()
+    storm.stop_and_join()
+    _assert_fixtures_intact(fixtures)
+
+
+def _decode_check(fixtures, jpeg_key, reference_key, **options):
+    """
+    A check that decode_jpeg must reproduce the reference exactly.
+    """
     simplejpeg = fixtures['simplejpeg']
-    enc, dec = fixtures['enc'], fixtures['dec']
+    jpeg = fixtures['enc'][jpeg_key]
+    reference = fixtures['dec'][reference_key]
+
+    def check():
+        if not np.array_equal(simplejpeg.decode_jpeg(jpeg, **options), reference):
+            raise AssertionError('decoded bytes differ from the reference')
+    return check
+
+
+def _encode_check(fixtures, image_key, reference_key, **options):
+    """
+    A check that encode_jpeg must reproduce the reference exactly.
+    """
+    simplejpeg = fixtures['simplejpeg']
+    image = fixtures[image_key]
+    reference = fixtures['enc'][reference_key]
+
+    def check():
+        if simplejpeg.encode_jpeg(image, 98, **options) != reference:
+            raise AssertionError('encoded bytes differ from the reference')
+    return check
+
+
+def _yuv_check(fixtures):
+    """
+    A check for both the color and the gray YUV plane encodings.
+    """
+    simplejpeg = fixtures['simplejpeg']
     y, u, v = fixtures['planes']
     yuv_reference = simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98)
     gray_yuv_reference = simplejpeg.encode_jpeg_yuv_planes(y, None, None, 98)
 
+    def check():
+        if simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98) != yuv_reference:
+            raise AssertionError('yuv bytes differ from the reference')
+        if simplejpeg.encode_jpeg_yuv_planes(
+                y, None, None, 98) != gray_yuv_reference:
+            raise AssertionError('gray yuv bytes differ from the reference')
+    return check
+
+
+def _header_check(fixtures):
+    """
+    A check that the decoded header must stay byte-stable.
+    """
+    def check():
+        if fixtures['simplejpeg'].decode_jpeg_header(
+                fixtures['enc']['main']) != fixtures['header']:
+            raise AssertionError('header differs from the reference')
+    return check
+
+
+def _error_check(fixtures):
+    """
+    A check that every documented error path keeps raising, and raises
+    exactly, while the rest of the API races.
+    """
+    simplejpeg = fixtures['simplejpeg']
+    enc = fixtures['enc']
+    image = fixtures['image']
+    y, u, v = fixtures['planes']
     garbage = bytes(bytearray(b'definitely not a jpeg'))
     truncated = bytes(enc['main'][:-32])
     too_small = bytearray(96)
-    flipped = np.flipud(fixtures['image'])
-    channels_wrong = np.resize(fixtures['image'], (HEIGHT, WIDTH, 2))
+    flipped = np.flipud(image)
+    channels_wrong = np.resize(image, (HEIGHT, WIDTH, 2))
     oversized_u = np.resize(u, (HEIGHT, WIDTH))
     error_battery = [
         (lambda: simplejpeg.decode_jpeg(garbage), 'JPEG'),
@@ -242,7 +325,7 @@ def test_pipeline_groups_stay_byte_exact_under_thread_races(fixtures):
         ),
     ]
 
-    def error_check():
+    def check():
         for function, message in error_battery:
             try:
                 function()
@@ -257,65 +340,66 @@ def test_pipeline_groups_stay_byte_exact_under_thread_races(fixtures):
                 expected = message if message is not None else 'ValueError'
                 raise AssertionError(
                     f'expected error {expected!r} was not raised')
+    return check
 
-    def decode_check(jpeg, reference, **options):
-        if not np.array_equal(simplejpeg.decode_jpeg(jpeg, **options), reference):
-            raise AssertionError('decoded bytes differ from the reference')
 
-    def encode_check(image, reference, **options):
-        if simplejpeg.encode_jpeg(image, 98, **options) != reference:
-            raise AssertionError('encoded bytes differ from the reference')
+@pytest.mark.free_threaded
+def test_decode_rgb_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups([('decode rgb', _decode_check(fixtures, 'main', 'rgb'))], fixtures)
 
-    def header_check():
-        if simplejpeg.decode_jpeg_header(enc['main']) != fixtures['header']:
-            raise AssertionError('header differs from the reference')
 
-    def yuv_check():
-        if simplejpeg.encode_jpeg_yuv_planes(y, u, v, 98) != yuv_reference:
-            raise AssertionError('yuv bytes differ from the reference')
-        if simplejpeg.encode_jpeg_yuv_planes(y, None, None, 98) != gray_yuv_reference:
-            raise AssertionError('gray yuv bytes differ from the reference')
+@pytest.mark.free_threaded
+def test_decode_gray_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups(
+        [('decode gray', _decode_check(
+            fixtures, 'main', 'gray', colorspace='gray'))], fixtures)
 
-    groups = [
-        ('decode rgb', lambda: decode_check(enc['main'], dec['rgb'])),
-        ('decode gray', lambda: decode_check(
-            enc['main'], dec['gray'], colorspace='gray')),
-        ('decode fastdct', lambda: decode_check(
-            enc['fast'], dec['fast'], fastdct=True)),
-        ('decode yuv', lambda: decode_check(enc['yuv'], dec['yuv'])),
-        ('encode rgb', lambda: encode_check(fixtures['image'], enc['main'])),
-        ('encode fastdct', lambda: encode_check(
-            fixtures['image'], enc['fast'], fastdct=True)),
-        ('encode gray', lambda: encode_check(
-            fixtures['gray'], enc['gray'],
-            colorspace='gray', colorsubsampling='gray')),
-        ('encode yuv', yuv_check),
-        ('header', header_check),
-        ('error paths', error_check),
-    ]
 
-    threads = _thread_count()
-    storm = _Storm()
-    for name, check in groups:
-        # warmup call: the first call carries one-time init cost
-        check()
-        start = time.perf_counter()
-        check()
-        duration = time.perf_counter() - start
-        # the budget is the group's wall window: the iterations are
-        # sized for the whole group, not per thread, so the wall stays
-        # at BUDGET/cores no matter how many cores the leg has
-        iters = max(4, min(int(BUDGET / max(duration, 1e-6) / threads), 5000))
-        batch = _batch(check, iters)
-        for index in range(threads):
-            storm.spawn_batch(batch, f'{name}-{index}')
-    storm.spawn_racer(_gc_rider(storm), 'gc')
+@pytest.mark.free_threaded
+def test_decode_fastdct_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups(
+        [('decode fastdct', _decode_check(
+            fixtures, 'fast', 'fast', fastdct=True))], fixtures)
 
-    # the batches wind down on their own while the rider keeps working,
-    # then the stop releases the rider for the epilogue
-    storm.join_batches()
-    storm.stop_and_join()
-    _assert_fixtures_intact(fixtures)
+
+@pytest.mark.free_threaded
+def test_decode_yuv_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups([('decode yuv', _decode_check(fixtures, 'yuv', 'yuv'))], fixtures)
+
+
+@pytest.mark.free_threaded
+def test_encode_rgb_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups([('encode rgb', _encode_check(fixtures, 'image', 'main'))], fixtures)
+
+
+@pytest.mark.free_threaded
+def test_encode_fastdct_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups(
+        [('encode fastdct', _encode_check(
+            fixtures, 'image', 'fast', fastdct=True))], fixtures)
+
+
+@pytest.mark.free_threaded
+def test_encode_gray_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups(
+        [('encode gray', _encode_check(
+            fixtures, 'gray', 'gray',
+            colorspace='gray', colorsubsampling='gray'))], fixtures)
+
+
+@pytest.mark.free_threaded
+def test_encode_yuv_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups([('encode yuv', _yuv_check(fixtures))], fixtures)
+
+
+@pytest.mark.free_threaded
+def test_header_stays_byte_exact_under_thread_races(fixtures):
+    _storm_groups([('header', _header_check(fixtures))], fixtures)
+
+
+@pytest.mark.free_threaded
+def test_error_paths_keep_raising_under_thread_races(fixtures):
+    _storm_groups([('error paths', _error_check(fixtures))], fixtures)
 
 
 @pytest.mark.free_threaded
