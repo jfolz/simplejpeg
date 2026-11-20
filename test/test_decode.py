@@ -30,13 +30,13 @@ def yield_reference_images():
             yield name, data, delta_decode(archive[name])
 
 
-def test_decode_header():
+def test_header():
     for f, data, ref in yield_reference_images():
         height, width, _, _ = simplejpeg.decode_jpeg_header(data)
         assert width == ref.shape[1] and height == ref.shape[0], f
 
 
-def test_decode_rgb():
+def test_rgb():
     for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data)
         assert mean_absolute_difference(ref, sim) < 1, f
@@ -49,7 +49,7 @@ def rgb2gray(rgb):
             7471 * rgb[..., 2].astype(np.int32) + 32768) >> 16
 
 
-def test_decode_gray():
+def test_gray():
     for f, data, ref in yield_reference_images():
         expected = rgb2gray(ref)
         _, _, colorspace, _ = simplejpeg.decode_jpeg_header(data)
@@ -61,7 +61,7 @@ def test_decode_gray():
         assert mean_absolute_difference(expected, sim[..., 0]) < 1, f
 
 
-def test_decode_buffer():
+def test_buffer():
     # large enough for the largest reference image (height * width * 3)
     b = bytearray(1024*1024*3)
     for f, data, ref in yield_reference_images():
@@ -69,38 +69,38 @@ def test_decode_buffer():
         assert mean_absolute_difference(ref, sim) < 1, f
 
 
-def test_decode_buffer_insufficient():
+def test_buffer_insufficient():
     for _, data, ref in yield_reference_images():
         b = bytearray(ref.size - 1)
         with pytest.raises(ValueError, match='too small'):
             simplejpeg.decode_jpeg(data, buffer=b)
 
 
-def test_decode_truncated():
+def test_truncated():
     for _, data, _ in yield_reference_images():
         with pytest.raises(ValueError, match='Premature end of JPEG file'):
             simplejpeg.decode_jpeg(data[:-1])
 
 
-def test_decode_fastdct():
+def test_fastdct():
     for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, fastdct=True)
         assert mean_absolute_difference(ref, sim) < 2, f
 
 
-def test_decode_fastupsample():
+def test_fastupsample():
     for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, fastupsample=True)
         assert mean_absolute_difference(ref, sim) < 2, f
 
 
-def test_decode_fastdct_fastupsample():
+def test_fastdct_fastupsample():
     for f, data, ref in yield_reference_images():
         sim = simplejpeg.decode_jpeg(data, fastdct=True, fastupsample=True)
         assert mean_absolute_difference(ref, sim) < 3, f
 
 
-def test_decode_min_width_height():
+def test_min_width_height():
     for f, data, ref in yield_reference_images():
         h, w = ref.shape[:2]
         # half height, but require original width
@@ -130,7 +130,7 @@ def _colorspace_to_rgb(sim, colorspace):
     return out
 
 
-def test_decode_colorspace():
+def test_colorspace():
     for f, data, ref in yield_reference_images():
         for colorspace in ('RGB', 'BGR', 'RGBX', 'BGRX', 'XBGR',
                            'XRGB', 'RGBA', 'BGRA', 'ABGR', 'ARGB'):
@@ -139,7 +139,7 @@ def test_decode_colorspace():
             assert mean_absolute_difference(ref, sim) < 1, f
 
 
-def test_decode_writable():
+def test_writable():
     # bytes objects are read-only and reject a writable buffer request
     b = b'x' * 16
     for _, data, _ in yield_reference_images():
@@ -147,7 +147,7 @@ def test_decode_writable():
             simplejpeg.decode_jpeg(data, buffer=b)
 
 
-def test_decode_resize_buffer_concurrent():
+def test_resize_buffer_concurrent():
     # create a big jpeg that takes a while to decode
     image = np.random.default_rng(1337).integers(
         0, 255, size=(2048, 2048, 3), dtype=np.uint8,
@@ -203,7 +203,7 @@ def _rgb_jpeg():
         rng.integers(0, 255, size=(64, 64, 3), dtype=np.uint8))
 
 
-def test_decode_rgb_released():
+def test_buffers_released_rgb():
     # input and output buffers stay exported only for the duration of
     # the call: resizing after the call must stay clean, a BufferError
     # would mean a leaked export
@@ -216,7 +216,7 @@ def test_decode_rgb_released():
     assert_released_after_call(decode, data, buffer)
 
 
-def test_decode_yuv_released():
+def test_buffers_released_yuv():
     rng = np.random.default_rng(1337)
     data = bytearray(simplejpeg.encode_jpeg_yuv_planes(
         rng.integers(0, 255, size=(64, 64), dtype=np.uint8),
@@ -230,7 +230,7 @@ def test_decode_yuv_released():
     assert_released_after_call(decode, data, buffer)
 
 
-def test_decode_garbage_released():
+def test_buffers_released_garbage():
     garbage = bytearray(b'definitely not a jpeg')
     buffer = bytearray(64 * 64 * 3)
 
@@ -240,7 +240,7 @@ def test_decode_garbage_released():
     assert_released_after_error(decode, garbage, buffer, match='JPEG')
 
 
-def test_decode_truncated_released():
+def test_buffers_released_truncated():
     # the truncated failure happens mid-decode, with a decoder and both
     # buffers exported along the way
     data = bytearray(_rgb_jpeg()[:-8])
@@ -252,7 +252,7 @@ def test_decode_truncated_released():
     assert_released_after_error(decode, data, buffer, match='Premature end of JPEG file')
 
 
-def test_decode_too_small_released():
+def test_buffers_released_too_small():
     data = bytearray(_rgb_jpeg())
     buffer = bytearray(64 * 64 * 3 - 1)
 
@@ -262,7 +262,7 @@ def test_decode_too_small_released():
     assert_released_after_error(decode, data, buffer, match='too small')
 
 
-def test_decode_header_garbage_released():
+def test_header_buffers_released_garbage():
     # the header does the same input buffer handling without output
     garbage = bytearray(b'definitely not a jpeg')
 
@@ -272,7 +272,7 @@ def test_decode_header_garbage_released():
     assert_released_after_error(decode_header, garbage, match='JPEG')
 
 
-def test_decode_header_released():
+def test_header_buffers_released():
     # the outputs are ints and module-cached strings, they have no
     # refcount that could increase: only the release of the input is
     # observable and verified here
@@ -284,7 +284,7 @@ def test_decode_header_released():
     assert_released_after_call(decode_header, data)
 
 
-def test_decode_readonly_released():
+def test_buffers_released_readonly():
     # a read-only buffer must be refused to decode into and release its
     # export on the way out
     data = bytearray(_rgb_jpeg())
@@ -296,7 +296,7 @@ def test_decode_readonly_released():
     assert_released_after_error(decode, data, buffer, error=(BufferError, ValueError), match='writable')
 
 
-def test_decode_strided_buffer_released():
+def test_buffers_released_strided():
     # a 3-D array with row strides that are not contiguous cannot be
     # written into, the transpose gives it the right shape for that
     data = bytearray(_rgb_jpeg())
@@ -308,7 +308,7 @@ def test_decode_strided_buffer_released():
     assert_released_after_error(decode, data, buffer, match='contiguous')
 
 
-def test_decode_array_input_released():
+def test_buffers_released_array_input():
     # array.array has the same export-refusing resize semantics as
     # bytearray and must release its export after the call as well
     data = array('B', _rgb_jpeg())
@@ -320,14 +320,14 @@ def test_decode_array_input_released():
     assert_released_after_call(decode, data, buffer)
 
 
-def test_decode_noncontiguous():
+def test_noncontiguous():
     b = np.zeros((3, 1024, 1024), dtype=np.uint8)
     for _, data, _ in yield_reference_images():
         with pytest.raises(ValueError, match='contiguous'):
             simplejpeg.decode_jpeg(data, buffer=b.transpose((1, 2, 0)))
 
 
-def test_decode_cmyk():
+def test_cmyk():
     for name in ('peppers_cmyk', 'cat_cmyk'):
         with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
             data = fp.read()
@@ -356,7 +356,7 @@ def _cmyk_reference(cmyk, colorspace):
     return out
 
 
-def test_decode_cmyk_alpha():
+def test_cmyk_alpha():
     for name in ('peppers_cmyk', 'cat_cmyk'):
         with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
             data = fp.read()
@@ -378,7 +378,7 @@ def cmyk2gray(cmyk):
         + 1868 * channels[2] + 8192) >> 14).astype(np.uint8)
 
 
-def test_decode_cmyk_gray():
+def test_cmyk_gray():
     for name in ('peppers_cmyk', 'cat_cmyk'):
         with open(pt.join(ROOT, 'images', name + '.jpg'), 'rb') as fp:
             data = fp.read()
@@ -388,7 +388,7 @@ def test_decode_cmyk_gray():
         np.testing.assert_array_equal(sim[..., 0], gray, name)
 
 
-def test_decode_cmyk_rgb():
+def test_cmyk_rgb():
     for f, data, ref in yield_reference_images():
         if not f.endswith('_cmyk'):
             continue
