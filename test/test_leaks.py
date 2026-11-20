@@ -19,27 +19,21 @@ from rssize import rss
 import simplejpeg
 
 
-def _assert_no_growth(battery, warmup=256, count=1000, leak_bytes=400):
-    # assert that RSS does not grow for test battery
-    # warmup first to account for one-time allocations,
-    # followed by the longer test run
-    # the allowance is per iteration in bytes
-    # there may be minor jitter between readings
+def _assert_no_growth(battery, warmup=256, count=1000, bytes_per_iteration=400):
+    # Assert that RSS does not grow for test battery.
+    # Warmup first to account for one-time allocations,
+    # followed by the longer test run.
+    # There may be minor jitter and memory fragmentation between readings,
+    # accounted for by an allowance given as bytes per iteration.
     battery(warmup)
     previous = rss()
     battery(count)
     growth = rss() - previous
-    allowance = leak_bytes * count
+    allowance = bytes_per_iteration * count
     if growth > allowance // 2:
-        warnings.warn(
-            f'the leak battery measured {growth} bytes of working set '
-            f'growth, {growth / allowance:.0%} of the {allowance} byte '
-            'allowance: consider retuning the leak test bounds')
+        warnings.warn(f'RSS grew by {growth} bytes, {growth / allowance:.0%} of the allowance')
     assert growth <= allowance, (
-        f'the working set grew by {growth} bytes over {count} calls, '
-        f'around {growth // count} bytes per call; '
-        f'the allowance is {leak_bytes} bytes per call, a 10th of a '
-        'leaked tjhandle (~4.1 KiB)'
+        f'RSS grew {growth / count:.1f} per iteration, exceeding allowed {bytes_per_iteration} bytes'
     )
 
 
@@ -101,27 +95,57 @@ def test_encode_yuv_releases_tjhandles():
     _assert_no_growth(battery)
 
 
-def test_error_paths_release_tjhandles():
-    im = generate_image(33, 47, 3)
-    data = simplejpeg.encode_jpeg(im, 98)
+def test_decode_garbage_releases_tjhandles():
     garbage = bytes(bytearray(b'definitely not a jpeg'))
-    truncated = data[:-8]
-    strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
-    channels = np.resize(im, (33, 47, 2))
 
     def battery(count):
-        # every iteration raises on one of the documented error paths:
-        # the decoder and encoder handles created for each call must be
-        # destroyed on the way out regardless
         for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.decode_jpeg(garbage)
+
+    _assert_no_growth(battery)
+
+
+def test_decode_truncated_releases_tjhandles():
+    data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
+    truncated = data[:-8]
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.decode_jpeg(truncated)
+
+    _assert_no_growth(battery)
+
+
+def test_decode_too_small_buffer_releases_tjhandles():
+    data = simplejpeg.encode_jpeg(generate_image(33, 47, 3), 98)
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.decode_jpeg(data, buffer=bytearray(12))
+
+    _assert_no_growth(battery)
+
+
+def test_encode_channels_releases_tjhandles():
+    im = generate_image(33, 47, 3)
+    channels = np.resize(im, (33, 47, 2))
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.encode_jpeg(channels, 98)
+
+    _assert_no_growth(battery)
+
+
+def test_encode_strided_releases_tjhandles():
+    strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
+
+    def battery(count):
+        for _ in range(count):
             with contextlib.suppress(ValueError):
                 simplejpeg.encode_jpeg(strided, 98)
 
