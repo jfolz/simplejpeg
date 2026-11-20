@@ -2,7 +2,12 @@ import os.path as pt
 
 import numpy as np
 import pytest
-from harness import generate_image, mean_absolute_difference
+from harness import (
+    assert_released_after_call,
+    assert_released_after_error,
+    generate_image,
+    mean_absolute_difference,
+)
 
 import simplejpeg
 
@@ -134,3 +139,74 @@ def test_encode_cmyk():
     assert decoded.shape == cmyk_input.shape
     mad = mean_absolute_difference(cmyk_input, decoded)
     assert 0 < mad < 2, mad
+
+
+def test_encode_rgb_released():
+    # the exported input is only held for the duration of the call: a
+    # reference kept after the call shows up in the refcount
+    im = generate_image(33, 47, 3)
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98)
+
+    assert_released_after_call(encode, im)
+
+
+def test_encode_gray_released():
+    im = generate_image(33, 47, 1)
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98, colorspace='gray')
+
+    assert_released_after_call(encode, im)
+
+
+def test_encode_flipud_released():
+    # the flipud view fails inside the compressor and its message comes
+    # from libjpeg, not worth pinning
+    im = generate_image(33, 47, 3)
+    flipped = np.flipud(im)
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98)
+
+    assert_released_after_error(encode, flipped)
+
+
+def test_encode_channels_released():
+    im = generate_image(33, 47, 3)
+    channels = np.resize(im, (im.shape[0], im.shape[1], 2))
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98)
+
+    assert_released_after_error(encode, channels, match='channels does not match')
+
+
+def test_encode_strided_released():
+    strided = np.zeros((3, 33, 47), dtype=np.uint8).transpose((1, 2, 0))
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98)
+
+    assert_released_after_error(encode, strided, match='contiguous rows')
+
+
+def test_encode_broadcast_released():
+    im = generate_image(33, 47, 3)
+    broadcast = np.broadcast_to(im[0], im.shape)
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98)
+
+    assert_released_after_error(encode, broadcast, match='broadcasting rows is not supported')
+
+
+def test_encode_2d_released():
+    # a 2-D image does not fit the 3-D buffer signature
+    flat = np.zeros((33, 47), dtype=np.uint8)
+
+    def encode(image):
+        return simplejpeg.encode_jpeg(image, 98, colorspace='gray')
+
+    assert_released_after_error(encode, flat, match='wrong number of dimensions')
