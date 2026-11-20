@@ -60,6 +60,9 @@ JPEG_URL = f'https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/{J
 JPEG_HASH = os.environ.get('SIMPLEJPEG_JPEG_HASH', 'c27ad72a68da151177929aa969ae773a2da5ac2af9ce946079314fdac8cece7f')
 SKIP_BUILD_NAME = 'skip_build'
 DYNAMIC_LINKING = bool(os.environ.get("SIMPLEJPEG_DYNAMIC_LINKING", ""))
+# sanitizer builds keep the extension binary unstripped so native leak
+# reports name our frames; set by the CI asan suite
+SANITIZE = bool(os.environ.get('SIMPLEJPEG_SANITIZE', ''))
 
 
 def verify_file(path, reference_digest, read_size=128*1024):
@@ -118,6 +121,30 @@ def touch(path):
         pass
 
 
+# -Wl,--strip-all,--exclude-libs,ALL,--gc-sections: remove all symbols,
+# do not export symbols, remove unused sections. Sanitizer builds
+# (SIMPLEJPEG_SANITIZE) leave --strip-all out so native leak reports
+# keep naming our frames.
+PRUNE_LINK_ARGS = f"-Wl,{'--strip-all,' if not SANITIZE else ''}--exclude-libs,ALL,--gc-sections"
+
+# per-platform options, shared by both build legs: the vendored
+# libjpeg-turbo cmake build uses them as CFLAGS / LDFLAGS prefixes, the
+# extension build splits them into extra_compile_args /
+# extra_link_args
+COMPILE_ARGS = {
+    # -flto enables LTO; like CPython --enable-optimizations builds,
+    # internal calls skip interposition, only PyInit stays exported
+    'linux': '-flto -fno-semantic-interposition -fvisibility=hidden',
+    'darwin': '-flto -fvisibility=hidden',  # PyMODINIT_FUNC stays exported
+    'windows': '/GL',  # whole program optimization
+}
+LINK_ARGS = {
+    'linux': f'-flto {PRUNE_LINK_ARGS}',  # link-time LTO
+    'darwin': '-flto -Wl,-dead_strip',
+    'windows': '/LTCG',
+}
+
+
 class cmake_build_ext(build_ext):
     def run(self):
         skip_path = pt.join(_libdir(), SKIP_BUILD_NAME)
@@ -138,29 +165,8 @@ class cmake_build_ext(build_ext):
         if OS == 'darwin' and ARCHFLAGS:
             flags.append("-DCMAKE_OSX_ARCHITECTURES=" + ";".join(ARCHFLAGS))
 
-        cflags = os.getenv('CFLAGS', '')
-        ldflags = os.getenv('LDFLAGS', '')
-        if OS == 'linux':
-            # enable LTO
-            cflags = '-flto ' + cflags
-            # same as extension
-            ldflags = (
-                '-flto '
-                '-Wl,'  # following are linker options
-                '--strip-all,'  # Remove all symbols
-                '--exclude-libs,ALL,'  # Do not export symbols
-                '--gc-sections '  # Remove unused sections'
-            ) + ldflags
-        elif OS == 'darwin':
-            # LTO and hidden symbols on the vendored library; a static
-            # library with hidden symbols still links, it just stops
-            # exporting them through the extension
-            cflags = '-flto -fvisibility=hidden ' + cflags
-            ldflags = '-flto -Wl,-dead_strip -Wl,-x ' + ldflags
-        elif OS == 'windows':
-            # whole program optimization: /GL per object, /LTCG at link
-            cflags = '/GL ' + cflags
-            ldflags = '/LTCG ' + ldflags
+        cflags = COMPILE_ARGS.get(OS, '') + ' ' + os.getenv('CFLAGS', '')
+        ldflags = LINK_ARGS.get(OS, '') + ' ' + os.getenv('LDFLAGS', '')
         env = {
             # custom CFLAGS - depends on platform
             'CFLAGS': cflags,
@@ -242,32 +248,8 @@ def make_jpeg_module():
         ('NPY_NO_DEPRECATED_API', NPY_API_VERSION),
         ('NPY_TARGET_VERSION', NPY_API_VERSION),
     ]
-    if OS == 'linux':
-        extra_link_args.append(
-            '-Wl,'  # following are linker options
-            '--strip-all,'  # Remove all symbols
-            '--exclude-libs,ALL,'  # Do not export symbols
-            '--gc-sections'  # Remove unused sections
-        )
-        extra_compile_args.extend([
-            '-flto',  # enable LTO
-            # like CPython --enable-optimizations builds: internal calls
-            # skip interposition, only PyInit stays exported
-            '-fno-semantic-interposition',
-            '-fvisibility=hidden',
-        ])
-    elif OS == 'darwin':
-        extra_compile_args.extend([
-            '-flto',  # enable LTO
-            '-fvisibility=hidden',  # PyMODINIT_FUNC stays exported
-        ])
-        extra_link_args.extend([
-            '-flto',
-            '-Wl,-dead_strip',  # same pruning as --gc-sections on linux
-        ])
-    elif OS == 'windows':
-        extra_compile_args.extend(['/GL'])  # whole program optimization
-        extra_link_args.extend(['/LTCG'])
+    extra_link_args.extend(LINK_ARGS.get(OS, '').split())
+    extra_compile_args.extend(COMPILE_ARGS.get(OS, '').split())
     return Extension(
         'simplejpeg._jpeg',
         sources,

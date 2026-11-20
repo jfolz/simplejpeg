@@ -11,6 +11,9 @@ jobs:
     env:
       CFLAGS: -fsanitize=address -g -O1 -fno-omit-frame-pointer
       LDFLAGS: -fsanitize=address
+      # setup.py reads it: sanitizer builds keep the extension binary
+      # unstripped so leak reports name our frames
+      SIMPLEJPEG_SANITIZE: '1'
       # test_threads.py reads it: shrink the storm's windows under the
       # slowed-down sanitizer build
       STORM_BUDGET: 0.4
@@ -33,22 +36,28 @@ jobs:
         run: |
           set -o pipefail
           pip install --no-build-isolation --verbose . 2>&1 | tee build.log
-      - name: Preload the ASan runtime, suppress numpy exit-time noise
-        # the interpreter itself is not instrumented; loading the
-        # instrumented extension via dlopen aborts without the preload.
-        # numpy registers ufuncs from native allocations that are only
-        # reported at interpreter shutdown, the suppression keeps those
-        # out of the way so simplejpeg leaks stand out
-        run: |
-          echo "LD_PRELOAD=$(gcc -print-file-name=libasan.so)" >> "$GITHUB_ENV"
-          echo "leak:multiarray_umath" > "$RUNNER_TEMP/lsan.txt"
-          echo "LSAN_OPTIONS=suppressions=$RUNNER_TEMP/lsan.txt" >> "$GITHUB_ENV"
       - name: Test suite
         # never from the repo cwd: the source tree would shadow the
-        # freshly built site-packages extension
+        # freshly built site-packages extension.
+        # the interpreter itself is not instrumented; loading the
+        # instrumented extension via dlopen aborts without the preload.
+        # the LD_PRELOAD assignment prefixes only the pytest command, so
+        # the pipeline's tee and every helper outside it (touch/zip in
+        # the log steps, the upload action's node) run un-instrumented:
+        # else they abort the step at their own process exit with their
+        # exit-time leak reports, each unrelated to simplejpeg (every
+        # uutils binary of the runner leaks a fixed 43 KB under the
+        # runtime, node leaks a 24 byte OpenSSL init block). the
+        # multiarray_umath suppression keeps numpy's exit-time ufunc
+        # allocations out of the way so simplejpeg leaks stand out;
+        # LSan matches suppression patterns against the full module path
+        # of each leaked stack frame
         run: |
           set -o pipefail
           cd ~
+          printf 'leak:multiarray_umath\n' > "$RUNNER_TEMP/lsan.txt"
+          LD_PRELOAD=$(gcc -print-file-name=libasan.so) \
+          LSAN_OPTIONS=suppressions=$RUNNER_TEMP/lsan.txt \
           python -m pytest "$GITHUB_WORKSPACE/test" -q 2>&1 | tee test.log
       - name: Zip the logs
         # runs after failures; test.log is touched in case the build
