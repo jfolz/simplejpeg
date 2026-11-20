@@ -40,10 +40,13 @@ def generate_image(height=800, width=600, channels=3):
     return np.ascontiguousarray(np.rint(arr).astype(np.uint8))
 
 
-def _refcounts(supplied):
-    # only used for before/after differentials: any per-interpreter
-    # offset of sys.getrefcount (its own argument temporary, loop
-    # bindings that hold or not) cancels between the two measurements
+def _refcounts(supplied: Collection[Any]) -> tuple[int,...]:
+    """
+    Return refcounts of the given list of objects.
+
+    Important: Do not rely on absolute refcount values.
+    The output can differ between platforms and/or Python versions.
+    """
     return tuple(sys.getrefcount(buffer) - 1 for buffer in supplied)
 
 
@@ -70,20 +73,24 @@ def _deduplicate_values(
     return tuple(dedup.values())
 
 
-def _assert_released(values, reference):
+def _assert_released(values, reference, message='refcount to {type} increased'):
     """
     Assert that the refcount of the given values matches the given reference values.
     Additionally, for mutable types array.array and bytearray, check whether they
     can be mutated without issue.
+    The failure message is a format template: {type} is replaced with the
+    value's type; callers pass their own wording, e.g.
+    'refcount to input increased' (a template without placeholders is
+    used as-is).
     """
     after = _refcounts(values)
     for value, baseline, refcount in zip(values, reference, after):
         if isinstance(value, (array.array, bytearray)):
             value.append(0)
-        assert refcount == baseline, f'refcount to {type(value)!r} increased'
+        assert refcount == baseline, message.format(type=type(value))
 
 
-def assert_released_after_call(operation, *inputs):
+def assert_released_after_call(operation, *inputs, message='refcount to {type} increased'):
     """
     Run operation(*inputs) and verify that:
 
@@ -97,29 +104,22 @@ def assert_released_after_call(operation, *inputs):
     """
     # store refcounts before the operation
     before = _refcounts(inputs)
-    outputs = operation(*inputs)
     # verify we did not hold onto references of created outputs
+    outputs = operation(*inputs)
     outputs = _deduplicate_values(outputs, inputs)
-    # one witness per object in the same holder shape: outputs first,
-    # one fresh mortal object last (an inline object(), not `()` — the
-    # empty tuple is an immortal singleton with a fixed refcount).
-    # getrefcount counts holders plus its own temporary argument,
-    # identically for all objects under the same holder shape, so the
-    # measured difference between an output and the witness is exactly
-    # the leak
-    witness = tuple(outputs) + (object(),)
-    count = len(witness) - 1
-    outputs = None
-    for index in range(count):
-        extra = (sys.getrefcount(witness[index])
-                 - sys.getrefcount(witness[-1]))
-        assert extra == 0, f'output {index} kept {extra} extra reference(s)'
-    # the copies die here, releasing exports the input checks depend on
-    del witness
-    _assert_released(inputs, before)
+    # obtain a plantform and Python version specific referene values for
+    # output refcount by applying exactly the same measurment to a identically
+    # structured reference object
+    reference = _refcounts((object(),))[0]
+    for i, refcount in enumerate(_refcounts(outputs)):
+        assert refcount == reference, f'expected refcount {reference} for output {i}, got {refcount}'
+    # delete outputs to release references held in inputs
+    del outputs, reference
+    _assert_released(inputs, before, message)
 
 
-def assert_released_after_error(operation, *inputs, error=ValueError, match=None):
+def assert_released_after_error(operation, *inputs, error=ValueError, match=None,
+                                message='refcount to {type} increased'):
     """
     Like assert_released_after_call, but the operation is expected to
     raise the given error class, with or without the pinned message.
@@ -127,4 +127,4 @@ def assert_released_after_error(operation, *inputs, error=ValueError, match=None
     before = _refcounts(inputs)
     with pytest.raises(error, match=match):
         operation(*inputs)
-    _assert_released(inputs, before)
+    _assert_released(inputs, before, message)
