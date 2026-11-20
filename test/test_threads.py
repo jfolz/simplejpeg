@@ -27,7 +27,6 @@ import traceback
 
 import numpy as np
 import pytest
-
 from harness import generate_image
 
 import simplejpeg
@@ -36,7 +35,7 @@ WIDTH = 512
 HEIGHT = 384
 JOIN_TIMEOUT = 60.0
 
-BUDGET = float(os.environ.get('STORM_BUDGET', 1.0))
+BUDGET = float(os.environ.get('STORM_BUDGET', '1.0'))
 
 
 def _thread_count():
@@ -84,7 +83,7 @@ class _Storm:
     def _supervise(self, call, name):
         try:
             call()
-        except BaseException:
+        except BaseException:  # noqa: BLE001 - supervision collects even SystemExit
             with self._lock:
                 self.errors.append((name, traceback.format_exc()))
             self.stop.set()
@@ -105,8 +104,8 @@ class _Storm:
             thread.join(timeout=timeout)
         alive = [
             t.name for t in self._batches + self._racers if t.is_alive()]
-        assert not alive, 'hung storm threads: %r' % alive[:10]
-        assert not self.errors, 'storm calls failed: %r' % (self.errors[:3],)
+        assert not alive, f'hung storm threads: {alive[:10]!r}'
+        assert not self.errors, f'storm calls failed: {self.errors[:3]!r}'
 
 
 def _batch(check, iterations):
@@ -250,14 +249,14 @@ def test_pipeline_groups_stay_byte_exact_under_thread_races(fixtures):
             except ValueError as e:
                 if message is not None and message not in str(e):
                     raise AssertionError(
-                        'unexpected error message: %r' % str(e)) from e
+                        f'unexpected error message: {str(e)!r}') from e
             except BaseException as e:
                 raise AssertionError(
-                    'unexpected %r raised: %r' % (type(e), str(e))) from e
+                    f'unexpected {type(e)!r} raised: {str(e)!r}') from e
             else:
+                expected = message if message is not None else 'ValueError'
                 raise AssertionError(
-                    'expected error %r was not raised'
-                    % (message if message is not None else 'ValueError',))
+                    f'expected error {expected!r} was not raised')
 
     def decode_check(jpeg, reference, **options):
         if not np.array_equal(simplejpeg.decode_jpeg(jpeg, **options), reference):
@@ -309,7 +308,7 @@ def test_pipeline_groups_stay_byte_exact_under_thread_races(fixtures):
         iters = max(4, min(int(BUDGET / max(duration, 1e-6) / threads), 5000))
         batch = _batch(check, iters)
         for index in range(threads):
-            storm.spawn_batch(batch, '%s-%d' % (name, index))
+            storm.spawn_batch(batch, f'{name}-{index}')
     storm.spawn_racer(_gc_rider(storm), 'gc')
 
     # the batches wind down on their own while the rider keeps working,
@@ -331,15 +330,15 @@ def test_decodes_survive_racing_output_buffer_resizes(fixtures):
         buf = bytearray(reference.nbytes)
         storm.spawn_racer(
             _output_decoder(storm, simplejpeg, jpeg, buf, reference),
-            'output-decode-%d' % index)
-        storm.spawn_racer(_resizer(buf, storm), 'output-resize-%d' % index)
+            f'output-decode-{index}')
+        storm.spawn_racer(_resizer(buf, storm), f'output-resize-{index}')
     storm.spawn_racer(_gc_rider(storm), 'gc')
 
     time.sleep(BUDGET)
     storm.stop_and_join()
     assert storm.refusals > 0, (
-        'no buffer-resize refusals observed with %d threads '
-        '(expected refusals under contention)' % threads)
+        f'no buffer-resize refusals observed with {threads} threads '
+        '(expected refusals under contention)')
     _assert_fixtures_intact(fixtures)
 
 
@@ -353,13 +352,13 @@ def test_decodes_survive_racing_input_buffer_resizes(fixtures):
     for index in range(max(2, threads // 2)):
         buf = bytearray(jpeg)
         storm.spawn_racer(
-            _input_decoder(storm, simplejpeg, buf), 'input-decode-%d' % index)
-        storm.spawn_racer(_resizer(buf, storm), 'input-resize-%d' % index)
+            _input_decoder(storm, simplejpeg, buf), f'input-decode-{index}')
+        storm.spawn_racer(_resizer(buf, storm), f'input-resize-{index}')
     storm.spawn_racer(_gc_rider(storm), 'gc')
 
     time.sleep(BUDGET)
     storm.stop_and_join()
     assert storm.refusals > 0, (
-        'no buffer-resize refusals observed with %d threads '
-        '(expected refusals under contention)' % threads)
+        f'no buffer-resize refusals observed with {threads} threads '
+        '(expected refusals under contention)')
     _assert_fixtures_intact(fixtures)

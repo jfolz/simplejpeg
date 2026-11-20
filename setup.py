@@ -233,12 +233,12 @@ def make_jpeg_module():
         ('NPY_TARGET_VERSION', NPY_API_VERSION),
     ]
     if OS == 'linux':
-        extra_link_args.extend([
+        extra_link_args.append(
             '-Wl,'  # following are linker options
             '--strip-all,'  # Remove all symbols
             '--exclude-libs,ALL,'  # Do not export symbols
             '--gc-sections'  # Remove unused sections
-        ])
+        )
         extra_compile_args.extend([
             '-flto',  # enable LTO
         ])

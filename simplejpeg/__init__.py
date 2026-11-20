@@ -1,7 +1,4 @@
-from ._jpeg import encode_jpeg, encode_jpeg_yuv_planes
-from ._jpeg import decode_jpeg
-from ._jpeg import decode_jpeg_header
-
+from ._jpeg import decode_jpeg, decode_jpeg_header, encode_jpeg, encode_jpeg_yuv_planes
 
 __version__ = '1.9.0'
 __version_info__ = __version__.split('.')
@@ -19,9 +16,9 @@ def is_jpeg(data):
 
 
 __all__ = [
-    decode_jpeg,
-    decode_jpeg_header,
-    encode_jpeg,
-    encode_jpeg_yuv_planes,
-    is_jpeg,
+    'decode_jpeg',
+    'decode_jpeg_header',
+    'encode_jpeg',
+    'encode_jpeg_yuv_planes',
+    'is_jpeg',
 ]

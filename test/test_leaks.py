@@ -10,12 +10,13 @@ hardest.
 """
 
 import contextlib
-import sys
 
 import numpy as np
 from harness import generate_image
 
 import simplejpeg
+
+
 def _assert_no_growth(rss, battery, warmup=256, count=1000):
     # first calls pay one-time allocations (jpeg tables, error buffers,
     # importer caches); afterwards a single long battery run must leave
